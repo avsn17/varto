@@ -968,7 +968,34 @@ footer {
         </ul>
       </div>
     </div>
-
+<!-- Canva Presentation Embed -->
+<div style="position:relative;width:100%;aspect-ratio:16/9;background:#0a160b;overflow:hidden;" id="canva-wrap">
+  <iframe
+    id="canva-frame"
+    src="https://canva.link/oxdnxjqkhabyp0s"
+    style="position:absolute;inset:0;width:100%;height:100%;border:none;"
+    allowfullscreen
+    allow="fullscreen"
+    loading="lazy"
+    title="Varto JES — Visual Report"
+  ></iframe>
+  <!-- fallback if iframe blocked -->
+  <div id="canva-fallback" style="display:none;position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1rem;padding:2rem;text-align:center;">
+    <p style="font-family:monospace;color:#7a9c7a;font-size:0.85rem;">Presentation blocked by your browser</p>
+    <a href="https://canva.link/oxdnxjqkhabyp0s" target="_blank" rel="noopener noreferrer"
+       style="font-family:monospace;font-size:0.75rem;background:#00ff41;color:#030805;padding:0.6rem 1.5rem;text-decoration:none;font-weight:bold;">
+      ↗ Open Presentation
+    </a>
+  </div>
+</div>
+<script>
+  var f = document.getElementById('canva-frame');
+  var t = setTimeout(function(){
+    document.getElementById('canva-fallback').style.display='flex';
+    f.style.display='none';
+  }, 8000);
+  f.onload = function(){ clearTimeout(t); };
+</script>
     <div class="pq green reveal">
       <p>The Varto JES project, as currently proposed, fails to meet the criteria for sustainable development. It ignores the fundamental principles of geological safety, environmental justice, and democratic participation. The demands of the local population for a total cessation are not based on sentiment — they are supported by the geographical and historical realities of the Varto basin.</p>
       <cite>— Integrated Assessment of the Varto Geothermal Energy Project (Scientific Review, 2025)</cite>
