@@ -3,1149 +3,1087 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>VARTO — Earth Guardian | Defend the Land</title>
-<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Literata:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+<meta name="description" content="Varto JES — The geothermal energy project threatening a seismic triple junction, 16 villages, and a biodiversity hotspot in Eastern Anatolia.">
+<title>VARTO — Earth Under Pressure | Defend the Land</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Literata:ital,opsz,wght@0,7..72,300;0,7..72,400;0,7..72,600;1,7..72,300;1,7..72,400&family=Share+Tech+Mono&display=swap" rel="stylesheet">
 <style>
+/* ===== DESIGN TOKENS ===== */
 :root {
-  --earth-black: #0f1a0b;
-  --soil: #2b3b1a;
-  --moss: #3a5c2a;
-  --canopy: #1e3a1e;
-  --sage: #6b8c4a;
-  --amber-soil: #c97e2a;
-  --clay: #8c5a2a;
-  --water: #2a6b5a;
-  --leaf: #7ab84a;
-  --danger-leaf: #c9452a;
-  --paper-nature: #e8f0e0;
-  --muted-sage: #8aa87a;
-  --green-glow: #8bc34a;
-  --red-earth: #c95a3a;
+  --black: #030805;
+  --deep-black: #050f06;
+  --surface: #0a160b;
+  --surface2: #0f1e10;
+  --green: #00ff41;
+  --green-dim: #00cc33;
+  --green-dark: #003d15;
+  --green-trace: rgba(0,255,65,0.06);
+  --red: #ff1a1a;
+  --red-dim: #cc0000;
+  --red-trace: rgba(255,26,26,0.06);
+  --amber: #ffaa00;
+  --amber-dim: rgba(255,170,0,0.7);
+  --text: #d4e8d4;
+  --text-dim: #7a9c7a;
+  --text-muted: #4a6a4a;
+  --paper: #eef4ee;
+  --mono: 'Share Tech Mono', monospace;
+  --serif: 'Literata', Georgia, serif;
+  --display: 'Bebas Neue', sans-serif;
 }
 
+/* ===== RESET ===== */
 *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
-html { scroll-behavior: smooth; }
+html { scroll-behavior: smooth; font-size: 16px; }
 
 body {
-  background: var(--earth-black);
-  color: var(--paper-nature);
-  font-family: 'Literata', Georgia, serif;
-  font-size: 17px;
-  line-height: 1.7;
+  background: var(--black);
+  color: var(--text);
+  font-family: var(--serif);
+  line-height: 1.75;
   overflow-x: hidden;
-  cursor: crosshair;
-  background-image: radial-gradient(circle at 10% 20%, rgba(60,90,30,0.1) 1px, transparent 1px);
-  background-size: 40px 40px;
 }
 
-/* ============ NATURE SCANLINE OVERLAY ============ */
+/* ===== SCAN LINES ===== */
 body::after {
   content: '';
-  position: fixed;
-  inset: 0;
+  position: fixed; inset: 0;
   background: repeating-linear-gradient(
-    0deg,
-    transparent,
-    transparent 2px,
-    rgba(100,140,60,0.05) 2px,
-    rgba(100,140,60,0.05) 4px
+    0deg, transparent, transparent 2px,
+    rgba(0,255,65,0.012) 2px, rgba(0,255,65,0.012) 4px
   );
   pointer-events: none;
-  z-index: 9999;
-  animation: natureFlicker 10s ease-in-out infinite;
+  z-index: 9000;
 }
 
-@keyframes natureFlicker {
-  0%, 100% { opacity: 0.8; }
-  50% { opacity: 1; }
-}
-
-/* ============ SEISMIC CANVAS (earthy tones) ============ */
-#seismic-bg {
-  position: fixed;
-  top: 0; left: 0;
-  width: 100%; height: 100%;
+/* ===== CANVAS BG ===== */
+#canvas-bg {
+  position: fixed; inset: 0;
   z-index: 0;
-  opacity: 0.1;
+  opacity: 0.09;
 }
 
-/* ============ PARTICLE SYSTEM (pollen/dust) ============ */
-#particle-canvas {
-  position: fixed;
-  top: 0; left: 0;
-  width: 100%; height: 100%;
-  z-index: 1;
-  pointer-events: none;
-  opacity: 0.4;
-}
-
-/* ============ HERO ============ */
-.hero {
-  position: relative;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  text-align: center;
-  z-index: 10;
-  padding: 4rem 2rem;
-  overflow: hidden;
-}
-
-.hero-bg-rings {
-  position: absolute;
-  inset: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  pointer-events: none;
-}
-
-.ring {
-  position: absolute;
-  border-radius: 50%;
-  border: 2px solid var(--danger-leaf);
-  opacity: 0;
-  animation: pulseRing 3.5s ease-out infinite;
-  box-shadow: 0 0 30px rgba(201,69,42,0.3);
-}
-.ring:nth-child(1) { width: 100px; height: 100px; animation-delay: 0s; }
-.ring:nth-child(2) { width: 300px; height: 300px; animation-delay: 0.8s; }
-.ring:nth-child(3) { width: 600px; height: 600px; animation-delay: 1.6s; }
-.ring:nth-child(4) { width: 900px; height: 900px; animation-delay: 2.4s; }
-.ring:nth-child(5) { width: 1300px; height: 1300px; animation-delay: 3.2s; }
-.ring:nth-child(6) { width: 1800px; height: 1800px; animation-delay: 4s; border-color: var(--leaf); }
-
-@keyframes pulseRing {
-  0% { transform: scale(0.2); opacity: 0.8; border-color: var(--danger-leaf); box-shadow: 0 0 40px var(--danger-leaf); }
-  30% { opacity: 0.5; }
-  60% { opacity: 0.2; border-color: rgba(201,69,42,0.4); }
-  100% { transform: scale(1.2); opacity: 0; border-color: rgba(201,69,42,0.1); }
-}
-
-.epicenter-dot {
-  position: absolute;
-  width: 22px; height: 22px;
-  border-radius: 50%;
-  background: radial-gradient(circle, var(--danger-leaf) 0%, var(--amber-soil) 100%);
-  box-shadow: 0 0 40px var(--danger-leaf), 0 0 80px rgba(201,69,42,0.6);
-  animation: epicenterPulse 1.3s ease-in-out infinite;
-  z-index: 2;
-}
-
-@keyframes epicenterPulse {
-  0%, 100% { transform: scale(1); box-shadow: 0 0 30px var(--danger-leaf), 0 0 60px var(--danger-leaf); }
-  50% { transform: scale(1.7); box-shadow: 0 0 60px var(--danger-leaf), 0 0 120px rgba(201,69,42,0.5); }
-}
-
-.hero-kicker {
-  font-family: 'Share Tech Mono', monospace;
-  font-size: 0.75rem;
-  letter-spacing: 0.5em;
-  color: var(--leaf);
-  text-transform: uppercase;
-  margin-bottom: 2rem;
-  animation: fadeUp 1s ease 0.3s both;
-  text-shadow: 0 0 15px var(--green-glow);
-  background: rgba(30,50,20,0.6);
-  padding: 0.4rem 1rem;
-  border-radius: 30px;
-  backdrop-filter: blur(4px);
-}
-
-.hero-title {
-  font-family: 'Bebas Neue', sans-serif;
-  font-size: clamp(4rem, 14vw, 11rem);
-  line-height: 0.85;
-  letter-spacing: 0.05em;
-  animation: fadeUp 1s ease 0.5s both;
-}
-
-.hero-title .line-green {
-  color: var(--leaf);
-  text-shadow: 0 0 30px var(--green-glow), 0 0 80px rgba(100,180,60,0.4);
-  animation: greenGlow 2.5s ease-in-out infinite alternate;
-}
-
-.hero-title .line-red {
-  color: var(--danger-leaf);
-  text-shadow: 0 0 30px var(--danger-leaf), 0 0 80px rgba(201,69,42,0.4);
-  animation: redGlow 2s ease-in-out infinite alternate;
-}
-
-@keyframes greenGlow {
-  from { text-shadow: 0 0 20px var(--leaf), 0 0 50px rgba(100,180,60,0.3); }
-  to { text-shadow: 0 0 50px var(--leaf), 0 0 120px rgba(100,180,60,0.5), 0 0 200px rgba(100,180,60,0.2); }
-}
-
-@keyframes redGlow {
-  from { text-shadow: 0 0 20px var(--danger-leaf), 0 0 50px rgba(201,69,42,0.3); }
-  to { text-shadow: 0 0 50px var(--danger-leaf), 0 0 120px rgba(201,69,42,0.5), 0 0 200px rgba(201,69,42,0.2); }
-}
-
-.hero-sub {
-  font-family: 'Literata', serif;
-  font-style: italic;
-  font-size: clamp(0.9rem, 2vw, 1.2rem);
-  color: var(--muted-sage);
-  max-width: 680px;
-  margin: 1.5rem auto 2.5rem;
-  animation: fadeUp 1s ease 0.7s both;
-}
-
-.hero-data-strip {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 1.5rem;
-  justify-content: center;
-  animation: fadeUp 1s ease 0.9s both;
-}
-
-.data-chip {
-  font-family: 'Share Tech Mono', monospace;
-  font-size: 0.65rem;
-  letter-spacing: 0.15em;
-  border: 1px solid;
-  padding: 0.5rem 1rem;
-  transition: all 0.3s ease;
-  cursor: pointer;
-  background: rgba(30,50,20,0.5);
-  backdrop-filter: blur(4px);
-}
-
-.data-chip:hover {
-  transform: scale(1.05);
-  box-shadow: 0 0 20px currentColor;
-}
-
-.data-chip.g { border-color: var(--leaf); color: var(--leaf); }
-.data-chip.r { border-color: var(--danger-leaf); color: var(--danger-leaf); }
-.data-chip.a { border-color: var(--amber-soil); color: var(--amber-soil); }
-
-@keyframes fadeUp {
-  from { opacity: 0; transform: translateY(40px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-/* ============ NAV ============ */
-nav {
-  position: sticky;
-  top: 0;
-  z-index: 100;
-  background: rgba(15,26,11,0.95);
-  border-bottom: 1px solid var(--moss);
-  backdrop-filter: blur(15px);
-  transition: all 0.3s ease;
-}
-
-nav.scrolled {
-  background: rgba(10,20,8,0.98);
-  border-bottom-color: var(--leaf);
-  box-shadow: 0 5px 30px rgba(100,180,60,0.1);
-}
-
-nav ul { display: flex; list-style: none; justify-content: center; flex-wrap: wrap; }
-nav a {
-  font-family: 'Share Tech Mono', monospace;
-  font-size: 0.65rem;
-  letter-spacing: 0.15em;
-  text-transform: uppercase;
-  color: var(--muted-sage);
-  text-decoration: none;
-  display: block;
-  padding: 1rem 1.2rem;
-  transition: all 0.3s ease;
-  position: relative;
-}
-nav a::after {
-  content: '';
-  position: absolute;
-  bottom: 0;
-  left: 50%;
-  width: 0;
-  height: 2px;
-  background: var(--leaf);
-  transition: all 0.3s ease;
-  transform: translateX(-50%);
-}
-nav a:hover {
-  color: var(--leaf);
-  text-shadow: 0 0 10px var(--leaf);
-}
-nav a:hover::after {
-  width: 80%;
-}
-
-/* ============ SECTIONS ============ */
-.section {
-  position: relative;
-  z-index: 10;
-  max-width: 1000px;
-  margin: 0 auto;
-  padding: 6rem 2rem;
-}
-
-.full-band {
-  position: relative;
-  z-index: 10;
-  padding: 6rem 2rem;
-}
-
-.label {
-  font-family: 'Share Tech Mono', monospace;
-  font-size: 0.7rem;
-  letter-spacing: 0.4em;
-  text-transform: uppercase;
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-  margin-bottom: 2rem;
-}
-.label.green { color: var(--leaf); text-shadow: 0 0 10px var(--leaf); }
-.label.red { color: var(--danger-leaf); text-shadow: 0 0 10px var(--danger-leaf); }
-.label.amber { color: var(--amber-soil); text-shadow: 0 0 10px var(--amber-soil); }
-.label::after { content: ''; flex: 1; height: 1px; background: currentColor; opacity: 0.4; }
-
-h2 {
-  font-family: 'Bebas Neue', sans-serif;
-  font-size: clamp(2.5rem, 6vw, 5.5rem);
-  line-height: 0.9;
-  letter-spacing: 0.03em;
-  margin-bottom: 1.5rem;
-}
-
-h2.green-h { color: var(--leaf); text-shadow: 0 0 20px rgba(100,180,60,0.3); }
-h2.red-h { color: var(--danger-leaf); text-shadow: 0 0 20px rgba(201,69,42,0.3); }
-h2.white-h { color: var(--paper-nature); }
-
-h3 {
-  font-family: 'Bebas Neue', sans-serif;
-  font-size: 1.8rem;
-  letter-spacing: 0.05em;
-  color: var(--leaf);
-  margin: 2.5rem 0 1rem;
-}
-
-p { margin-bottom: 1.2rem; color: #c5d8b5; }
-strong { color: var(--leaf); font-weight: 600; }
-em.red { color: var(--danger-leaf); font-style: normal; font-weight: 600; }
-
-/* ============ STATS GRID ============ */
-.stats-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-  gap: 2px;
-  background: var(--moss);
-  margin: 3rem 0;
-  border: 1px solid var(--moss);
-}
-
-.stat {
-  background: var(--canopy);
-  padding: 2rem 1rem;
-  text-align: center;
-  transition: all 0.4s ease;
-  position: relative;
-  overflow: hidden;
-}
-.stat::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: radial-gradient(circle at 50% 50%, rgba(100,180,60,0.08), transparent 70%);
-  animation: statGlow 3s ease-in-out infinite alternate;
-}
-.stat:hover { 
-  background: rgba(100,180,60,0.12); 
-  transform: translateY(-5px);
-  box-shadow: 0 10px 40px rgba(100,180,60,0.15);
-}
-
-.stat-n {
-  font-family: 'Bebas Neue', sans-serif;
-  font-size: 3.5rem;
-  line-height: 1;
-  display: block;
-  transition: transform 0.3s ease;
-}
-.stat:hover .stat-n {
-  transform: scale(1.1);
-}
-.stat-n.g { color: var(--leaf); text-shadow: 0 0 20px var(--leaf); }
-.stat-n.r { color: var(--danger-leaf); text-shadow: 0 0 20px var(--danger-leaf); animation: redNumPulse 2s ease-in-out infinite; }
-.stat-n.a { color: var(--amber-soil); text-shadow: 0 0 15px var(--amber-soil); }
-
-@keyframes redNumPulse {
-  0%, 100% { text-shadow: 0 0 15px var(--danger-leaf); }
-  50% { text-shadow: 0 0 40px var(--danger-leaf), 0 0 80px rgba(201,69,42,0.4); }
-}
-
-@keyframes statGlow {
-  from { opacity: 0.2; }
-  to { opacity: 0.6; }
-}
-
-.stat-l {
-  font-family: 'Share Tech Mono', monospace;
-  font-size: 0.6rem;
-  letter-spacing: 0.15em;
-  text-transform: uppercase;
-  color: var(--muted-sage);
-  margin-top: 0.5rem;
-  display: block;
-}
-
-/* ============ FAULT ZONE DISPLAY ============ */
-.fault-viz {
-  background: var(--canopy);
-  border: 1px solid var(--moss);
-  padding: 2.5rem;
-  margin: 2.5rem 0;
-  position: relative;
-  overflow: hidden;
-  box-shadow: 0 0 40px rgba(100,180,60,0.1);
-}
-
-.fault-lines-viz {
-  width: 100%;
-  height: 150px;
-  position: relative;
-  margin-bottom: 1.5rem;
-}
-
-.fault-line {
-  position: absolute;
-  height: 3px;
-  border-radius: 2px;
-  animation: faultShake 2s ease-in-out infinite;
-}
-.fault-line.nafz {
-  width: 100%; top: 20%;
-  background: linear-gradient(to right, transparent, var(--leaf), var(--leaf), transparent);
-  box-shadow: 0 0 15px var(--leaf);
-}
-.fault-line.eafz {
-  width: 80%; top: 50%; left: 10%;
-  background: linear-gradient(to right, transparent, var(--amber-soil), var(--amber-soil), transparent);
-  box-shadow: 0 0 15px var(--amber-soil);
-  animation-delay: 0.7s;
-}
-.fault-line.vfz {
-  width: 50%; top: 75%; left: 25%;
-  background: linear-gradient(to right, transparent, var(--danger-leaf), var(--danger-leaf), transparent);
-  box-shadow: 0 0 15px var(--danger-leaf);
-  animation-delay: 0.3s;
-}
-.fault-line.jes {
-  width: 8%; top: 0; left: 46%; height: 100%;
-  background: linear-gradient(to bottom, transparent, rgba(201,69,42,0.8), transparent);
-  animation: jesWarning 1s ease-in-out infinite;
-  box-shadow: 0 0 20px var(--danger-leaf);
-}
-
-@keyframes faultShake {
-  0%, 100% { transform: translateY(0) scaleX(1); }
-  25% { transform: translateY(-2px) scaleX(1.02); }
-  75% { transform: translateY(2px) scaleX(0.98); }
-}
-
-@keyframes jesWarning {
-  0%, 100% { opacity: 1; box-shadow: 0 0 20px var(--danger-leaf); }
-  50% { opacity: 0.3; box-shadow: 0 0 5px var(--danger-leaf); }
-}
-
-.fault-labels {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-}
-.fl { font-family: 'Share Tech Mono', monospace; font-size: 0.7rem; display: flex; align-items: center; gap: 0.8rem; }
-.fl-dot { width: 12px; height: 4px; border-radius: 2px; flex-shrink: 0; }
-
-/* ============ RISK CARDS ============ */
-.risk-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: 3px;
-  margin: 2.5rem 0;
-  background: var(--moss);
-}
-
-.risk-card {
-  background: var(--canopy);
-  padding: 2rem;
-  position: relative;
-  overflow: hidden;
-  border-top: 4px solid;
-  transition: all 0.4s ease;
-}
-.risk-card:hover { 
-  transform: translateY(-8px) scale(1.02);
-  box-shadow: 0 20px 60px rgba(0,0,0,0.5);
-  z-index: 10;
-}
-
-.risk-card::after {
-  content: '';
-  position: absolute;
-  bottom: 0; left: 0; right: 0; height: 2px;
-  animation: scanLine 2s linear infinite;
-  background: linear-gradient(to right, transparent, rgba(100,180,60,0.5), transparent);
-}
-
-@keyframes scanLine {
-  from { transform: translateX(-100%); }
-  to { transform: translateX(100%); }
-}
-
-.risk-card.c1 { border-top-color: var(--danger-leaf); }
-.risk-card.c2 { border-top-color: var(--water); }
-.risk-card.c3 { border-top-color: var(--leaf); }
-.risk-card.c4 { border-top-color: var(--amber-soil); }
-.risk-card.c5 { border-top-color: #8a6a3a; }
-.risk-card.c6 { border-top-color: var(--muted-sage); }
-
-.risk-icon { font-size: 2.5rem; margin-bottom: 1rem; display: block; animation: iconFloat 3s ease-in-out infinite; }
-
-@keyframes iconFloat {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-5px); }
-}
-
-.risk-title {
-  font-family: 'Bebas Neue', sans-serif;
-  font-size: 1.5rem;
-  letter-spacing: 0.05em;
-  margin-bottom: 0.8rem;
-}
-
-.c1 .risk-title { color: var(--danger-leaf); }
-.c2 .risk-title { color: var(--water); }
-.c3 .risk-title { color: var(--leaf); }
-.c4 .risk-title { color: var(--amber-soil); }
-.c5 .risk-title { color: #8a6a3a; }
-.c6 .risk-title { color: var(--muted-sage); }
-
-.risk-body { font-size: 0.95rem; color: #9aac8a; line-height: 1.7; }
-
-/* ============ SEISMIC EQUATION ============ */
-.equation-box {
-  background: rgba(60,90,40,0.1);
-  border: 1px solid var(--moss);
-  border-left: 5px solid var(--leaf);
-  padding: 2.5rem;
-  margin: 2.5rem 0;
-  font-family: 'Share Tech Mono', monospace;
-  font-size: 1.1rem;
-  color: var(--leaf);
-  text-align: center;
-  position: relative;
-  box-shadow: 0 0 30px rgba(100,180,60,0.08);
-}
-
-.equation-box::before {
-  content: 'COULOMB FAILURE CRITERION';
-  position: absolute;
-  top: -0.7rem;
-  left: 1rem;
-  font-size: 0.6rem;
-  letter-spacing: 0.3em;
-  background: var(--earth-black);
-  padding: 0 0.8rem;
-  color: var(--leaf);
-}
-
-.eq-main { font-size: 1.6rem; margin-bottom: 0.8rem; animation: equationPulse 3s ease-in-out infinite; }
-
-@keyframes equationPulse {
-  0%, 100% { text-shadow: 0 0 8px var(--leaf); }
-  50% { text-shadow: 0 0 20px var(--leaf), 0 0 40px rgba(100,180,60,0.3); }
-}
-
-.eq-sub { font-size: 0.75rem; color: var(--muted-sage); }
-
-/* ============ TIMELINE ============ */
-.timeline { position: relative; padding-left: 4rem; margin: 2.5rem 0; }
-.timeline::before {
-  content: '';
-  position: absolute;
-  left: 0; top: 0; bottom: 0;
-  width: 3px;
-  background: linear-gradient(to bottom, var(--danger-leaf), var(--amber-soil), var(--leaf));
-  box-shadow: 0 0 15px rgba(100,180,60,0.2);
-}
-
-.tl-item {
-  position: relative;
-  margin-bottom: 2.5rem;
-  opacity: 0;
-  transform: translateX(-30px);
-  transition: all 0.6s ease;
-}
-.tl-item.visible { opacity: 1; transform: translateX(0); }
-
-.tl-item::before {
-  content: '';
-  position: absolute;
-  left: -4.2rem;
-  top: 0.4rem;
-  width: 16px; height: 16px;
-  border-radius: 50%;
-  border: 3px solid;
-  transition: all 0.3s ease;
-}
-
-.tl-item.danger::before { border-color: var(--danger-leaf); background: rgba(201,69,42,0.3); box-shadow: 0 0 15px var(--danger-leaf); }
-.tl-item.warn::before { border-color: var(--amber-soil); background: rgba(201,126,42,0.2); box-shadow: 0 0 10px var(--amber-soil); }
-.tl-item.safe::before { border-color: var(--leaf); background: rgba(100,180,60,0.2); box-shadow: 0 0 10px var(--leaf); }
-
-.tl-item:hover::before {
-  transform: scale(1.3);
-}
-
-.tl-year {
-  font-family: 'Share Tech Mono', monospace;
-  font-size: 0.75rem;
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
-  margin-bottom: 0.5rem;
-}
-.tl-item.danger .tl-year { color: var(--danger-leaf); text-shadow: 0 0 8px var(--danger-leaf); }
-.tl-item.warn .tl-year { color: var(--amber-soil); text-shadow: 0 0 8px var(--amber-soil); }
-.tl-item.safe .tl-year { color: var(--leaf); text-shadow: 0 0 8px var(--leaf); }
-
-.tl-text { color: #b0c0a0; font-size: 1rem; line-height: 1.7; }
-
-/* ============ COMPARISON TABLE ============ */
-.compare-table {
-  width: 100%;
-  border-collapse: collapse;
-  margin: 2.5rem 0;
-  font-size: 0.9rem;
-}
-.compare-table th {
-  font-family: 'Share Tech Mono', monospace;
-  font-size: 0.65rem;
-  letter-spacing: 0.15em;
-  text-transform: uppercase;
-  padding: 1rem;
-  text-align: left;
-  border-bottom: 2px solid var(--moss);
-  color: var(--leaf);
-}
-.compare-table td {
-  padding: 1rem;
-  border-bottom: 1px solid rgba(100,180,60,0.1);
-  color: #9aac8a;
-  transition: all 0.3s ease;
-}
-.compare-table tr:hover td { 
-  background: rgba(100,180,60,0.06); 
-}
-.td-warn { color: var(--amber-soil) !important; font-weight: 600; }
-.td-danger { color: var(--danger-leaf) !important; font-weight: 600; text-shadow: 0 0 8px rgba(201,69,42,0.2); }
-.td-ok { color: var(--leaf) !important; font-weight: 600; }
-
-/* ============ SCIENCE BANDS ============ */
-.science-dark {
-  background: rgba(20,35,15,0.85);
-  border-top: 1px solid var(--moss);
-  border-bottom: 1px solid var(--moss);
-}
-
-.science-red {
-  background: rgba(45,25,15,0.9);
-  border-top: 1px solid rgba(201,69,42,0.2);
-  border-bottom: 1px solid rgba(201,69,42,0.2);
-}
-
-/* ============ PULL QUOTE ============ */
-.pq {
-  border-left: 4px solid var(--leaf);
-  padding: 2rem 2.5rem;
-  margin: 3.5rem 0;
-  background: rgba(100,180,60,0.05);
-  position: relative;
-  box-shadow: 0 0 30px rgba(100,180,60,0.08);
-}
-.pq::before {
-  content: '"';
-  font-family: 'Bebas Neue', sans-serif;
-  font-size: 10rem;
-  color: var(--leaf);
-  opacity: 0.12;
-  position: absolute;
-  top: -2.5rem;
-  left: 1rem;
-  line-height: 1;
-}
-.pq p {
-  font-style: italic;
-  font-size: 1.25rem;
-  color: var(--paper-nature);
-  margin-bottom: 0.8rem;
-}
-.pq cite {
-  font-family: 'Share Tech Mono', monospace;
-  font-size: 0.65rem;
-  letter-spacing: 0.15em;
-  color: var(--muted-sage);
-  font-style: normal;
-}
-
-/* ============ ACTION CARDS ============ */
-.action-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 3px;
-  background: var(--moss);
-  margin: 2.5rem 0;
-}
-
-.action-card {
-  background: var(--canopy);
-  padding: 2.5rem;
-  position: relative;
-  overflow: hidden;
-  transition: all 0.4s ease;
-}
-
-.action-card:hover {
-  background: rgba(30,60,20,0.95);
-  transform: translateY(-5px);
-}
-
-.action-card::before {
-  content: '';
-  position: absolute;
-  top: 0; left: 0; right: 0;
-  height: 3px;
-  background: var(--leaf);
-  animation: greenPulse 1.5s ease-in-out infinite;
-}
-
-@keyframes greenPulse {
-  0%, 100% { opacity: 1; box-shadow: 0 0 15px var(--leaf); }
-  50% { opacity: 0.4; box-shadow: none; }
-}
-
-.action-num {
-  font-family: 'Bebas Neue', sans-serif;
-  font-size: 4rem;
-  color: rgba(100,180,60,0.2);
-  line-height: 1;
-  margin-bottom: 0.8rem;
-  transition: all 0.3s ease;
-}
-.action-card:hover .action-num {
-  color: rgba(100,180,60,0.4);
-  transform: scale(1.1);
-}
-
-.action-title {
-  font-family: 'Bebas Neue', sans-serif;
-  font-size: 1.4rem;
-  color: var(--leaf);
-  letter-spacing: 0.05em;
-  margin-bottom: 1rem;
-}
-
-.action-body { font-size: 0.95rem; color: #8aaa7a; line-height: 1.7; }
-
-/* ============ OUTCOMES ============ */
-.outcome-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 3px;
-  background: var(--moss);
-  margin: 2.5rem 0;
-}
-
-@media (max-width: 768px) { .outcome-grid { grid-template-columns: 1fr; } }
-
-.outcome-card {
-  padding: 2.5rem;
-  position: relative;
-  transition: all 0.4s ease;
-}
-
-.outcome-card:hover {
-  transform: scale(1.02);
-  z-index: 10;
-}
-
-.outcome-card.bad {
-  background: rgba(55,25,15,0.85);
-  border-top: 4px solid var(--danger-leaf);
-}
-.outcome-card.good {
-  background: rgba(20,45,15,0.85);
-  border-top: 4px solid var(--leaf);
-}
-
-.outcome-title {
-  font-family: 'Bebas Neue', sans-serif;
-  font-size: 1.8rem;
-  letter-spacing: 0.05em;
-  margin-bottom: 1.5rem;
-}
-.bad .outcome-title { color: var(--danger-leaf); text-shadow: 0 0 15px rgba(201,69,42,0.2); }
-.good .outcome-title { color: var(--leaf); text-shadow: 0 0 15px rgba(100,180,60,0.2); }
-
-.outcome-list { list-style: none; }
-.outcome-list li {
-  font-size: 0.95rem;
-  color: #aabba0;
-  padding: 0.6rem 0;
-  border-bottom: 1px solid rgba(255,255,255,0.05);
-  display: flex;
-  gap: 1rem;
-  align-items: flex-start;
-  transition: all 0.3s ease;
-}
-.outcome-list li:hover {
-  padding-left: 10px;
-  background: rgba(255,255,255,0.02);
-}
-.outcome-list li::before {
-  font-family: 'Share Tech Mono', monospace;
-  font-size: 0.8rem;
-  flex-shrink: 0;
-  margin-top: 0.2rem;
-}
-.bad .outcome-list li::before { content: '✗'; color: var(--danger-leaf); }
-.good .outcome-list li::before { content: '✓'; color: var(--leaf); }
-
-/* ============ LIVE TICKER ============ */
-.ticker {
-  background: linear-gradient(90deg, var(--danger-leaf), #8a3a2a, var(--danger-leaf));
-  background-size: 200% 100%;
-  padding: 0.8rem 0;
+/* ===== TICKER ===== */
+.ticker-wrap {
+  background: var(--red);
   overflow: hidden;
   position: relative;
-  animation: tickerGradient 5s ease infinite;
+  z-index: 200;
 }
-
-@keyframes tickerGradient {
-  0%, 100% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-}
-
 .ticker-inner {
   display: flex;
   white-space: nowrap;
-  animation: tickerScroll 25s linear infinite;
+  animation: tickerScroll 35s linear infinite;
 }
-
-.ticker-text {
-  font-family: 'Share Tech Mono', monospace;
-  font-size: 0.75rem;
-  letter-spacing: 0.2em;
+.ticker-inner:hover { animation-play-state: paused; }
+.tick-item {
+  font-family: var(--mono);
+  font-size: 0.65rem;
+  letter-spacing: 0.15em;
   text-transform: uppercase;
   color: #fff;
-  padding: 0 4rem;
-  text-shadow: 0 0 8px rgba(0,0,0,0.3);
+  padding: 0.45rem 2.5rem;
 }
-
 @keyframes tickerScroll {
   from { transform: translateX(0); }
   to { transform: translateX(-50%); }
 }
 
-/* ============ SEISMIC WAVEFORM ============ */
-.waveform-container {
-  background: var(--canopy);
-  border: 1px solid var(--moss);
-  padding: 1.5rem;
-  margin: 2.5rem 0;
+/* ===== HERO ===== */
+.hero {
+  position: relative;
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  text-align: center;
+  padding: 8rem 2rem 6rem;
+  z-index: 10;
   overflow: hidden;
-  box-shadow: 0 0 20px rgba(100,180,60,0.08);
 }
 
-.waveform-label {
-  font-family: 'Share Tech Mono', monospace;
-  font-size: 0.6rem;
-  letter-spacing: 0.3em;
-  color: var(--leaf);
-  margin-bottom: 0.8rem;
+/* Ripple rings */
+.ripple-wrap {
+  position: absolute; inset: 0;
+  display: grid; place-items: center;
+  pointer-events: none;
+}
+.ripple {
+  position: absolute;
+  border-radius: 50%;
+  border: 1px solid var(--red);
+  animation: rippleOut 5s ease-out infinite;
+  opacity: 0;
+}
+.ripple:nth-child(1) { width: 80px; height: 80px; animation-delay: 0s; }
+.ripple:nth-child(2) { width: 240px; height: 240px; animation-delay: 1s; }
+.ripple:nth-child(3) { width: 480px; height: 480px; animation-delay: 2s; }
+.ripple:nth-child(4) { width: 800px; height: 800px; animation-delay: 3s; }
+.ripple:nth-child(5) { width: 1200px; height: 1200px; animation-delay: 4s; }
+@keyframes rippleOut {
+  0%   { transform: scale(0.2); opacity: 0.9; border-color: var(--red); }
+  70%  { opacity: 0.15; }
+  100% { transform: scale(1); opacity: 0; }
 }
 
-.waveform-svg { width: 200%; animation: waveScroll 8s linear infinite; }
-
-@keyframes waveScroll {
-  from { transform: translateX(0); }
-  to { transform: translateX(-50%); }
+.epicenter {
+  position: absolute;
+  width: 14px; height: 14px;
+  border-radius: 50%;
+  background: var(--red);
+  box-shadow: 0 0 0 3px rgba(255,26,26,0.3), 0 0 40px var(--red);
+  animation: epicPulse 1.8s ease-in-out infinite;
+  z-index: 2;
+}
+@keyframes epicPulse {
+  0%,100% { box-shadow: 0 0 0 3px rgba(255,26,26,0.3), 0 0 30px var(--red); }
+  50% { box-shadow: 0 0 0 8px rgba(255,26,26,0.15), 0 0 80px var(--red), 0 0 160px rgba(255,26,26,0.2); }
 }
 
-/* ============ CHEMICAL GRID ============ */
-.chem-grid {
+.hero-content { position: relative; z-index: 3; }
+
+.hero-eyebrow {
+  font-family: var(--mono);
+  font-size: 0.62rem;
+  letter-spacing: 0.4em;
+  color: var(--green);
+  text-transform: uppercase;
+  text-shadow: 0 0 12px var(--green);
+  margin-bottom: 2rem;
+  animation: fadeSlideUp 0.9s ease 0.2s both;
+}
+
+.hero-title {
+  font-family: var(--display);
+  font-size: clamp(5rem, 16vw, 13rem);
+  line-height: 0.85;
+  letter-spacing: 0.04em;
+  animation: fadeSlideUp 0.9s ease 0.4s both;
+}
+
+.hero-title .t-white { color: var(--paper); }
+.hero-title .t-small {
+  font-family: var(--mono);
+  font-size: 0.12em;
+  letter-spacing: 0.4em;
+  color: var(--text-dim);
+  display: block;
+  padding: 0.5em 0;
+}
+.hero-title .t-red {
+  color: var(--red);
+  text-shadow: 0 0 40px var(--red), 0 0 100px rgba(255,26,26,0.35);
+  animation: redTitleGlow 2.5s ease-in-out infinite alternate;
+}
+.hero-title .t-green {
+  color: var(--green);
+  text-shadow: 0 0 30px var(--green), 0 0 80px rgba(0,255,65,0.25);
+  animation: greenTitleGlow 3s ease-in-out infinite alternate;
+}
+@keyframes redTitleGlow {
+  from { text-shadow: 0 0 30px var(--red), 0 0 60px rgba(255,26,26,0.25); }
+  to   { text-shadow: 0 0 70px var(--red), 0 0 160px rgba(255,26,26,0.5); }
+}
+@keyframes greenTitleGlow {
+  from { text-shadow: 0 0 20px var(--green), 0 0 50px rgba(0,255,65,0.2); }
+  to   { text-shadow: 0 0 60px var(--green), 0 0 130px rgba(0,255,65,0.45); }
+}
+
+.hero-desc {
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: clamp(0.95rem, 2.2vw, 1.2rem);
+  color: var(--text-dim);
+  max-width: 640px;
+  margin: 1.8rem auto 2.5rem;
+  animation: fadeSlideUp 0.9s ease 0.6s both;
+}
+
+.chips {
+  display: flex; flex-wrap: wrap; gap: 0.6rem;
+  justify-content: center;
+  animation: fadeSlideUp 0.9s ease 0.8s both;
+  margin-bottom: 3rem;
+}
+.chip {
+  font-family: var(--mono);
+  font-size: 0.58rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  border: 1px solid;
+  padding: 0.35rem 0.8rem;
+  animation: chipFlicker 4s ease-in-out infinite;
+}
+.chip.g { border-color: var(--green); color: var(--green); }
+.chip.r { border-color: var(--red); color: var(--red); animation-delay: 1.3s; }
+.chip.a { border-color: var(--amber); color: var(--amber); animation-delay: 0.7s; }
+@keyframes chipFlicker {
+  0%,88%,100% { opacity: 1; }
+  93% { opacity: 0.2; }
+}
+
+.scroll-cue {
+  display: flex; flex-direction: column; align-items: center; gap: 0.5rem;
+  font-family: var(--mono); font-size: 0.55rem; letter-spacing: 0.25em;
+  color: var(--green); text-transform: uppercase;
+  animation: fadeSlideUp 1s ease 2s both;
+}
+.scroll-line {
+  width: 1px; height: 50px;
+  background: linear-gradient(to bottom, var(--green), transparent);
+  animation: scrollBounce 1.8s ease-in-out infinite;
+}
+@keyframes scrollBounce {
+  0%,100% { transform: scaleY(1); opacity: 0.4; }
+  50% { transform: scaleY(1.3); opacity: 1; }
+}
+
+@keyframes fadeSlideUp {
+  from { opacity: 0; transform: translateY(28px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ===== NAV ===== */
+nav {
+  position: sticky; top: 0; z-index: 500;
+  background: rgba(3,8,5,0.96);
+  border-bottom: 1px solid var(--green-dark);
+  backdrop-filter: blur(12px);
+}
+nav ul { display: flex; list-style: none; justify-content: center; flex-wrap: wrap; }
+nav a {
+  display: block;
+  font-family: var(--mono); font-size: 0.58rem; letter-spacing: 0.18em; text-transform: uppercase;
+  color: var(--text-muted); text-decoration: none;
+  padding: 0.85rem 1.1rem;
+  transition: color 0.2s, text-shadow 0.2s;
+  border-bottom: 2px solid transparent;
+  transition: all 0.2s;
+}
+nav a:hover, nav a.active { color: var(--green); text-shadow: 0 0 10px var(--green); border-bottom-color: var(--green); }
+
+/* ===== LAYOUT HELPERS ===== */
+.band { position: relative; z-index: 10; padding: 6rem 2rem; }
+.band-dark { background: rgba(0,6,1,0.85); border-top: 1px solid var(--green-dark); border-bottom: 1px solid var(--green-dark); }
+.band-red { background: rgba(18,0,0,0.9); border-top: 1px solid rgba(255,26,26,0.15); border-bottom: 1px solid rgba(255,26,26,0.15); }
+.container { max-width: 980px; margin: 0 auto; }
+
+.section-tag {
+  font-family: var(--mono); font-size: 0.6rem; letter-spacing: 0.35em; text-transform: uppercase;
+  display: flex; align-items: center; gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+.section-tag::after { content: ''; flex: 1; height: 1px; background: currentColor; opacity: 0.25; }
+.section-tag.green { color: var(--green); text-shadow: 0 0 8px var(--green); }
+.section-tag.red { color: var(--red); }
+.section-tag.amber { color: var(--amber); }
+.section-tag.white { color: var(--text-dim); }
+
+h2 {
+  font-family: var(--display);
+  font-size: clamp(2.8rem, 6.5vw, 5.5rem);
+  line-height: 0.9; letter-spacing: 0.03em;
+  margin-bottom: 1.5rem;
+}
+h2.green { color: var(--green); text-shadow: 0 0 25px rgba(0,255,65,0.25); }
+h2.red   { color: var(--red); text-shadow: 0 0 30px rgba(255,26,26,0.35); }
+h2.white { color: var(--paper); }
+
+h3 {
+  font-family: var(--display);
+  font-size: 1.8rem; letter-spacing: 0.05em;
+  color: var(--green); margin: 2.5rem 0 0.8rem;
+}
+
+p { margin-bottom: 1.2rem; color: var(--text-dim); font-size: 1.05rem; }
+p strong { color: var(--green); font-weight: 600; }
+p em.r { color: var(--red); font-style: normal; font-weight: 600; }
+p em.a { color: var(--amber); font-style: normal; font-weight: 600; }
+
+/* ===== STATS ===== */
+.stats {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-  gap: 3px;
-  background: var(--moss);
-  margin: 2.5rem 0;
+  gap: 1px; background: var(--green-dark);
+  border: 1px solid var(--green-dark);
+  margin: 3rem 0;
+}
+.stat {
+  background: var(--surface);
+  padding: 1.6rem 1.2rem; text-align: center;
+  transition: background 0.3s;
+  cursor: default;
+}
+.stat:hover { background: var(--surface2); }
+
+.sn {
+  font-family: var(--display);
+  font-size: 2.8rem; line-height: 1;
+  display: block; margin-bottom: 0.3rem;
+}
+.sn.g { color: var(--green); text-shadow: 0 0 20px rgba(0,255,65,0.4); }
+.sn.r {
+  color: var(--red); text-shadow: 0 0 20px rgba(255,26,26,0.5);
+  animation: redStatPulse 2.5s ease-in-out infinite;
+}
+.sn.a { color: var(--amber); }
+@keyframes redStatPulse {
+  0%,100% { text-shadow: 0 0 15px rgba(255,26,26,0.4); }
+  50% { text-shadow: 0 0 50px rgba(255,26,26,0.8), 0 0 100px rgba(255,26,26,0.3); }
+}
+.sl {
+  font-family: var(--mono); font-size: 0.52rem; letter-spacing: 0.12em;
+  text-transform: uppercase; color: var(--text-muted);
 }
 
-.chem-cell {
-  background: var(--canopy);
-  padding: 1.5rem 1rem;
-  text-align: center;
-  transition: all 0.3s ease;
+/* ===== FAULT VIZ ===== */
+.fault-box {
+  background: var(--surface);
+  border: 1px solid var(--green-dark);
+  padding: 2rem; margin: 2.5rem 0;
+  position: relative; overflow: hidden;
 }
-.chem-cell:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+.fault-box::before {
+  content: '// ACTIVE FAULT SYSTEM MAP — KARLΙOVA TRIPLE JUNCTION';
+  font-family: var(--mono); font-size: 0.55rem; letter-spacing: 0.15em;
+  color: var(--green); display: block; margin-bottom: 1.5rem;
+  text-shadow: 0 0 6px var(--green);
 }
+.fault-track { position: relative; height: 110px; margin-bottom: 1.5rem; }
+.ft {
+  position: absolute; height: 2px; border-radius: 1px;
+  animation: ftWave 4s ease-in-out infinite;
+}
+.ft.nafz { top: 18%; width: 100%; background: linear-gradient(to right, transparent 0%, var(--green) 15%, var(--green) 85%, transparent 100%); }
+.ft.eafz { top: 50%; width: 78%; left: 11%; background: linear-gradient(to right, transparent 0%, var(--amber) 15%, var(--amber) 85%, transparent 100%); animation-delay: 1.2s; }
+.ft.vfz  { top: 78%; width: 52%; left: 24%; background: linear-gradient(to right, transparent 0%, var(--red) 15%, var(--red) 85%, transparent 100%); animation-delay: 0.6s; }
+.ft.drill {
+  width: 6px; height: 100%; top: 0; left: 47%;
+  background: linear-gradient(to bottom, transparent, rgba(255,26,26,0.9), transparent);
+  animation: drillPulse 1.4s ease-in-out infinite;
+}
+@keyframes ftWave {
+  0%,100% { transform: translateY(0); }
+  33% { transform: translateY(-1.5px); }
+  66% { transform: translateY(1.5px); }
+}
+@keyframes drillPulse {
+  0%,100% { opacity: 1; box-shadow: 0 0 8px var(--red); }
+  50% { opacity: 0.35; box-shadow: none; }
+}
+.fault-legend { display: flex; flex-direction: column; gap: 0.4rem; }
+.fl { display: flex; align-items: center; gap: 0.6rem; }
+.fl-bar { width: 24px; height: 3px; border-radius: 2px; flex-shrink: 0; }
+.fl-text { font-family: var(--mono); font-size: 0.6rem; letter-spacing: 0.06em; }
+.fl-text.g { color: var(--green); }
+.fl-text.a { color: var(--amber); }
+.fl-text.r { color: var(--red); }
+.fl-text.d { color: rgba(255,80,80,0.8); font-size: 0.58rem; }
 
-.chem-symbol {
-  font-family: 'Bebas Neue', sans-serif;
-  font-size: 2.5rem;
-  display: block;
-  transition: transform 0.3s ease;
+/* ===== EQUATION ===== */
+.eq-box {
+  background: rgba(0,255,65,0.03);
+  border: 1px solid var(--green-dark);
+  border-left: 4px solid var(--green);
+  padding: 2rem 2.5rem; margin: 2.5rem 0;
+  position: relative; text-align: center;
 }
-.chem-cell:hover .chem-symbol {
-  transform: scale(1.2);
+.eq-box::before {
+  content: 'COULOMB FAILURE CRITERION';
+  position: absolute; top: -0.6rem; left: 1.2rem;
+  font-family: var(--mono); font-size: 0.5rem; letter-spacing: 0.2em;
+  background: var(--black); padding: 0 0.6rem;
+  color: var(--green); text-shadow: 0 0 6px var(--green);
 }
-
-.chem-name {
-  font-family: 'Share Tech Mono', monospace;
-  font-size: 0.6rem;
-  letter-spacing: 0.15em;
-  color: var(--muted-sage);
-  display: block;
-  margin: 0.3rem 0;
+.eq-main {
+  font-family: var(--mono); font-size: 1.4rem; color: var(--green);
+  text-shadow: 0 0 12px rgba(0,255,65,0.5);
+  margin-bottom: 0.8rem;
 }
+.eq-sub  { font-family: var(--mono); font-size: 0.65rem; color: var(--text-muted); margin-bottom: 0.4rem; }
+.eq-warn { font-family: var(--mono); font-size: 0.68rem; color: var(--red); margin-top: 0.8rem; }
 
-.chem-risk {
-  font-family: 'Share Tech Mono', monospace;
-  font-size: 0.65rem;
-  padding: 0.3rem 0.6rem;
-  display: inline-block;
-  margin-top: 0.5rem;
+/* ===== WAVEFORM ===== */
+.wave-box {
+  background: var(--surface); border: 1px solid var(--green-dark);
+  padding: 1rem; margin: 2rem 0; overflow: hidden;
 }
+.wave-label { font-family: var(--mono); font-size: 0.52rem; letter-spacing: 0.18em; color: var(--green); margin-bottom: 0.6rem; }
+.wave-svg { width: 200%; animation: waveSroll 14s linear infinite; }
+@keyframes waveSroll { from { transform: translateX(0); } to { transform: translateX(-50%); } }
 
-.chem-cell.danger .chem-symbol { color: var(--danger-leaf); text-shadow: 0 0 15px var(--danger-leaf); }
-.chem-cell.danger .chem-risk { color: var(--danger-leaf); border: 1px solid var(--danger-leaf); }
-.chem-cell.warn .chem-symbol { color: var(--amber-soil); text-shadow: 0 0 10px var(--amber-soil); }
-.chem-cell.warn .chem-risk { color: var(--amber-soil); border: 1px solid var(--amber-soil); }
+/* ===== TIMELINE ===== */
+.tl { position: relative; padding-left: 2.8rem; margin: 2rem 0; }
+.tl::before {
+  content: ''; position: absolute; left: 0; top: 0; bottom: 0;
+  width: 2px;
+  background: linear-gradient(to bottom, var(--red) 0%, var(--amber) 50%, var(--green) 100%);
+}
+.tl-item {
+  position: relative; margin-bottom: 2.2rem;
+  opacity: 0; transform: translateX(-12px);
+  transition: opacity 0.55s ease, transform 0.55s ease;
+}
+.tl-item.vis { opacity: 1; transform: translateX(0); }
+.tl-item::before {
+  content: ''; position: absolute;
+  left: -3.15rem; top: 0.3rem;
+  width: 11px; height: 11px; border-radius: 50%; border: 2px solid;
+}
+.tl-item.d::before { border-color: var(--red); background: rgba(255,26,26,0.25); box-shadow: 0 0 10px var(--red); }
+.tl-item.w::before { border-color: var(--amber); background: rgba(255,170,0,0.2); }
+.tl-item.s::before { border-color: var(--green); background: rgba(0,255,65,0.2); box-shadow: 0 0 8px var(--green); }
+.tl-yr { font-family: var(--mono); font-size: 0.62rem; letter-spacing: 0.15em; text-transform: uppercase; margin-bottom: 0.3rem; }
+.tl-item.d .tl-yr { color: var(--red); }
+.tl-item.w .tl-yr { color: var(--amber); }
+.tl-item.s .tl-yr { color: var(--green); }
+.tl-body { color: #91ae91; font-size: 0.98rem; }
+.tl-body strong { color: var(--red); }
 
-/* ============ FOOTER ============ */
-footer {
-  background: var(--earth-black);
-  border-top: 2px solid var(--moss);
-  text-align: center;
-  padding: 4rem 2rem;
+/* ===== CHEM TABLE ===== */
+.chem { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 2px; background: var(--green-dark); margin: 2rem 0; }
+.ce { background: var(--surface); padding: 1.2rem; text-align: center; }
+.ce-sym { font-family: var(--display); font-size: 2.2rem; line-height: 1; display: block; }
+.ce-nm  { font-family: var(--mono); font-size: 0.5rem; letter-spacing: 0.08em; color: var(--text-muted); display: block; margin: 0.25rem 0; }
+.ce-val { font-family: var(--mono); font-size: 0.58rem; padding: 0.18rem 0.4rem; border: 1px solid; display: inline-block; }
+.ce.danger .ce-sym { color: var(--red); text-shadow: 0 0 12px var(--red); }
+.ce.danger .ce-val { color: var(--red); border-color: var(--red); }
+.ce.warn .ce-sym  { color: var(--amber); }
+.ce.warn .ce-val  { color: var(--amber); border-color: var(--amber); }
+.ce.ok .ce-sym    { color: var(--green); }
+.ce.ok .ce-val    { color: var(--green); border-color: var(--green); }
+
+/* ===== RISK CARDS ===== */
+.risk-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 2px; background: #111; margin: 2rem 0; }
+.rc { background: var(--surface); padding: 2rem; border-top: 3px solid; position: relative; overflow: hidden; transition: transform 0.25s; }
+.rc:hover { transform: translateY(-3px); background: var(--surface2); }
+.rc::after { content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 1px; background: linear-gradient(to right, transparent, rgba(0,255,65,0.35), transparent); animation: scanBar 3.5s linear infinite; }
+.rc:nth-child(even)::after { animation-delay: 1.75s; }
+@keyframes scanBar { from { transform: translateX(-100%); } to { transform: translateX(100%); } }
+.rc.c1 { border-top-color: var(--red); }
+.rc.c2 { border-top-color: #4db8ff; }
+.rc.c3 { border-top-color: var(--green); }
+.rc.c4 { border-top-color: var(--amber); }
+.rc.c5 { border-top-color: #cc88ff; }
+.rc.c6 { border-top-color: var(--text-muted); }
+.rc-icon { font-size: 2.2rem; display: block; margin-bottom: 0.8rem; }
+.rc-title { font-family: var(--display); font-size: 1.35rem; letter-spacing: 0.04em; margin-bottom: 0.6rem; }
+.c1 .rc-title { color: var(--red); }
+.c2 .rc-title { color: #4db8ff; }
+.c3 .rc-title { color: var(--green); }
+.c4 .rc-title { color: var(--amber); }
+.c5 .rc-title { color: #cc88ff; }
+.c6 .rc-title { color: var(--text-dim); }
+.rc-body { font-size: 0.9rem; color: var(--text-muted); line-height: 1.65; }
+
+/* ===== COMPARE TABLE ===== */
+.ct { width: 100%; border-collapse: collapse; margin: 2rem 0; font-size: 0.88rem; overflow-x: auto; display: block; }
+.ct th {
+  font-family: var(--mono); font-size: 0.58rem; letter-spacing: 0.1em; text-transform: uppercase;
+  padding: 0.8rem 1rem; text-align: left;
+  border-bottom: 1px solid var(--green-dark); color: var(--green);
+  background: var(--surface);
+  position: sticky; top: 0;
+}
+.ct td { padding: 0.75rem 1rem; border-bottom: 1px solid rgba(0,255,65,0.06); color: var(--text-muted); }
+.ct tr:hover td { background: rgba(0,255,65,0.04); }
+.td-ok { color: var(--green) !important; }
+.td-warn { color: var(--amber) !important; }
+.td-bad { color: var(--red) !important; }
+
+/* ===== ACTION GRID ===== */
+.action-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 2px; background: var(--green-dark); margin: 2rem 0; }
+.ac {
+  background: var(--surface); padding: 2rem; position: relative;
+  overflow: hidden; transition: background 0.25s;
+}
+.ac:hover { background: var(--surface2); }
+.ac::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+  background: var(--green); box-shadow: 0 0 10px var(--green);
+  animation: greenSweep 2.5s ease-in-out infinite;
+}
+.ac:nth-child(2n)::before { animation-delay: 1.25s; }
+.ac:nth-child(3n)::before { animation-delay: 0.83s; }
+@keyframes greenSweep {
+  0%,100% { opacity: 1; }
+  50% { opacity: 0.3; }
+}
+.ac-num { font-family: var(--display); font-size: 4rem; color: rgba(0,255,65,0.1); line-height: 1; margin-bottom: 0.5rem; }
+.ac-title { font-family: var(--display); font-size: 1.25rem; color: var(--green); letter-spacing: 0.04em; margin-bottom: 0.7rem; }
+.ac-body { font-size: 0.88rem; color: var(--text-muted); line-height: 1.65; }
+
+/* ===== OUTCOME ===== */
+.outcome-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2px; background: #111; margin: 2rem 0; }
+@media (max-width: 620px) { .outcome-grid { grid-template-columns: 1fr; } }
+.oc { padding: 2.2rem; }
+.oc.bad  { background: rgba(25,0,0,0.85); border-top: 3px solid var(--red); }
+.oc.good { background: rgba(0,18,2,0.85); border-top: 3px solid var(--green); }
+.oc-title { font-family: var(--display); font-size: 1.5rem; letter-spacing: 0.04em; margin-bottom: 1.2rem; }
+.oc.bad  .oc-title { color: var(--red); }
+.oc.good .oc-title { color: var(--green); }
+.oc-list { list-style: none; }
+.oc-list li {
+  font-size: 0.9rem; color: #99b099;
+  padding: 0.45rem 0; border-bottom: 1px solid rgba(255,255,255,0.05);
+  display: flex; gap: 0.8rem; align-items: flex-start; line-height: 1.5;
+}
+.oc-list li::before { font-family: var(--mono); font-size: 0.7rem; flex-shrink: 0; margin-top: 0.1rem; }
+.oc.bad  .oc-list li::before { content: '✗'; color: var(--red); }
+.oc.good .oc-list li::before { content: '✓'; color: var(--green); }
+
+/* ===== PULLQUOTE ===== */
+.pq {
+  border-left: 3px solid;
+  padding: 1.5rem 2rem; margin: 3rem 0;
   position: relative;
-  z-index: 10;
 }
-
-.footer-motto {
-  font-family: 'Bebas Neue', sans-serif;
-  font-size: 2.5rem;
-  color: var(--leaf);
-  text-shadow: 0 0 20px var(--leaf);
-  margin-bottom: 1.5rem;
-  animation: mottoGlow 3s ease-in-out infinite alternate;
+.pq::before {
+  content: '"'; font-family: var(--display); font-size: 7rem;
+  position: absolute; top: -1.5rem; left: 0.8rem;
+  line-height: 1; opacity: 0.1;
 }
+.pq p { font-style: italic; font-size: 1.15rem; color: var(--paper); margin-bottom: 0.5rem; }
+.pq cite { font-family: var(--mono); font-size: 0.58rem; letter-spacing: 0.1em; font-style: normal; }
+.pq.green { border-color: var(--green); background: rgba(0,255,65,0.03); }
+.pq.green::before { color: var(--green); }
+.pq.green cite { color: var(--green-dim); }
+.pq.red { border-color: var(--red); background: rgba(255,26,26,0.03); }
+.pq.red::before { color: var(--red); }
+.pq.red cite { color: rgba(255,80,80,0.7); }
 
-@keyframes mottoGlow {
-  from { text-shadow: 0 0 15px var(--leaf); }
-  to { text-shadow: 0 0 35px var(--leaf), 0 0 70px rgba(100,180,60,0.3); }
+/* ===== BILINGUAL BANNER ===== */
+.bilingual {
+  background: var(--surface2);
+  border: 1px solid var(--green-dark);
+  border-left: 4px solid var(--green);
+  padding: 1.5rem 2rem; margin: 2rem 0;
+  display: grid; grid-template-columns: 1fr 1fr; gap: 2rem;
 }
+@media (max-width: 520px) { .bilingual { grid-template-columns: 1fr; } }
+.bilingual-en { font-style: italic; font-size: 1rem; color: var(--paper); }
+.bilingual-tr { font-style: italic; font-size: 1rem; color: var(--text-dim); border-left: 1px solid var(--green-dark); padding-left: 2rem; }
+.bilingual-label { font-family: var(--mono); font-size: 0.5rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 0.4rem; }
 
-footer p {
-  font-family: 'Share Tech Mono', monospace;
-  font-size: 0.65rem;
-  letter-spacing: 0.15em;
-  color: var(--muted-sage);
+/* ===== FOOTER ===== */
+footer {
+  background: var(--black);
+  border-top: 1px solid var(--green-dark);
+  text-align: center; padding: 4rem 2rem;
+  position: relative; z-index: 10;
+}
+.footer-title {
+  font-family: var(--display);
+  font-size: clamp(2rem, 5vw, 4rem);
+  color: var(--green);
+  text-shadow: 0 0 30px rgba(0,255,65,0.4);
   margin-bottom: 0.5rem;
 }
+.footer-sub { font-family: var(--mono); font-size: 0.6rem; letter-spacing: 0.15em; color: var(--text-muted); margin-bottom: 0.3rem; }
+.footer-sources { margin-top: 2rem; }
+.footer-sources p { font-family: var(--mono); font-size: 0.58rem; color: var(--text-muted); margin-bottom: 0.25rem; letter-spacing: 0.05em; }
+.footer-green { color: var(--green); text-shadow: 0 0 8px var(--green); }
 
-/* SCROLL INDICATOR */
-.scroll-hint {
-  position: absolute;
-  bottom: 3rem;
-  left: 50%;
-  transform: translateX(-50%);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 0.8rem;
-  color: var(--leaf);
-  font-family: 'Share Tech Mono', monospace;
-  font-size: 0.6rem;
-  letter-spacing: 0.3em;
-  animation: fadeIn 2s ease 2s both;
+/* ===== RESPONSIVE ===== */
+@media (max-width: 640px) {
+  nav ul { flex-wrap: nowrap; overflow-x: auto; justify-content: flex-start; }
+  nav a { white-space: nowrap; padding: 0.8rem 0.75rem; }
+  .stats { grid-template-columns: repeat(2, 1fr); }
+  .bilingual { grid-template-columns: 1fr; }
+  .bilingual-tr { border-left: none; padding-left: 0; border-top: 1px solid var(--green-dark); padding-top: 1.5rem; }
 }
 
-.scroll-arrow {
-  width: 2px;
-  height: 60px;
-  background: linear-gradient(to bottom, var(--leaf), transparent);
-  animation: arrowPulse 1.5s ease-in-out infinite;
-  position: relative;
+/* ===== SCROLL REVEAL ===== */
+.reveal {
+  opacity: 0; transform: translateY(24px);
+  transition: opacity 0.7s ease, transform 0.7s ease;
 }
-
-.scroll-arrow::after {
-  content: '';
-  position: absolute;
-  bottom: 0;
-  left: -4px;
-  width: 10px;
-  height: 10px;
-  border-right: 2px solid var(--leaf);
-  border-bottom: 2px solid var(--leaf);
-  transform: rotate(45deg);
-}
-
-@keyframes arrowPulse {
-  0%, 100% { opacity: 0.3; transform: translateY(0); }
-  50% { opacity: 1; transform: translateY(10px); }
-}
-
-@keyframes fadeIn { to { opacity: 1; } }
+.reveal.vis { opacity: 1; transform: none; }
 </style>
 </head>
 <body>
 
-<!-- SEISMIC BACKGROUND CANVAS -->
-<canvas id="seismic-bg"></canvas>
+<canvas id="canvas-bg"></canvas>
 
-<!-- PARTICLE CANVAS -->
-<canvas id="particle-canvas"></canvas>
-
-<!-- LIVE TICKER -->
-<div class="ticker">
+<!-- TICKER -->
+<div class="ticker-wrap" aria-label="Live alert feed">
   <div class="ticker-inner">
-    <span class="ticker-text">🌿 VARTO TRIPLE JUNCTION · M6.8 EARTHQUAKE 1966 · 2,529 KILLED · IGNIS H2 DRILLING PLANNED MAY 2026 · COULOMB STRESS POSITIVE · EIA NOT REQUIRED · 16 VILLAGES AT RISK · ARSENIC UP TO 10,700 µg/L · YEDISU SEISMIC GAP UNRUPTURED SINCE 1784 · PROTECT THE LAND ·</span>
-    <span class="ticker-text">🌿 VARTO TRIPLE JUNCTION · M6.8 EARTHQUAKE 1966 · 2,529 KILLED · IGNIS H2 DRILLING PLANNED MAY 2026 · COULOMB STRESS POSITIVE · EIA NOT REQUIRED · 16 VILLAGES AT RISK · ARSENIC UP TO 10,700 µg/L · YEDISU SEISMIC GAP UNRUPTURED SINCE 1784 · PROTECT THE LAND ·</span>
+    <span class="tick-item">⚠ VARTO TRIPLE JUNCTION</span>
+    <span class="tick-item">· M6.8 EARTHQUAKE 1966 · 2,529 KILLED ·</span>
+    <span class="tick-item">IGNIS H2 DRILLING: MAY 2026</span>
+    <span class="tick-item">· COULOMB STRESS POSITIVE ·</span>
+    <span class="tick-item">EIA NOT REQUIRED — LEGALLY CONTESTED</span>
+    <span class="tick-item">· 16 VILLAGES AT RISK ·</span>
+    <span class="tick-item">ARSENIC UP TO 10,700 µg/L</span>
+    <span class="tick-item">· YEDISU GAP UNRUPTURED SINCE 1784 ·</span>
+    <span class="tick-item">BEKTAŞ ET AL. 2025: DESTRUCTIVE EARTHQUAKE RISK ·</span>
+    <span class="tick-item">453,494 m² PASTURELAND SEIZED ·</span>
+    <!-- duplicate for seamless loop -->
+    <span class="tick-item">⚠ VARTO TRIPLE JUNCTION</span>
+    <span class="tick-item">· M6.8 EARTHQUAKE 1966 · 2,529 KILLED ·</span>
+    <span class="tick-item">IGNIS H2 DRILLING: MAY 2026</span>
+    <span class="tick-item">· COULOMB STRESS POSITIVE ·</span>
+    <span class="tick-item">EIA NOT REQUIRED — LEGALLY CONTESTED</span>
+    <span class="tick-item">· 16 VILLAGES AT RISK ·</span>
+    <span class="tick-item">ARSENIC UP TO 10,700 µg/L</span>
+    <span class="tick-item">· YEDISU GAP UNRUPTURED SINCE 1784 ·</span>
+    <span class="tick-item">BEKTAŞ ET AL. 2025: DESTRUCTIVE EARTHQUAKE RISK ·</span>
+    <span class="tick-item">453,494 m² PASTURELAND SEIZED ·</span>
   </div>
 </div>
 
 <!-- HERO -->
 <header class="hero" id="top">
-  <div class="hero-bg-rings">
-    <div class="ring"></div><div class="ring"></div><div class="ring"></div>
-    <div class="ring"></div><div class="ring"></div><div class="ring"></div>
-    <div class="epicenter-dot"></div>
+  <div class="ripple-wrap" aria-hidden="true">
+    <div class="epicenter"></div>
+    <div class="ripple"></div>
+    <div class="ripple"></div>
+    <div class="ripple"></div>
+    <div class="ripple"></div>
+    <div class="ripple"></div>
   </div>
-  <p class="hero-kicker">Varto · Muş · Karlıova Triple Junction · Eastern Anatolia</p>
-  <h1 class="hero-title"><span class="line-green">VARTO</span><br><span style="color:#aaa;font-size:0.5em;letter-spacing:0.3em;display:block;font-family:'Share Tech Mono',monospace;">EARTH</span><span class="line-red">UNDER PRESSURE</span></h1>
-  <p class="hero-sub">A geothermal energy project at the world's most dangerous tectonic junction — and what it means for nature, people, and the future</p>
-  <div class="hero-data-strip">
-    <span class="data-chip g">NAFZ + EAFZ + VFZ CONVERGE</span>
-    <span class="data-chip r">M6.8 HISTORICAL EARTHQUAKE</span>
-    <span class="data-chip a">453,494 m² PASTURELAND AT STAKE</span>
-    <span class="data-chip g">16 VILLAGES AFFECTED</span>
-    <span class="data-chip r">NO EIA CONDUCTED</span>
-    <span class="data-chip a">3,000m PLANNED DRILL DEPTH</span>
+  <div class="hero-content">
+    <p class="hero-eyebrow">Varto · Muş · Karlıova Triple Junction · Eastern Anatolia · 39.17°N 41.46°E</p>
+    <h1 class="hero-title">
+      <span class="t-green">VARTO</span>
+      <span class="t-small">Earth · Toprak · Erd</span>
+      <span class="t-red">UNDER PRESSURE</span>
+    </h1>
+    <p class="hero-desc">A US geothermal company plans to drill 3,000 meters into the world's most dangerous tectonic junction — threatening 16 villages, a biodiversity hotspot, 2,500 years of history, and the safety of a land already shattered by earthquakes.</p>
+    <div class="chips">
+      <span class="chip g">NAFZ + EAFZ + VFZ</span>
+      <span class="chip r">M6.8 QUAKE HISTORY</span>
+      <span class="chip a">3,000m DRILL DEPTH</span>
+      <span class="chip g">16 VILLAGES</span>
+      <span class="chip r">NO EIA</span>
+      <span class="chip a">453,494 m² SEIZED</span>
+      <span class="chip g">URARTIAN HERITAGE</span>
+      <span class="chip r">YEDISU GAP: 240 YRS</span>
+    </div>
+    <div class="scroll-cue">
+      <span>Scroll to explore</span>
+      <div class="scroll-line"></div>
+    </div>
   </div>
-  <div class="scroll-hint"><span>SCROLL TO EXPLORE</span><div class="scroll-arrow"></div></div>
 </header>
 
 <!-- NAV -->
-<nav id="mainNav">
+<nav id="main-nav" aria-label="Section navigation">
   <ul>
-    <li><a href="#project">Project</a></li><li><a href="#geology">Geology</a></li><li><a href="#seismic">Seismic Risk</a></li>
-    <li><a href="#chemical">Chemical Hazards</a></li><li><a href="#ecology">Ecology</a></li><li><a href="#history">History</a></li>
-    <li><a href="#actions">Take Action</a></li><li><a href="#outcomes">Outcomes</a></li>
+    <li><a href="#project">Project</a></li>
+    <li><a href="#geology">Geology</a></li>
+    <li><a href="#seismic">Seismic</a></li>
+    <li><a href="#chemical">Chemicals</a></li>
+    <li><a href="#ecology">Ecology</a></li>
+    <li><a href="#history">History</a></li>
+    <li><a href="#voices">Voices</a></li>
+    <li><a href="#actions">Stop It</a></li>
+    <li><a href="#outcomes">Outcomes</a></li>
   </ul>
 </nav>
 
-<!-- PROJECT -->
-<div class="full-band science-dark" id="project"><div class="section"><p class="label green">The Project</p><h2 class="green-h">What Is Being Drilled Into the Earth?</h2><p>US-based <strong>IGNIS H2 Energy Production Inc.</strong> (Texas, founded Turkey subsidiary late 2023) obtained geothermal exploration license Ar:2023/02 for the Güzelkent area — a 40 km² zone approximately 12 km northwest of Varto center. The company conducted Magnetotelluric (MT) surveys in 2023–2024, targeting a drilling depth of <strong>3,000 meters</strong> to extract high-pressure steam. First drilling: <em class="red">May 2026</em>.</p><div class="stats-grid"><div class="stat"><span class="stat-n g">40</span><span class="stat-l">km² license area</span></div><div class="stat"><span class="stat-n r">16</span><span class="stat-l">villages (Varto)</span></div><div class="stat"><span class="stat-n r">6</span><span class="stat-l">villages (Karlıova)</span></div><div class="stat"><span class="stat-n g">3,000</span><span class="stat-l">meters drill depth</span></div><div class="stat"><span class="stat-n a">453,494</span><span class="stat-l">m² pastureland taken</span></div><div class="stat"><span class="stat-n r">0</span><span class="stat-l">EIA conducted</span></div><div class="stat"><span class="stat-n r">2,529</span><span class="stat-l">killed in 1966</span></div><div class="stat"><span class="stat-n a">40–45°C</span><span class="stat-l">spring baseline</span></div></div><div class="pq"><p>The administrative decision to categorize portions of the project as "EIA Not Required" has become a central point of legal contention — critics argue the project was segmented to bypass comprehensive environmental scrutiny.</p><cite>— Integrated Assessment of the Varto Geothermal Energy Project (Scientific Review, 2025)</cite></div></div></div>
+<!-- ===== PROJECT ===== -->
+<div class="band band-dark" id="project">
+  <div class="container">
+    <p class="section-tag green">The Project</p>
+    <h2 class="green reveal">What Is Being Drilled Into the Earth?</h2>
+    <p class="reveal">US-based <strong>IGNIS H2 Energy Production Inc.</strong> (Texas) incorporated its Turkish subsidiary in late 2023, immediately acquiring four geothermal exploration licenses across Eastern Anatolia. The flagship Güzelkent project sits in a 40 km² zone ~12 km northwest of Varto, at the transition between the Varto Basin and the Bingöl Mountains. The company conducted Magnetotelluric (MT) geophysical surveys in 2023–2024, identifying hydrothermal reservoirs and developing a conceptual model targeting <strong>3,000 meters depth</strong> to extract high-pressure steam for electricity generation. First drilling: <em class="r">May 2026</em>.</p>
+    <p class="reveal">The Muş Governorate approved drilling on <strong>5,560 m² of communal pastureland</strong> — part of a total 453,494 m² affected area. Critically, a <em class="r">"No EIA Required"</em> (ÇED Gerekli Değildir) decision was issued, bypassing Turkey's full Environmental Impact Assessment process despite the project's scope and proximity to active fault zones, biodiversity habitats, and dense rural communities.</p>
 
-<!-- GEOLOGY -->
-<div class="full-band" id="geology"><div class="section"><p class="label red">Geological Context</p><h2 class="red-h">The Karlıova Triple Junction</h2><p>Varto sits at one of the most tectonically complex locations on Earth: the <strong>Karlıova Triple Junction (KTJ)</strong>, where three of the world's most active fault systems converge. The Arabian Plate pushes northward at <strong>15±2 mm/year</strong>, the Anatolian Plate moves westward at <strong>24±2 mm/year</strong>. Convergence rate: <strong>18–25 mm/year</strong>.</p><div class="fault-viz"><div class="fault-lines-viz"><div class="fault-line nafz"></div><div class="fault-line eafz"></div><div class="fault-line vfz"></div><div class="fault-line jes"></div></div><div class="fault-labels"><div class="fl"><div class="fl-dot" style="background:var(--leaf)"></div><span>North Anatolian Fault Zone (NAFZ) — 38 segments, M7+ events</span></div><div class="fl"><div class="fl-dot" style="background:var(--amber-soil)"></div><span>East Anatolian Fault Zone (EAFZ) — source of 2023 M7.7+7.6 earthquakes</span></div><div class="fl"><div class="fl-dot" style="background:var(--danger-leaf)"></div><span>Varto Fault Zone (VFZ) — 30 km length, right-lateral strike-slip</span></div><div class="fl"><div class="fl-dot" style="background:rgba(201,69,42,0.6);width:6px"></div><span>🌿 IGNIS DRILL ZONE — penetrates at 3,000m depth directly into this tectonic nexus</span></div></div></div><p>A 2025 peer-reviewed study (Bektaş et al.) analyzed Coulomb stress changes across the KTJ after the 2023 earthquakes. GNSS station BIN1 displaced <strong>10.1 cm in the NE direction</strong>. The study warns that <strong>"major fault systems with high seismic potential could trigger a destructive earthquake in the KTJ region."</strong></p><h3>The Yedisu Seismic Gap — A Ticking Clock</h3><p>The <strong>Yedisu Seismic Gap (YSG)</strong> has not produced a significant earthquake (M≥7.0) since <strong>1784</strong> — over 240 years of accumulated stress. Coulomb stress analysis shows positive stress lobes near the proposed JES project zone. Introducing fluid injection into this system is the equivalent of pressing on an already-compressed spring.</p></div></div>
+    <div class="stats reveal">
+      <div class="stat"><span class="sn g">40</span><span class="sl">km² license area</span></div>
+      <div class="stat"><span class="sn r">16</span><span class="sl">villages — Varto</span></div>
+      <div class="stat"><span class="sn r">6</span><span class="sl">villages — Karlıova</span></div>
+      <div class="stat"><span class="sn g">3,000</span><span class="sl">meters drill depth</span></div>
+      <div class="stat"><span class="sn a">453k</span><span class="sl">m² pastureland</span></div>
+      <div class="stat"><span class="sn r">0</span><span class="sl">EIA conducted</span></div>
+      <div class="stat"><span class="sn r">2,529</span><span class="sl">killed — 1966 quake</span></div>
+      <div class="stat"><span class="sn a">240yr</span><span class="sl">seismic gap unruptured</span></div>
+    </div>
 
-<!-- SEISMIC RISK -->
-<div class="full-band science-red" id="seismic"><div class="section"><p class="label red">Seismic Science</p><h2 class="red-h">How Drilling Causes Earthquakes</h2><div class="waveform-container"><div class="waveform-label">// SEISMIC ACTIVITY MONITOR — VARTO REGION</div><svg class="waveform-svg" viewBox="0 0 1200 80"><polyline points="0,40 30,40 40,25 50,55 55,15 60,65 65,10 70,60 75,40 90,40 100,35 110,50 130,40 140,20 145,55 150,25 155,50 160,40 180,40 190,30 200,55 220,40 230,20 240,60 245,5 250,70 255,40 270,40 280,40 290,35 300,50 320,40 330,30 340,55 360,40 380,40 390,25 400,60 420,40 440,40 450,15 460,70 465,5 470,65 475,40 490,40 500,35 510,50 530,40 540,30 550,60 570,40 590,40 600,40" fill="none" stroke="#c95a3a" stroke-width="2"/></svg></div><div class="equation-box"><div class="eq-main">τ<sub>f</sub> = C + μ(σ<sub>n</sub> − P<sub>p</sub>)</div><div class="eq-sub">τ<sub>f</sub> = shear stress for failure · C = cohesion · μ = friction · σ<sub>n</sub> = normal stress · P<sub>p</sub> = pore fluid pressure</div><div class="eq-sub" style="margin-top:1rem;color:var(--danger-leaf);">↑ P<sub>p</sub> via reinjection at 3,000m → ↓ effective normal stress → LOWER FAILURE THRESHOLD → INDUCED EARTHQUAKE</div></div><p>According to Bektaş et al. (2025), Coulomb stress changes from 0.1 to 1 bar are sufficient to trigger future earthquakes — and the KTJ shows <strong>positive stress lobes across all depth intervals from 5–20 km.</strong></p><div class="timeline" id="quake-tl"><div class="tl-item danger"><div class="tl-year">7 March 1966 — M5.6</div><div class="tl-text">Foreshock strikes Varto. 14 killed, 75 wounded.</div></div><div class="tl-item danger"><div class="tl-year">19 August 1966 — M6.8–6.9</div><div class="tl-text"><strong style="color:var(--danger-leaf)">2,529 people killed</strong>, 19,013 buildings destroyed. The town of Varto is essentially erased.</div></div><div class="tl-item warn"><div class="tl-year">22 May 1971 — M6.8</div><div class="tl-text">Bingöl earthquake — severe damage in Karlıova.</div></div><div class="tl-item danger"><div class="tl-year">6 February 2023 — M7.7 + M7.6</div><div class="tl-text">Kahramanmaraş earthquakes kill 50,000+. GNSS station BIN1 near Varto displaces 10.1 cm northeastward.</div></div><div class="tl-item safe"><div class="tl-year">2023–Present — The Warning</div><div class="tl-text">The Yedisu Seismic Gap has not ruptured since 1784. IGNIS plans to inject fluid at 3,000m depth into this system.</div></div></div><h3>What Happened in the Aegean — And Why Varto Is Worse</h3><p>A 2022 study in <em>Environmental Science and Pollution Research</em> (Ozcelik) analyzed the Büyük Menderes Graben geothermal field. Varto sits on a compressional triple junction already loaded with unspent seismic energy. The risk profile is categorically different.</p><table class="compare-table"><thead><tr><th>Factor</th><th>Aegean BMG</th><th>Varto / Karlıova</th></tr></thead><tbody><tr><td>Tectonic setting</td><td class="td-ok">Extensional graben</td><td class="td-danger">Triple junction compression</td></tr><tr><td>Major fault systems</td><td class="td-warn">1 (WAGS)</td><td class="td-danger">3 converging (NAFZ+EAFZ+VFZ)</td></tr><tr><td>Seismic history</td><td class="td-warn">Moderate events</td><td class="td-danger">M6.8+ lethal quakes (1966,1971)</td></tr><tr><td>Coulomb stress</td><td class="td-warn">Moderate positive</td><td class="td-danger">High positive across 5–20 km</td></tr><tr><td>Seismic gap</td><td class="td-ok">None identified</td><td class="td-danger">YSG unruptured since 1784 (240 yrs)</td></tr></tbody></table></div></div>
+    <div class="pq red reveal">
+      <p>The project has been segmented into parcels to bypass the comprehensive EIA mandated by Turkey's Ministry of Environment. Each segment individually falls below the threshold — together, they constitute a major industrial intervention in a seismically critical zone.</p>
+      <cite>— Parliamentary Questions, CHP MP Evrim Rızvanoğlu to Ministers Yumaklı & Kurum, 2025</cite>
+    </div>
+  </div>
+</div>
 
-<!-- CHEMICAL HAZARDS -->
-<div class="full-band science-dark" id="chemical"><div class="section"><p class="label amber">Chemical Hazards</p><h2 class="white-h">What Comes Up From 3,000 Meters</h2><p>Geothermal fluids carry dissolved heavy metals, gases, and minerals toxic to soils, water, plants, and human health.</p><div class="chem-grid"><div class="chem-cell danger"><span class="chem-symbol">As</span><span class="chem-name">Arsenic</span><span class="chem-risk">10,700 µg/L</span></div><div class="chem-cell danger"><span class="chem-symbol">H₂S</span><span class="chem-name">Hydrogen Sulfide</span><span class="chem-risk">Acid rain</span></div><div class="chem-cell danger"><span class="chem-symbol">B</span><span class="chem-name">Boron</span><span class="chem-risk">24.5–90 mg/L</span></div><div class="chem-cell warn"><span class="chem-symbol">Pb</span><span class="chem-name">Lead</span><span class="chem-risk">No safe level</span></div></div><h3>Boron Toxicity — The Slow Death of Pastures</h3><p>Boron concentrations above <strong>1–2 mg/L</strong> become phytotoxic. In the Aegean geothermal field, boron values of <strong>24.5 to 90.18 mg/L</strong> were measured — 15 to 90 times the toxicity threshold.</p><h3>Acid Rain Over the Bingöl Mountains</h3><p>H₂S released into the atmosphere forms sulfuric acid. For Varto's high-altitude alpine meadows, acid deposition would cause irreversible damage to endemic plant communities.</p><h3>Thermal Pollution of the Murat River</h3><p>The Varto basin feeds the <strong>Murat River</strong>, a major tributary of the Euphrates. Discharge of spent geothermal water raises stream temperatures by 2–3°C, disrupting fish reproductive cycles.</p></div></div>
+<!-- ===== GEOLOGY ===== -->
+<div class="band" id="geology">
+  <div class="container">
+    <p class="section-tag red">Geological Context</p>
+    <h2 class="red reveal">The Karlıova Triple Junction</h2>
+    <p class="reveal">Varto sits at one of the most tectonically complex locations on Earth: the <strong>Karlıova Triple Junction (KTJ)</strong>, the convergence point of three of the planet's most destructive fault systems. The Arabian Plate presses northward at <strong>15±2 mm/year</strong>. The Anatolian Plate moves west at <strong>24±2 mm/year</strong> relative to Eurasia. The resulting crustal shortening — <strong>18–25 mm/year</strong> — must release somewhere. It has done so catastrophically, repeatedly, in living memory.</p>
 
-<!-- ECOLOGY -->
-<div class="full-band" id="ecology"><div class="section"><p class="label green">Ecology</p><h2 class="green-h">An Important Natural Area Under the Drill</h2><div class="risk-grid"><div class="risk-card c3"><span class="risk-icon">🌿</span><div class="risk-title">Endemic Flora</div><div class="risk-body"><em>Achillea schischkinii</em> and <em>Pulicaria armena</em> — pollinators found only in undisturbed Muş-Varto corridor meadows.</div></div><div class="risk-card c2"><span class="risk-icon">🐺</span><div class="risk-title">Fauna Corridors</div><div class="risk-body">Wolves, bears, raptors use the thermal updrafts above volcanic plateaus. Drilling disrupts these corridors permanently.</div></div><div class="risk-card c4"><span class="risk-icon">🐄</span><div class="risk-title">Agropastoral Commons</div><div class="risk-body">453,494 m² of communal pastureland. Boron contamination would destroy the dairy economy of 16+ villages, forcing urban migration.</div></div><div class="risk-card c1"><span class="risk-icon">🌊</span><div class="risk-title">Euphrates Watershed</div><div class="risk-body">Varto feeds the Murat River → Euphrates. Arsenic at 10,700 µg/L threatens agricultural regions far beyond Varto.</div></div><div class="risk-card c5"><span class="risk-icon">🏺</span><div class="risk-title">Urartian Sites</div><div class="risk-body">The Kayalıdere fortress dates to King Sarduri II, 764–735 BCE. No prior archaeological survey was mandated before drilling approval.</div></div></div></div></div>
+    <div class="fault-box reveal">
+      <div class="fault-track">
+        <div class="ft nafz"></div>
+        <div class="ft eafz"></div>
+        <div class="ft vfz"></div>
+        <div class="ft drill"></div>
+      </div>
+      <div class="fault-legend">
+        <div class="fl"><div class="fl-bar" style="background:var(--green)"></div><span class="fl-text g">North Anatolian Fault Zone (NAFZ) — 38 segments, right-lateral strike-slip. Source: 1939 Erzincan M7.9 (33,000 dead), 1999 İzmit M7.6</span></div>
+        <div class="fl"><div class="fl-bar" style="background:var(--amber)"></div><span class="fl-text a">East Anatolian Fault Zone (EAFZ) — 580 km, left-lateral, 10 mm/yr. Source: 2023 Kahramanmaraş M7.7 + M7.6 (50,000+ dead)</span></div>
+        <div class="fl"><div class="fl-bar" style="background:var(--red)"></div><span class="fl-text r">Varto Fault Zone (VFZ) — 30 km, right-lateral strike-slip. Three segments: Varto, Leylekdağ, Çayçatı. Source: 1966 M6.8</span></div>
+        <div class="fl"><div class="fl-bar" style="background:rgba(255,80,80,0.7); width:6px"></div><span class="fl-text d">⚡ IGNIS drill zone — 3,000m injection into this tectonic nexus. No seismic risk study conducted.</span></div>
+      </div>
+    </div>
 
-<!-- HISTORY -->
-<div class="full-band science-dark" id="history"><div class="section"><p class="label red">Historical Trauma</p><h2 class="red-h">A People That Has Endured Everything</h2><div class="timeline"><div class="tl-item danger"><div class="tl-year">19 August 1966</div><div class="tl-text">2,529 killed — survivors still live in Varto. The community's opposition is rooted in lived catastrophe.</div></div><div class="tl-item warn"><div class="tl-year">1990s</div><div class="tl-text">Armed conflict forces displacement. Communities scatter to European diaspora (Germany, France, Belgium, Netherlands).</div></div><div class="tl-item warn"><div class="tl-year">2000s–2010s</div><div class="tl-text">HES hydroelectric projects begin diverting rivers. The JES project is the third wave in a "systematic ecological assault."</div></div><div class="tl-item danger"><div class="tl-year">2023–2025</div><div class="tl-text">IGNIS license obtained without community consent — residents reportedly misled. Protests erupt across Turkey. Legal challenges filed against the EIA exemption.</div></div></div></div></div>
+    <p class="reveal">A 2025 peer-reviewed study published in the <em>Bulletin of Geophysics and Oceanography</em> (Bektaş, Pırtı, Alkan, Yücel, Büyüksaraç) used GNSS satellite data from 10 continuously operating stations across the region and analyzed Coulomb stress changes from 15 local M≥5.0 earthquakes. The study found the BIN1 station — directly on the Bingöl-Karlıova segment — displaced <strong>10.1 cm northeastward</strong> following the 2023 earthquakes, 350 km from the epicenters. This station sits on the <em class="r">only unbroken section of the EAFZ</em> — a fault that has not ruptured since before records began.</p>
 
-<!-- ACTIONS -->
-<div class="full-band" id="actions"><div class="section"><p class="label green">Pathways to Stop It</p><h2 class="green-h">What Can Be Done — Right Now</h2><div class="action-grid"><div class="action-card"><div class="action-num">01</div><div class="action-title">Demand a Full EIA</div><div class="action-body">The "No EIA Required" decision is legally contested. Danıştay issued a stay order (2022/7584) on similar exemptions.</div></div><div class="action-card"><div class="action-num">02</div><div class="action-title">Independent Seismic Study</div><div class="action-body">USGS + European Seismological Commission must quantify induced rupture probability before drilling begins.</div></div><div class="action-card"><div class="action-num">03</div><div class="action-title">Parliamentary Pressure</div><div class="action-body">DEM Party and CHP MPs have submitted questions to ministers. Support through constituent letters and diaspora advocacy in Germany, France, and the EU.</div></div><div class="action-card"><div class="action-num">04</div><div class="action-title">Protect the Natural Area</div><div class="action-body">File for formal legal protection of the Important Natural Area (Önemli Doğa Alanı) status under Turkish environmental law.</div></div><div class="action-card"><div class="action-num">05</div><div class="action-title">Community Consent (FPIC)</div><div class="action-body">Free, Prior, Informed Consent requires that Varto's 22+ affected villages actively consent. The community was not consulted.</div></div><div class="action-card"><div class="action-num">06</div><div class="action-title">Diaspora Amplification</div><div class="action-body">500,000+ Vartolu diaspora in Europe. Their parliamentary representatives can raise this issue in EU–Turkey frameworks.</div></div></div></div></div>
+    <h3 class="reveal">The Yedisu Seismic Gap — 240 Years of Stored Energy</h3>
+    <p class="reveal">Between Bingöl and Karlıova lies the <strong>Yedisu Seismic Gap (YSG)</strong>, approximately 70 km long and comprising the Kargapazarı, Elmalı, Yedisu, and Erzincan sub-segments of the NAFZ. This gap has not produced a significant earthquake (M≥7) since <strong>1784</strong> — 240+ years of accumulated elastic strain. Coulomb stress modelling shows strong positive stress lobes along all YSG segments. Seismologists predict this gap will rupture. Introducing high-pressure fluid injection near the junction where these segments begin would be one of the most reckless geological interventions imaginable.</p>
+  </div>
+</div>
 
-<!-- OUTCOMES -->
-<div class="full-band science-red" id="outcomes"><div class="section"><p class="label amber">Possible Futures</p><h2 class="white-h">What Happens Next Depends on Us</h2><div class="outcome-grid"><div class="outcome-card bad"><div class="outcome-title">⚡ If Drilling Proceeds</div><ul class="outcome-list"><li>Induced seismicity on Varto Fault or Yedisu Gap</li><li>Boron contamination of 453,494 m² of pastureland</li><li>Arsenic into Euphrates watershed</li><li>Permanent loss of Important Natural Area biodiversity</li><li>Forced displacement of 16+ villages</li><li>Destruction of unexcavated Urartian archaeological heritage</li></ul></div><div class="outcome-card good"><div class="outcome-title">✓ If the Project Is Stopped</div><ul class="outcome-list"><li>No additional stress on triple junction</li><li>Pastureland & endemic species preserved</li><li>Murat River watershed stays free of contamination</li><li>Archaeological survey opportunity</li><li>Democratic precedent: community consent respected</li><li>Full EIA conducted → project redesigned or canceled</li></ul></div></div><div class="pq"><p>The Varto JES project fails to meet the criteria for sustainable development. It ignores geological safety, environmental justice, and democratic participation.</p><cite>— Integrated Scientific Assessment, Varto JES Project (2025)</cite></div></div></div>
+<!-- ===== SEISMIC ===== -->
+<div class="band band-red" id="seismic">
+  <div class="container">
+    <p class="section-tag red">Seismic Science</p>
+    <h2 class="red reveal">How Drilling Triggers Earthquakes</h2>
+
+    <div class="wave-box reveal">
+      <div class="wave-label">// SEISMIC SIGNAL — VARTO REGION (CONTINUOUS MONITORING)</div>
+      <svg class="wave-svg" viewBox="0 0 1200 55" xmlns="http://www.w3.org/2000/svg">
+        <polyline
+          points="0,28 40,28 50,18 58,40 62,8 66,52 70,10 74,48 78,28 100,28 110,22 118,36 130,28 145,12 150,48 155,22 160,44 165,28 185,28 195,20 205,38 220,28 235,16 242,46 246,6 250,54 254,28 270,28 280,26 290,32 305,28 320,22 328,40 340,28 360,28 370,18 378,44 384,28 400,28 415,12 422,50 428,18 434,46 438,28 455,28 465,22 475,36 488,28 500,28 510,20 518,42 525,28 545,28 555,16 563,48 568,28 580,28 600,28 0,28 40,28 50,18 58,40 62,8 66,52 70,10 74,48 78,28 100,28 110,22 118,36 130,28 145,12 150,48 155,22 160,44 165,28 185,28 195,20 205,38 220,28 235,16 242,46 246,6 250,54 254,28 270,28 280,26 290,32 305,28 320,22 328,40 340,28 360,28 370,18 378,44 384,28 400,28 415,12 422,50 428,18 434,46 438,28 455,28 465,22 475,36 488,28 500,28 510,20 518,42 525,28 545,28 555,16 563,48 568,28 580,28 600,28"
+          fill="none" stroke="#ff1a1a" stroke-width="1.5" opacity="0.85"/>
+      </svg>
+    </div>
+
+    <div class="eq-box reveal">
+      <div class="eq-main">τ<sub>f</sub> = C + μ(σ<sub>n</sub> − P<sub>p</sub>)</div>
+      <div class="eq-sub">τ<sub>f</sub> = shear stress for failure &ensp;·&ensp; C = rock cohesion &ensp;·&ensp; μ = friction coefficient &ensp;·&ensp; σ<sub>n</sub> = normal stress &ensp;·&ensp; P<sub>p</sub> = pore fluid pressure</div>
+      <div class="eq-warn">↑ INJECT FLUID AT 3,000m → ↑ P<sub>p</sub> → ↓ (σ<sub>n</sub>−P<sub>p</sub>) → LOWER FAILURE THRESHOLD → FAULT RUPTURE</div>
+    </div>
+
+    <p class="reveal">This is not theoretical. When geothermal operators reinject spent fluid underground, they raise pore pressure (P<sub>p</sub>) inside fault planes. This mechanically lowers the friction barrier that prevents faults from slipping. The Varto Fault Zone is already at near-critical stress levels — the Coulomb stress maps from Bektaş et al. (2025) show <strong>positive stress lobes at every depth interval from 5–20 km</strong> across the KTJ. Changes of just <strong>0.1 to 1 bar</strong> in Coulomb stress are sufficient to trigger earthquakes on prepared faults.</p>
+
+    <div class="tl" id="seismic-tl">
+      <div class="tl-item d"><div class="tl-yr">7 March 1966 — M5.6</div><div class="tl-body">Foreshock strikes Varto. 14 killed, 75 wounded. Traditional stone houses sustain heavy damage. The earth gives its first warning.</div></div>
+      <div class="tl-item d"><div class="tl-yr">19 August 1966 — M6.8 · INTENSITY IX (VIOLENT)</div><div class="tl-body"><strong>2,529 people killed.</strong> 1,500 injured. 19,013 buildings demolished or heavily damaged. The deadliest earthquake on Earth in 1966. The town of Varto is leveled. Surface fractures appear in three parallel NW-trending zones, connected to the North Anatolian fault system (USGS Wallace, 1968). Approximately 140 villages across four provinces are demolished.</div></div>
+      <div class="tl-item d"><div class="tl-yr">22 May 1971 — M6.8</div><div class="tl-body">Bingöl earthquake. Severe damage in Karlıova and surrounding villages — the twin disaster that confirms the whole KTJ region is lethally seismically active.</div></div>
+      <div class="tl-item w"><div class="tl-yr">2003–2021 — Bingöl Region</div><div class="tl-body">2,662 earthquakes M≥3.0 recorded around the KTJ in the instrumental period. The Bingöl area experiences M6+ events roughly every 11 years. Smaller earthquakes (M&lt;4.5) have been documented to increase after geothermal fluid extraction begins in Turkey's Aegean region (Ozcelik, 2022).</div></div>
+      <div class="tl-item d"><div class="tl-yr">6 February 2023 — M7.7 + M7.6 Kahramanmaraş</div><div class="tl-body">The EAFZ ruptures catastrophically 350 km south of Varto. <strong>50,000+ killed.</strong> 550,000 homes destroyed. GNSS data shows BIN1 station (Bingöl–Karlıova) displaced 10.1 cm northeastward — proving stress transfers this far from major ruptures. The unbroken Bingöl-Karlıova segment absorbs more stress. Scientists warn of future rupture potential.</div></div>
+      <div class="tl-item s"><div class="tl-yr">2025 — Scientific Warning Issued</div><div class="tl-body">Bektaş et al. publish in <em>Bulletin of Geophysics and Oceanography</em>: Coulomb stress maps show high-stress concentration between Erzincan-Pülümür and Tercan-Kiğı. The study concludes: <strong style="color:var(--green)">"Major fault systems could trigger a destructive earthquake in the KTJ region."</strong> IGNIS announces May 2026 drilling start. No seismic risk study commissioned.</div></div>
+    </div>
+
+    <h3 class="reveal">The Aegean Precedent — What Actually Happened</h3>
+    <p class="reveal">A 2022 peer-reviewed study in <em>Environmental Science and Pollution Research</em> (Ozcelik, Süleyman Demirel University) analyzed Turkey's largest geothermal field — the Büyük Menderes Graben with 60 plants. It found microseismic events (M&lt;4.5) increased rapidly after 2000 as plant numbers grew, consistent with fluid-induced seismicity. However, the BMG is an extensional graben — geologically far calmer than the KTJ. The risk comparison is stark:</p>
+
+    <div style="overflow-x:auto" class="reveal">
+      <table class="ct">
+        <thead><tr><th>Factor</th><th>Aegean BMG</th><th>Varto / Karlıova</th></tr></thead>
+        <tbody>
+          <tr><td>Tectonic regime</td><td class="td-ok">Extensional graben</td><td class="td-bad">Triple junction compression</td></tr>
+          <tr><td>Active fault systems</td><td class="td-warn">1 (West Anatolian)</td><td class="td-bad">3 converging (NAFZ+EAFZ+VFZ)</td></tr>
+          <tr><td>Historical fatalities</td><td class="td-warn">Moderate events</td><td class="td-bad">M6.8+ → 2,500+ dead</td></tr>
+          <tr><td>Coulomb stress state</td><td class="td-warn">Moderate positive</td><td class="td-bad">High positive, all depths 5–20 km</td></tr>
+          <tr><td>Seismic gap present?</td><td class="td-ok">No</td><td class="td-bad">Yes — 240 yrs (Yedisu Gap)</td></tr>
+          <tr><td>Plate convergence</td><td class="td-ok">Extension ~3mm/yr</td><td class="td-bad">Compression 18–25 mm/yr</td></tr>
+          <tr><td>EIA status</td><td class="td-warn">Varies per plant</td><td class="td-bad">"Not Required" — all segments</td></tr>
+          <tr><td>Independent risk study</td><td class="td-warn">Some plants</td><td class="td-bad">None conducted</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- ===== CHEMICALS ===== -->
+<div class="band band-dark" id="chemical">
+  <div class="container">
+    <p class="section-tag amber">Chemical Hazards</p>
+    <h2 class="white reveal">What 3,000 Meters Releases</h2>
+    <p class="reveal">Geothermal fluids at depth are highly effective chemical solvents — they leach heavy metals, metalloids, and toxic compounds from host rocks. When brought to the surface and reinjected or spilled, these compounds enter drinking water, soils, and air. The following concentrations were <strong>actually measured</strong> at Turkey's operating Aegean geothermal plants (Ministry of Environment & Urbanization, 2020; Ozcelik, 2022):</p>
+
+    <div class="chem reveal">
+      <div class="ce danger"><span class="ce-sym">As</span><span class="ce-nm">Arsenic</span><span class="ce-val">8,900–10,700 µg/L</span></div>
+      <div class="ce danger"><span class="ce-sym">H₂S</span><span class="ce-nm">Hydrogen Sulfide</span><span class="ce-val">7.10 µg/m³ avg</span></div>
+      <div class="ce danger"><span class="ce-sym">B</span><span class="ce-nm">Boron</span><span class="ce-val">24.5–90.18 mg/L</span></div>
+      <div class="ce danger"><span class="ce-sym">Pb</span><span class="ce-nm">Lead</span><span class="ce-val">No safe level</span></div>
+      <div class="ce warn"><span class="ce-sym">Hg</span><span class="ce-nm">Mercury</span><span class="ce-val">Filter required</span></div>
+      <div class="ce warn"><span class="ce-sym">SO₂</span><span class="ce-nm">Sulfur Dioxide</span><span class="ce-val">→ Acid rain</span></div>
+      <div class="ce warn"><span class="ce-sym">Na⁺</span><span class="ce-nm">Sodium</span><span class="ce-val">Soil alkalinization</span></div>
+      <div class="ce warn"><span class="ce-sym">Li</span><span class="ce-nm">Lithium</span><span class="ce-val">Aquatic toxicity</span></div>
+    </div>
+
+    <h3 class="reveal">Boron — The Silent Crop Killer</h3>
+    <p class="reveal">Boron is a necessary micronutrient at trace levels, but above <strong>1–2 mg/L in irrigation water it becomes phytotoxic</strong>, inhibiting root growth and killing cereals and grasses. In the Aegean field, boron concentrations of <strong>24.5 to 90.18 mg/L</strong> — 15 to 90 times the toxicity limit — were measured in geothermal plant fluids. These values caused documented fig, olive, and grape yield declines of 20–30%. In Varto, the affected crops are fodder grasses and pastures that sustain the entire dairy livestock economy of 22+ villages. There is no substitute crop. Contamination = economic collapse.</p>
+
+    <h3 class="reveal">Acid Rain Over the Bingöl Mountains</h3>
+    <p class="reveal">When H₂S enters the atmosphere it reacts with moisture to form sulfuric acid — the classic acid rain mechanism. In Aydın Province (the Aegean field), air measurements averaged 7.10 µg/m³ of H₂S — exactly at the WHO 30-minute threshold for odor disturbance. For Varto's high-altitude alpine meadows, which are the last moisture refuges during increasing summer droughts and contain rare endemic flora, acid deposition causes irreversible soil acidification and loss of pH-sensitive plant communities. These meadows cannot move to safety.</p>
+
+    <h3 class="reveal">The Murat River and the Euphrates</h3>
+    <p class="reveal">The Varto basin drains into the <strong>Murat River</strong>, a primary tributary of the Euphrates — a river system supporting agriculture across multiple countries. Discharge of geothermal effluent would introduce arsenic, boron, and heavy metals into this system, propagating contamination far beyond the project zone. The steeper topography of Varto makes surface spill containment significantly harder than the flat Aegean plains, where spills already reached rivers directly (documented by Ozcelik with photographic evidence of thermal water discharged into the Büyük Menderes).</p>
+  </div>
+</div>
+
+<!-- ===== ECOLOGY ===== -->
+<div class="band" id="ecology">
+  <div class="container">
+    <p class="section-tag green">Ecology</p>
+    <h2 class="green reveal">An Important Natural Area Under the Drill</h2>
+    <p class="reveal">The project zone falls within Turkey's classified <strong>Important Natural Areas (Önemli Doğa Alanı)</strong> designation — recognizing exceptional biodiversity. Botanical surveys by Muş Alparslan University documented endemic species found nowhere else. This is not generic land being developed; it is an irreplaceable ecological library being opened to a one-time industrial extraction.</p>
+
+    <div class="risk-grid reveal">
+      <div class="rc c3">
+        <span class="rc-icon">🌿</span>
+        <div class="rc-title">Endemic Flora</div>
+        <div class="rc-body"><em>Achillea schischkinii</em> (Deli civanperçemi) and <em>Pulicaria armena</em> (Boz yarotu) — pollinators and traditional medicine plants unique to the undisturbed Muş-Varto corridor. Drilling roads + equipment + boron contamination = permanent habitat loss for species with no other home.</div>
+      </div>
+      <div class="rc c2">
+        <span class="rc-icon">🐺</span>
+        <div class="rc-title">Fauna &amp; Migration</div>
+        <div class="rc-body">Wolves, brown bears, raptors, and migratory birds use the thermal updrafts above volcanic plateaus. The "dağ çayırları" (mountain meadows) are last moisture refuges during summer drought. Industrial fragmentation of this landscape — even without chemical spills — destroys wildlife corridors permanently.</div>
+      </div>
+      <div class="rc c3">
+        <span class="rc-icon">🌳</span>
+        <div class="rc-title">Saf Meşe Oak Forest</div>
+        <div class="rc-body">Native oak (saf meşe) forests buffer erosion, act as carbon sinks, and anchor the regional food web. Road clearing for 3,000m drilling equipment cuts through these stands. Logged stands don't recover to native forest within human lifespans — the biodiversity they support disperses or dies.</div>
+      </div>
+      <div class="rc c4">
+        <span class="rc-icon">🐄</span>
+        <div class="rc-title">Agropastoral Commons</div>
+        <div class="rc-body">453,494 m² of communal grazing land (mera) is being legally reclassified for industrial use. This is not private farmland — it is collectively owned commons maintained through generations of Kurdish-Alevi transhumance. Boron contamination or physical disruption removes the foundation of 22+ villages' livelihoods simultaneously.</div>
+      </div>
+      <div class="rc c1">
+        <span class="rc-icon">🌊</span>
+        <div class="rc-title">Euphrates Watershed</div>
+        <div class="rc-body">Varto's streams drain to the Murat River → Euphrates. Arsenic at 10,700 µg/L entering this system creates transboundary contamination affecting agriculture in Muş, Bingöl, and downstream provinces. Once arsenic enters alluvial aquifers, it is essentially permanent on human timescales.</div>
+      </div>
+      <div class="rc c5">
+        <span class="rc-icon">🏺</span>
+        <div class="rc-title">Urartian Heritage</div>
+        <div class="rc-body">Kayalıdere fortress (20 km from Varto), excavated 1965, dates to King Sarduri II (764–735 BCE) and reveals advanced metallurgy, wine production, and temple architecture. The Varto basin contains unexcavated höyüks and necropolises. Seismic swarms from drilling cause structural fatigue in ancient stonework. No archaeological survey was required before drilling approval.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== HISTORY ===== -->
+<div class="band band-dark" id="history">
+  <div class="container">
+    <p class="section-tag red">Historical Depth</p>
+    <h2 class="red reveal">A People That Has Endured Everything</h2>
+    <p class="reveal">Varto is not an empty landscape waiting for development. It is a place of continuous human civilization for thousands of years — shaped by volcanoes, fault lines, kingdoms, and survival. Understanding this context is inseparable from understanding why the JES project is experienced not as an energy investment, but as a final assault.</p>
+
+    <div class="tl" id="hist-tl">
+      <div class="tl-item s"><div class="tl-yr">9th–7th Century BCE — Urartian Kingdom</div><div class="tl-body">The Varto basin serves as a strategic frontier of the Kingdom of Van. Kayalıdere reveals sophisticated bronze craft, wine cellars, and religious architecture under King Sarduri II. The volcanic plateau's fertility and its spring waters — the same hydrothermal system IGNIS now targets — sustained this civilization.</div></div>
+      <div class="tl-item s"><div class="tl-yr">Pre-20th Century — Kurdish-Alevi Communities</div><div class="tl-body">Kurdish-Alevi communities establish the rızalık culture: collective consent, shared commons, seasonal transhumance. Sacred pilgrimage sites (ocaks) and communal pastures are the physical infrastructure of this civilization. The Bingöl Mountains are not background scenery — they are the community's living spiritual and economic space.</div></div>
+      <div class="tl-item d"><div class="tl-yr">19 August 1966 — The Earthquake</div><div class="tl-body"><strong>2,529 people killed.</strong> Approximately 140 villages demolished across four provinces. The town of Varto is essentially erased. Survivors rebuild over decades. This is not a distant historical footnote — living people in Varto today survived this earthquake or grew up in its shadow. Their opposition to drilling is physically rooted in memory.</div></div>
+      <div class="tl-item d"><div class="tl-yr">1990s — Armed Conflict &amp; Displacement</div><div class="tl-body">Conflict in eastern Turkey forces evacuation of villages. Families scatter across Turkey and European diaspora (Germany, France, Belgium, Netherlands, Sweden). An estimated 500,000+ Vartolu live abroad today. This displacement hollows the region's population and makes remaining communities more vulnerable to outside extraction interests who meet no local resistance at the ballot box.</div></div>
+      <div class="tl-item w"><div class="tl-yr">2000s–2010s — Systematic Ecological Pressure</div><div class="tl-body">HES (hydroelectric) projects begin diverting rivers. Activists call it "cutting the veins." Then quarry and mining concessions surround the mountains. The JES project arrives as the third wave. The Varto Ecology Platform names it explicitly: rivers to HES, land to JES, mountains to mines — a coordinated industrial conversion of a living landscape.</div></div>
+      <div class="tl-item d"><div class="tl-yr">2023–2025 — Resistance Grows</div><div class="tl-body">IGNIS obtains its license in 2023. Communities learn of it months later — reportedly after company officials told villagers they were conducting earthquake research. By 2025, protests erupt from Varto to İzmir to Kocaeli. DEM Party and CHP submit parliamentary questions. Legal challenges filed against EIA exemption. A miting (mass rally) is announced for Varto, April 24, 2025.</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== VOICES ===== -->
+<div class="band" id="voices">
+  <div class="container">
+    <p class="section-tag white">Voices</p>
+    <h2 class="white reveal">Who Is Speaking Out</h2>
+
+    <div class="bilingual reveal">
+      <div>
+        <div class="bilingual-label">English</div>
+        <div class="bilingual-en">"In this region, JES projects carry the scientifically documented risk of triggering seismic activity by disrupting underground balance. It is against reason and science to invite new disaster onto a people already fighting for their lives on fault lines."</div>
+      </div>
+      <div class="bilingual-tr">
+        <div class="bilingual-label">Türkçe</div>
+        <div>"Bu bölgede, JES projeleri yer altı dengesini bozarak bilimsel olarak depremselliği tetikleme riski taşımaktadır. Fay hatları üzerinde yaşam mücadelesi veren bir halkın tepesine, yeni felaket davetiyeleri çıkarmak akıl ve bilim dışıdır."</div>
+      </div>
+    </div>
+    <p style="font-family:var(--mono);font-size:0.6rem;color:var(--text-muted);margin-top:-1rem;margin-bottom:2rem;letter-spacing:0.1em" class="reveal">— Sıla Yıldız, Varto Ecology Platform Youth Council</p>
+
+    <div class="pq green reveal">
+      <p>The project area falls under Turkey's Important Natural Areas for biodiversity. Instead of being protected with correct agricultural and livestock policies, it is being destroyed by plunder projects that provide no benefit to local people — poisoning their air, their water, their nature.</p>
+      <cite>— Varto Ecology Platform, Official Statement 2025</cite>
+    </div>
+
+    <div class="pq red reveal">
+      <p>Varto's problem is the protection of nature there. Renewable energy is valuable, but procedures carried out behind closed doors without consulting the people have no legal basis. Two projects. No public knowledge. 16 villages affected. This project is unlawful.</p>
+      <cite>— Ali Haydar Konca, Former EU Affairs Minister</cite>
+    </div>
+
+    <div class="pq green reveal">
+      <p>Any irreversible damage to the natural structure would affect not only the ecosystem but thousands of years of cultural memory. The project area contains sacred sites where people have practiced rituals and maintained spiritual connection for centuries.</p>
+      <cite>— Bahar Koç, İzmir Ecology Platform</cite>
+    </div>
+  </div>
+</div>
+
+<!-- ===== ACTIONS ===== -->
+<div class="band band-dark" id="actions">
+  <div class="container">
+    <p class="section-tag green">Pathways Forward</p>
+    <h2 class="green reveal">What Can Stop This — Right Now</h2>
+    <p class="reveal">Drilling has not begun. Multiple legal, scientific, political, and community pathways exist. Each one matters. The window is open until May 2026.</p>
+
+    <div class="action-grid reveal">
+      <div class="ac"><div class="ac-num">01</div><div class="ac-title">Demand Full EIA</div><div class="ac-body">The "No EIA Required" decision is legally contested. Danıştay (Council of State, 6th Division) issued stay order 2022/7584 on similar exemptions. The project must be evaluated under EIA Regulation Appendix-1 Article 42 — requiring full public environmental hearings and independent scientific review before any drilling begins.</div></div>
+      <div class="ac"><div class="ac-num">02</div><div class="ac-title">Independent Seismic Study</div><div class="ac-body">An independent assessment by international earth scientists (USGS, European Seismological Commission, KOERI) must quantify induced seismicity probability at the specific drill coordinates, with Coulomb stress modeling for the VFZ and YSG. This is standard practice for geothermal projects in seismic zones worldwide.</div></div>
+      <div class="ac"><div class="ac-num">03</div><div class="ac-title">Parliamentary Pressure</div><div class="ac-body">DEM and CHP MPs have already submitted formal questions to two ministers. Citizens, diaspora, and European parliament supporters can amplify: constituent letters, EU parliamentary questions on human rights and environmental law, and international media attention that makes the project politically costly to advance.</div></div>
+      <div class="ac"><div class="ac-num">04</div><div class="ac-title">Protect the Natural Area</div><div class="ac-body">File for formal legal protection of Important Natural Area (Önemli Doğa Alanı) status. Challenge the conversion of legally classified communal mera (pastureland) for private industrial use — a violation of both the Pastureland Law and the constitutional right to a healthy environment (Article 56, Turkish Constitution).</div></div>
+      <div class="ac"><div class="ac-num">05</div><div class="ac-title">Community Consent (FPIC)</div><div class="ac-body">UN Free, Prior, and Informed Consent principles require that Varto's 22+ villages actively and genuinely consent before any project proceeds. Residents were reportedly told this was "earthquake research." This constitutes deceptive practice that invalidates any implicit consent. International human rights bodies can receive formal complaints.</div></div>
+      <div class="ac"><div class="ac-num">06</div><div class="ac-title">Diaspora &amp; International Amplification</div><div class="ac-body">500,000+ Vartolu live in Germany, France, Belgium, and the Netherlands. European parliaments, Turkish diaspora organizations, and international environmental NGOs can elevate this story to the international level — adding reputational and diplomatic pressure on a US company operating in Turkey without adequate safeguards.</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== OUTCOMES ===== -->
+<div class="band" id="outcomes">
+  <div class="container">
+    <p class="section-tag amber">Two Futures</p>
+    <h2 class="white reveal">What Happens Next Depends on Action</h2>
+    <p class="reveal">These are not hypothetical scenarios. They are the direct consequence of choices being made right now by a government ministry, a foreign corporation, and a community fighting for its land. One future is written in scientific necessity and human rights. The other is written in corporate extraction and political inertia.</p>
+
+    <div class="outcome-grid reveal">
+      <div class="oc bad">
+        <div class="oc-title">⚡ If Drilling Proceeds</div>
+        <ul class="oc-list">
+          <li>High-pressure fluid injection into VFZ at 3,000m — near-critical Coulomb stress system artificially destabilized</li>
+          <li>Induced seismicity risk on Varto Fault Zone or Yedisu Seismic Gap (240yr accumulated energy)</li>
+          <li>Boron at 24–90 mg/L enters pastureland — 15–45× the phytotoxicity threshold — permanent crop damage</li>
+          <li>Arsenic up to 10,700 µg/L reaches Murat River → Euphrates watershed</li>
+          <li>Permanent loss of Important Natural Area biodiversity — endemic species, alpine meadows</li>
+          <li>Forced displacement of livestock farming families from 22+ villages</li>
+          <li>Unexcavated Urartian archaeological heritage destroyed without record</li>
+          <li>Democratic precedent: projects approved without community knowledge or consent</li>
+          <li>Cultural landscape and sacred sites of a Kurdish-Alevi community erased</li>
+        </ul>
+      </div>
+      <div class="oc good">
+        <div class="oc-title">✓ If the Project Is Stopped</div>
+        <ul class="oc-list">
+          <li>Varto Fault Zone remains unperturbed — no additional induced seismicity risk on a historically catastrophic system</li>
+          <li>453,494 m² of communal pasture preserved for multi-generational farming communities</li>
+          <li>Important Natural Area retains biodiversity — endemic plants, alpine meadows, wildlife corridors</li>
+          <li>Murat River watershed protected from geothermal chemical contamination</li>
+          <li>Archaeological survey of unexcavated sites before any future development</li>
+          <li>Democratic precedent: community consent recognized as genuine public interest</li>
+          <li>Full EIA conducted → project either canceled or fundamentally redesigned with real safeguards</li>
+          <li>Legal framework strengthened against EIA fragmentation as a deliberate evasion tactic</li>
+          <li>Varto as agrotourism, protected area, and sustainable pastoral zone — real local development</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="pq green reveal">
+      <p>The Varto JES project, as currently proposed, fails to meet the criteria for sustainable development. It ignores the fundamental principles of geological safety, environmental justice, and democratic participation. The demands of the local population for a total cessation are not based on sentiment — they are supported by the geographical and historical realities of the Varto basin.</p>
+      <cite>— Integrated Assessment of the Varto Geothermal Energy Project (Scientific Review, 2025)</cite>
+    </div>
+  </div>
+</div>
 
 <!-- FOOTER -->
-<footer><div class="footer-motto">VARTO IS NOT OWNERLESS</div><p>Scientific Sources: Bektaş et al. 2025 · Ozcelik 2022 · USGS · ScienceDirect Sançar et al. 2015</p><p>Journalistic Sources: Evrensel · Dicle TV · Muş Sarı Haber · Kısa Dalga · CHP Official · Bianet · Rudaw</p><p>Community Sources: Varto Ecology Platform · VADEF · Kocaeli Vartolular Platform · İzmir Ecology Platform</p><br><p style="color:var(--leaf);text-shadow:0 0 8px var(--leaf);">🌿 COMPILED IN THE PUBLIC INTEREST · APRIL 2025 🌿</p></footer>
+<footer>
+  <div class="footer-title">VARTO IS NOT OWNERLESS</div>
+  <p style="font-family:var(--serif);font-style:italic;color:var(--text-dim);font-size:1rem;margin-bottom:1.5rem;">Varto sahipsiz değildir. Toprağımızı ve suyumuzu şirketlerin kâr hırsına kurban etmeyeceğiz.</p>
+  <div class="footer-sources">
+    <p>SCIENTIFIC · Bektaş et al. 2025 (Bull. Geoph. Ocean.) · Ozcelik 2022 (Environ. Sci. Pollut. Res.) · USGS Wallace 1968 · Sançar et al. 2015 (Tectonophys.)</p>
+    <p>JOURNALISTIC · Evrensel · Dicle TV · Muş Sarı Haber · Kısa Dalga · CHP Official · Bianet · Rudaw · Birgün</p>
+    <p>COMMUNITY · Varto Ecology Platform · VADEF · Kocaeli Vartolular Platform · İzmir Ecology Platform</p>
+    <br>
+    <p class="footer-green">COMPILED IN THE PUBLIC INTEREST · APRIL 2025 · varto-black.vercel.app</p>
+  </div>
+</footer>
 
 <script>
-// Seismic background canvas
-const canvas = document.getElementById('seismic-bg');
-const ctx = canvas.getContext('2d');
-let W, H;
-function resize() { W = canvas.width = window.innerWidth; H = canvas.height = window.innerHeight; }
-resize(); window.addEventListener('resize', resize);
-let t2 = 0;
-function drawSeismic() {
-  ctx.clearRect(0, 0, W, H);
-  t2 += 0.005;
-  ctx.beginPath();
-  ctx.strokeStyle = '#7ab84a';
-  ctx.lineWidth = 1.2;
-  ctx.globalAlpha = 0.25;
-  for (let x = 0; x <= W; x += 5) {
-    const y = H/2 + Math.sin(x * 0.008 + t2) * 40 + Math.sin(x * 0.02 + t2 * 1.3) * 15;
-    x === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+/* ===== CANVAS SEISMIC BACKGROUND ===== */
+(function() {
+  const c = document.getElementById('canvas-bg');
+  const ctx = c.getContext('2d');
+  let W, H, waves = [];
+
+  function resize() {
+    W = c.width = innerWidth;
+    H = c.height = innerHeight;
   }
-  ctx.stroke();
-  requestAnimationFrame(drawSeismic);
-}
-drawSeismic();
+  resize();
+  addEventListener('resize', resize);
 
-// Particle canvas (pollen/dust)
-const pCanvas = document.getElementById('particle-canvas');
-let pCtx, pW, pH, particles = [];
-function resizeParticle() { pW = pCanvas.width = window.innerWidth; pH = pCanvas.height = window.innerHeight; initParticles(); }
-resizeParticle(); window.addEventListener('resize', resizeParticle);
-function initParticles() {
-  particles = [];
-  for (let i = 0; i < 100; i++) {
-    particles.push({ x: Math.random() * pW, y: Math.random() * pH, radius: 1 + Math.random() * 2.5, vx: (Math.random() - 0.5) * 0.3, vy: (Math.random() - 0.5) * 0.2 - 0.05, color: Math.random() > 0.7 ? '#c97e2a' : '#7ab84a' });
+  function mkWaves() {
+    waves = [];
+    for (let i = 0; i < 8; i++) {
+      waves.push({
+        y: Math.random() * H,
+        amp: 8 + Math.random() * 28,
+        freq: 0.004 + Math.random() * 0.018,
+        speed: 0.2 + Math.random() * 0.7,
+        phase: Math.random() * Math.PI * 2,
+        color: Math.random() > 0.55 ? '#00ff41' : '#ff1a1a',
+        lw: 0.4 + Math.random() * 1.2,
+        opacity: 0.25 + Math.random() * 0.45
+      });
+    }
   }
-}
-function drawParticles() {
-  if (!pCanvas) return;
-  pCtx = pCanvas.getContext('2d');
-  pCtx.clearRect(0, 0, pW, pH);
-  for (let p of particles) {
-    pCtx.beginPath(); pCtx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
-    pCtx.fillStyle = p.color; pCtx.globalAlpha = 0.3; pCtx.fill();
-    p.x += p.vx; p.y += p.vy;
-    if (p.x > pW) p.x = 0; if (p.x < 0) p.x = pW;
-    if (p.y > pH) p.y = 0; if (p.y < 0) p.y = pH;
+  mkWaves();
+
+  let t = 0;
+  function draw() {
+    ctx.clearRect(0, 0, W, H);
+    t += 0.008;
+    waves.forEach(w => {
+      ctx.beginPath();
+      ctx.strokeStyle = w.color;
+      ctx.lineWidth = w.lw;
+      ctx.globalAlpha = w.opacity;
+      for (let x = 0; x <= W; x += 3) {
+        const y = w.y
+          + Math.sin(x * w.freq + t * w.speed + w.phase) * w.amp
+          + Math.sin(x * w.freq * 2.7 + t * w.speed * 1.5) * w.amp * 0.25;
+        x === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+      }
+      ctx.stroke();
+    });
+    requestAnimationFrame(draw);
   }
-  requestAnimationFrame(drawParticles);
-}
-drawParticles();
+  draw();
+})();
 
-// Timeline observer
-const observer = new IntersectionObserver((entries) => { entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); }); }, { threshold: 0.15 });
-document.querySelectorAll('.tl-item').forEach(el => observer.observe(el));
+/* ===== SCROLL REVEALS ===== */
+(function() {
+  const obs = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) e.target.classList.add('vis');
+    });
+  }, { threshold: 0.1 });
 
-// Nav scroll effect
-const navEl = document.getElementById('mainNav');
-window.addEventListener('scroll', () => { navEl.classList.toggle('scrolled', window.scrollY > 100); });
+  document.querySelectorAll('.tl-item').forEach((el, i) => {
+    el.style.transitionDelay = (i * 0.1) + 's';
+    obs.observe(el);
+  });
 
-// Active nav highlight
-const sections = document.querySelectorAll('section, div[id]');
-const navLinks = document.querySelectorAll('nav a');
-window.addEventListener('scroll', () => {
-  let current = '';
-  sections.forEach(s => { if (window.scrollY >= (s.offsetTop - 200)) current = s.id; });
-  navLinks.forEach(a => { a.style.color = ''; a.style.textShadow = ''; if (a.getAttribute('href').replace('#', '') === current) { a.style.color = 'var(--leaf)'; a.style.textShadow = '0 0 10px var(--leaf)'; } });
-});
+  const revObs = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) e.target.classList.add('vis');
+    });
+  }, { threshold: 0.08 });
+
+  document.querySelectorAll('.reveal').forEach((el, i) => {
+    el.style.transitionDelay = (i % 4 * 0.08) + 's';
+    revObs.observe(el);
+  });
+})();
+
+/* ===== NAV ACTIVE ===== */
+(function() {
+  const links = document.querySelectorAll('nav a');
+  const sections = document.querySelectorAll('[id]');
+
+  const obs = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        links.forEach(a => a.classList.remove('active'));
+        const active = document.querySelector('nav a[href="#' + e.target.id + '"]');
+        if (active) active.classList.add('active');
+      }
+    });
+  }, { rootMargin: '-40% 0px -55% 0px' });
+
+  sections.forEach(s => { if (s.id !== 'top') obs.observe(s); });
+})();
 </script>
 </body>
 </html>
