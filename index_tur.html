@@ -1,2528 +1,2658 @@
 <!doctype html>
 <html lang="tr">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta
-      name="description"
-      content="Varto JES — Doğu Anadolu’da bir sismik üçlü kavşağı, 16 köyü ve bir biyolojik çeşitlilik merkezini tehdit eden jeotermal enerji projesi."
-    />
-    <title>VARTO — Die Erde unter Druck | Das Land verteidigen</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Literata:ital,opsz,wght@0,7..72,300;0,7..72,400;0,7..72,600;1,7..72,300;1,7..72,400&family=Share+Tech+Mono&display=swap"
-      rel="stylesheet"
-    />
-    <style>
-      /* ===== DESIGN TOKENS ===== */
-      :root {
-        --black: #030805;
-        --deep-black: #050f06;
-        --surface: #0a160b;
-        --surface2: #0f1e10;
-        --green: #00ff41;
-        --green-dim: #00cc33;
-        --green-dark: #003d15;
-        --green-trace: rgba(0, 255, 65, 0.06);
-        --red: #ff1a1a;
-        --red-dim: #cc0000;
-        --red-trace: rgba(255, 26, 26, 0.06);
-        --amber: #ffaa00;
-        --amber-dim: rgba(255, 170, 0, 0.7);
-        --text: #d4e8d4;
-        --text-dim: #7a9c7a;
-        --text-muted: #4a6a4a;
-        --paper: #eef4ee;
-        --mono: "Share Tech Mono", monospace;
-        --serif: "Literata", Georgia, serif;
-        --display: "Bebas Neue", sans-serif;
-      }
-
-      /* ===== RESET ===== */
-      *,
-      *::before,
-      *::after {
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
-      }
-      html {
-        scroll-behavior: smooth;
-        font-size: 16px;
-      }
-
-      body {
-        background: var(--black);
-        color: var(--text);
-        font-family: var(--serif);
-        line-height: 1.75;
-        overflow-x: hidden;
-      }
-
-      /* ===== SCAN LINES ===== */
-      body::after {
-        content: "";
-        position: fixed;
-        inset: 0;
-        background: repeating-linear-gradient(
-          0deg,
-          transparent,
-          transparent 2px,
-          rgba(0, 255, 65, 0.012) 2px,
-          rgba(0, 255, 65, 0.012) 4px
-        );
-        pointer-events: none;
-        z-index: 9000;
-      }
-
-      /* ===== CANVAS BG ===== */
-      #canvas-bg {
-        position: fixed;
-        inset: 0;
-        z-index: 0;
-        opacity: 0.09;
-      }
-
-      /* ===== TICKER ===== */
-      .ticker-wrap {
-        background: var(--red);
-        overflow: hidden;
-        position: relative;
-        z-index: 200;
-      }
-      .ticker-inner {
-        display: flex;
-        white-space: nowrap;
-        animation: tickerScroll 35s linear infinite;
-      }
-      .ticker-inner:hover {
-        animation-play-state: paused;
-      }
-      .tick-item {
-        font-family: var(--mono);
-        font-size: 0.65rem;
-        letter-spacing: 0.15em;
-        text-transform: uppercase;
-        color: #fff;
-        padding: 0.45rem 2.5rem;
-      }
-      @keyframes tickerScroll {
-        from {
-          transform: translateX(0);
-        }
-        to {
-          transform: translateX(-50%);
-        }
-      }
-
-      /* ===== HERO ===== */
-      .hero {
-        position: relative;
-        min-height: 100vh;
-        display: grid;
-        place-items: center;
-        text-align: center;
-        padding: 8rem 2rem 6rem;
-        z-index: 10;
-        overflow: hidden;
-      }
-
-      /* Ripple rings */
-      .ripple-wrap {
-        position: absolute;
-        inset: 0;
-        display: grid;
-        place-items: center;
-        pointer-events: none;
-      }
-      .ripple {
-        position: absolute;
-        border-radius: 50%;
-        border: 1px solid var(--red);
-        animation: rippleOut 5s ease-out infinite;
-        opacity: 0;
-      }
-      .ripple:nth-child(1) {
-        width: 80px;
-        height: 80px;
-        animation-delay: 0s;
-      }
-      .ripple:nth-child(2) {
-        width: 240px;
-        height: 240px;
-        animation-delay: 1s;
-      }
-      .ripple:nth-child(3) {
-        width: 480px;
-        height: 480px;
-        animation-delay: 2s;
-      }
-      .ripple:nth-child(4) {
-        width: 800px;
-        height: 800px;
-        animation-delay: 3s;
-      }
-      .ripple:nth-child(5) {
-        width: 1200px;
-        height: 1200px;
-        animation-delay: 4s;
-      }
-      @keyframes rippleOut {
-        0% {
-          transform: scale(0.2);
-          opacity: 0.9;
-          border-color: var(--red);
-        }
-        70% {
-          opacity: 0.15;
-        }
-        100% {
-          transform: scale(1);
-          opacity: 0;
-        }
-      }
-
-      .epicenter {
-        position: absolute;
-        width: 14px;
-        height: 14px;
-        border-radius: 50%;
-        background: var(--red);
-        box-shadow:
-          0 0 0 3px rgba(255, 26, 26, 0.3),
-          0 0 40px var(--red);
-        animation: epicPulse 1.8s ease-in-out infinite;
-        z-index: 2;
-      }
-      @keyframes epicPulse {
-        0%,
-        100% {
-          box-shadow:
-            0 0 0 3px rgba(255, 26, 26, 0.3),
-            0 0 30px var(--red);
-        }
-        50% {
-          box-shadow:
-            0 0 0 8px rgba(255, 26, 26, 0.15),
-            0 0 80px var(--red),
-            0 0 160px rgba(255, 26, 26, 0.2);
-        }
-      }
-
-      .hero-content {
-        position: relative;
-        z-index: 3;
-      }
-
-      .hero-eyebrow {
-        font-family: var(--mono);
-        font-size: 0.62rem;
-        letter-spacing: 0.4em;
-        color: var(--green);
-        text-transform: uppercase;
-        text-shadow: 0 0 12px var(--green);
-        margin-bottom: 2rem;
-        animation: fadeSlideUp 0.9s ease 0.2s both;
-      }
-
-      .hero-title {
-        font-family: var(--display);
-        font-size: clamp(5rem, 16vw, 13rem);
-        line-height: 0.85;
-        letter-spacing: 0.04em;
-        animation: fadeSlideUp 0.9s ease 0.4s both;
-      }
-
-      .hero-title .t-white {
-        color: var(--paper);
-      }
-      .hero-title .t-small {
-        font-family: var(--mono);
-        font-size: 0.12em;
-        letter-spacing: 0.4em;
-        color: var(--text-dim);
-        display: block;
-        padding: 0.5em 0;
-      }
-      .hero-title .t-red {
-        color: var(--red);
-        text-shadow:
-          0 0 40px var(--red),
-          0 0 100px rgba(255, 26, 26, 0.35);
-        animation: redTitleGlow 2.5s ease-in-out infinite alternate;
-      }
-      .hero-title .t-green {
-        color: var(--green);
-        text-shadow:
-          0 0 30px var(--green),
-          0 0 80px rgba(0, 255, 65, 0.25);
-        animation: greenTitleGlow 3s ease-in-out infinite alternate;
-      }
-      @keyframes redTitleGlow {
-        from {
-          text-shadow:
-            0 0 30px var(--red),
-            0 0 60px rgba(255, 26, 26, 0.25);
-        }
-        to {
-          text-shadow:
-            0 0 70px var(--red),
-            0 0 160px rgba(255, 26, 26, 0.5);
-        }
-      }
-      @keyframes greenTitleGlow {
-        from {
-          text-shadow:
-            0 0 20px var(--green),
-            0 0 50px rgba(0, 255, 65, 0.2);
-        }
-        to {
-          text-shadow:
-            0 0 60px var(--green),
-            0 0 130px rgba(0, 255, 65, 0.45);
-        }
-      }
-
-      .hero-desc {
-        font-family: var(--serif);
-        font-style: italic;
-        font-size: clamp(0.95rem, 2.2vw, 1.2rem);
-        color: var(--text-dim);
-        max-width: 640px;
-        margin: 1.8rem auto 2.5rem;
-        animation: fadeSlideUp 0.9s ease 0.6s both;
-      }
-
-      .chips {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 0.6rem;
-        justify-content: center;
-        animation: fadeSlideUp 0.9s ease 0.8s both;
-        margin-bottom: 3rem;
-      }
-      .chip {
-        font-family: var(--mono);
-        font-size: 0.58rem;
-        letter-spacing: 0.12em;
-        text-transform: uppercase;
-        border: 1px solid;
-        padding: 0.35rem 0.8rem;
-        animation: chipFlicker 4s ease-in-out infinite;
-      }
-      .chip.g {
-        border-color: var(--green);
-        color: var(--green);
-      }
-      .chip.r {
-        border-color: var(--red);
-        color: var(--red);
-        animation-delay: 1.3s;
-      }
-      .chip.a {
-        border-color: var(--amber);
-        color: var(--amber);
-        animation-delay: 0.7s;
-      }
-      @keyframes chipFlicker {
-        0%,
-        88%,
-        100% {
-          opacity: 1;
-        }
-        93% {
-          opacity: 0.2;
-        }
-      }
-
-      .scroll-cue {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        gap: 0.5rem;
-        font-family: var(--mono);
-        font-size: 0.55rem;
-        letter-spacing: 0.25em;
-        color: var(--green);
-        text-transform: uppercase;
-        animation: fadeSlideUp 1s ease 2s both;
-      }
-      .scroll-line {
-        width: 1px;
-        height: 50px;
-        background: linear-gradient(to bottom, var(--green), transparent);
-        animation: scrollBounce 1.8s ease-in-out infinite;
-      }
-      @keyframes scrollBounce {
-        0%,
-        100% {
-          transform: scaleY(1);
-          opacity: 0.4;
-        }
-        50% {
-          transform: scaleY(1.3);
-          opacity: 1;
-        }
-      }
-
-      @keyframes fadeSlideUp {
-        from {
-          opacity: 0;
-          transform: translateY(28px);
-        }
-        to {
-          opacity: 1;
-          transform: translateY(0);
-        }
-      }
-      /* ===== NAV ===== */
-      nav {
-        position: sticky;
-        top: 0;
-        z-index: 500;
-        background: rgba(3, 8, 5, 0.96);
-        border-bottom: 1px solid var(--green-dark);
-        backdrop-filter: blur(12px);
-      }
-      nav ul {
-        display: flex;
-        list-style: none;
-        justify-content: center;
-        flex-wrap: wrap;
-      }
-      nav a {
-        display: block;
-        font-family: var(--mono);
-        font-size: 0.58rem;
-        letter-spacing: 0.18em;
-        text-transform: uppercase;
-        color: var(--text-muted);
-        text-decoration: none;
-        padding: 0.85rem 1.1rem;
-        transition:
-          color 0.2s,
-          text-shadow 0.2s;
-        border-bottom: 2px solid transparent;
-        transition: all 0.2s;
-      }
-      nav a:hover,
-      nav a.active {
-        color: var(--green);
-        text-shadow: 0 0 10px var(--green);
-        border-bottom-color: var(--green);
-      }
-
-      /* ===== LAYOUT HELPERS ===== */
-      .band {
-        position: relative;
-        z-index: 10;
-        padding: 6rem 2rem;
-      }
-      .band-dark {
-        background: rgba(0, 6, 1, 0.85);
-        border-top: 1px solid var(--green-dark);
-        border-bottom: 1px solid var(--green-dark);
-      }
-      .band-red {
-        background: rgba(18, 0, 0, 0.9);
-        border-top: 1px solid rgba(255, 26, 26, 0.15);
-        border-bottom: 1px solid rgba(255, 26, 26, 0.15);
-      }
-      .container {
-        max-width: 980px;
-        margin: 0 auto;
-      }
-
-      .section-tag {
-        font-family: var(--mono);
-        font-size: 0.6rem;
-        letter-spacing: 0.35em;
-        text-transform: uppercase;
-        display: flex;
-        align-items: center;
-        gap: 1rem;
-        margin-bottom: 1.5rem;
-      }
-      .section-tag::after {
-        content: "";
-        flex: 1;
-        height: 1px;
-        background: currentColor;
-        opacity: 0.25;
-      }
-      .section-tag.green {
-        color: var(--green);
-        text-shadow: 0 0 8px var(--green);
-      }
-      .section-tag.red {
-        color: var(--red);
-      }
-      .section-tag.amber {
-        color: var(--amber);
-      }
-      .section-tag.white {
-        color: var(--text-dim);
-      }
-
-      h2 {
-        font-family: var(--display);
-        font-size: clamp(2.8rem, 6.5vw, 5.5rem);
-        line-height: 0.9;
-        letter-spacing: 0.03em;
-        margin-bottom: 1.5rem;
-      }
-      h2.green {
-        color: var(--green);
-        text-shadow: 0 0 25px rgba(0, 255, 65, 0.25);
-      }
-      h2.red {
-        color: var(--red);
-        text-shadow: 0 0 30px rgba(255, 26, 26, 0.35);
-      }
-      h2.white {
-        color: var(--paper);
-      }
-
-      h3 {
-        font-family: var(--display);
-        font-size: 1.8rem;
-        letter-spacing: 0.05em;
-        color: var(--green);
-        margin: 2.5rem 0 0.8rem;
-      }
-
-      p {
-        margin-bottom: 1.2rem;
-        color: var(--text-dim);
-        font-size: 1.05rem;
-      }
-      p strong {
-        color: var(--green);
-        font-weight: 600;
-      }
-      p em.r {
-        color: var(--red);
-        font-style: normal;
-        font-weight: 600;
-      }
-      p em.a {
-        color: var(--amber);
-        font-style: normal;
-        font-weight: 600;
-      }
-
-      /* ===== STATS ===== */
-      .stats {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-        gap: 1px;
-        background: var(--green-dark);
-        border: 1px solid var(--green-dark);
-        margin: 3rem 0;
-      }
-      .stat {
-        background: var(--surface);
-        padding: 1.6rem 1.2rem;
-        text-align: center;
-        transition: background 0.3s;
-        cursor: default;
-      }
-      .stat:hover {
-        background: var(--surface2);
-      }
-
-      .sn {
-        font-family: var(--display);
-        font-size: 2.8rem;
-        line-height: 1;
-        display: block;
-        margin-bottom: 0.3rem;
-      }
-      .sn.g {
-        color: var(--green);
-        text-shadow: 0 0 20px rgba(0, 255, 65, 0.4);
-      }
-      .sn.r {
-        color: var(--red);
-        text-shadow: 0 0 20px rgba(255, 26, 26, 0.5);
-        animation: redStatPulse 2.5s ease-in-out infinite;
-      }
-      .sn.a {
-        color: var(--amber);
-      }
-      @keyframes redStatPulse {
-        0%,
-        100% {
-          text-shadow: 0 0 15px rgba(255, 26, 26, 0.4);
-        }
-        50% {
-          text-shadow:
-            0 0 50px rgba(255, 26, 26, 0.8),
-            0 0 100px rgba(255, 26, 26, 0.3);
-        }
-      }
-      .sl {
-        font-family: var(--mono);
-        font-size: 0.52rem;
-        letter-spacing: 0.12em;
-        text-transform: uppercase;
-        color: var(--text-muted);
-      }
-
-      /* ===== FAULT VIZ ===== */
-      .fault-box {
-        background: var(--surface);
-        border: 1px solid var(--green-dark);
-        padding: 2rem;
-        margin: 2.5rem 0;
-        position: relative;
-        overflow: hidden;
-      }
-      .fault-box::before {
-        content: "// ACTIVE FAULT SYSTEM MAP — KARLΙOVA TRIPLE JUNCTION";
-        font-family: var(--mono);
-        font-size: 0.55rem;
-        letter-spacing: 0.15em;
-        color: var(--green);
-        display: block;
-        margin-bottom: 1.5rem;
-        text-shadow: 0 0 6px var(--green);
-      }
-      .fault-track {
-        position: relative;
-        height: 110px;
-        margin-bottom: 1.5rem;
-      }
-      .ft {
-        position: absolute;
-        height: 2px;
-        border-radius: 1px;
-        animation: ftWave 4s ease-in-out infinite;
-      }
-      .ft.nafz {
-        top: 18%;
-        width: 100%;
-        background: linear-gradient(
-          to right,
-          transparent 0%,
-          var(--green) 15%,
-          var(--green) 85%,
-          transparent 100%
-        );
-      }
-      .ft.eafz {
-        top: 50%;
-        width: 78%;
-        left: 11%;
-        background: linear-gradient(
-          to right,
-          transparent 0%,
-          var(--amber) 15%,
-          var(--amber) 85%,
-          transparent 100%
-        );
-        animation-delay: 1.2s;
-      }
-      .ft.vfz {
-        top: 78%;
-        width: 52%;
-        left: 24%;
-        background: linear-gradient(
-          to right,
-          transparent 0%,
-          var(--red) 15%,
-          var(--red) 85%,
-          transparent 100%
-        );
-        animation-delay: 0.6s;
-      }
-      .ft.drill {
-        width: 6px;
-        height: 100%;
-        top: 0;
-        left: 47%;
-        background: linear-gradient(
-          to bottom,
-          transparent,
-          rgba(255, 26, 26, 0.9),
-          transparent
-        );
-        animation: drillPulse 1.4s ease-in-out infinite;
-      }
-      @keyframes ftWave {
-        0%,
-        100% {
-          transform: translateY(0);
-        }
-        33% {
-          transform: translateY(-1.5px);
-        }
-        66% {
-          transform: translateY(1.5px);
-        }
-      }
-      @keyframes drillPulse {
-        0%,
-        100% {
-          opacity: 1;
-          box-shadow: 0 0 8px var(--red);
-        }
-        50% {
-          opacity: 0.35;
-          box-shadow: none;
-        }
-      }
-      .fault-legend {
-        display: flex;
-        flex-direction: column;
-        gap: 0.4rem;
-      }
-      .fl {
-        display: flex;
-        align-items: center;
-        gap: 0.6rem;
-      }
-      .fl-bar {
-        width: 24px;
-        height: 3px;
-        border-radius: 2px;
-        flex-shrink: 0;
-      }
-      .fl-text {
-        font-family: var(--mono);
-        font-size: 0.6rem;
-        letter-spacing: 0.06em;
-      }
-      .fl-text.g {
-        color: var(--green);
-      }
-      .fl-text.a {
-        color: var(--amber);
-      }
-      .fl-text.r {
-        color: var(--red);
-      }
-      .fl-text.d {
-        color: rgba(255, 80, 80, 0.8);
-        font-size: 0.58rem;
-      }
-
-      /* ===== EQUATION ===== */
-      .eq-box {
-        background: rgba(0, 255, 65, 0.03);
-        border: 1px solid var(--green-dark);
-        border-left: 4px solid var(--green);
-        padding: 2rem 2.5rem;
-        margin: 2.5rem 0;
-        position: relative;
-        text-align: center;
-      }
-      .eq-box::before {
-        content: "COULOMB FAILURE CRITERION";
-        position: absolute;
-        top: -0.6rem;
-        left: 1.2rem;
-        font-family: var(--mono);
-        font-size: 0.5rem;
-        letter-spacing: 0.2em;
-        background: var(--black);
-        padding: 0 0.6rem;
-        color: var(--green);
-        text-shadow: 0 0 6px var(--green);
-      }
-      .eq-main {
-        font-family: var(--mono);
-        font-size: 1.4rem;
-        color: var(--green);
-        text-shadow: 0 0 12px rgba(0, 255, 65, 0.5);
-        margin-bottom: 0.8rem;
-      }
-      .eq-sub {
-        font-family: var(--mono);
-        font-size: 0.65rem;
-        color: var(--text-muted);
-        margin-bottom: 0.4rem;
-      }
-      .eq-warn {
-        font-family: var(--mono);
-        font-size: 0.68rem;
-        color: var(--red);
-        margin-top: 0.8rem;
-      }
-
-      /* ===== WAVEFORM ===== */
-      .wave-box {
-        background: var(--surface);
-        border: 1px solid var(--green-dark);
-        padding: 1rem;
-        margin: 2rem 0;
-        overflow: hidden;
-      }
-      .wave-label {
-        font-family: var(--mono);
-        font-size: 0.52rem;
-        letter-spacing: 0.18em;
-        color: var(--green);
-        margin-bottom: 0.6rem;
-      }
-      .wave-svg {
-        width: 200%;
-        animation: waveSroll 14s linear infinite;
-      }
-      @keyframes waveSroll {
-        from {
-          transform: translateX(0);
-        }
-        to {
-          transform: translateX(-50%);
-        }
-      }
-
-      /* ===== TIMELINE ===== */
-      .tl {
-        position: relative;
-        padding-left: 2.8rem;
-        margin: 2rem 0;
-      }
-      .tl::before {
-        content: "";
-        position: absolute;
-        left: 0;
-        top: 0;
-        bottom: 0;
-        width: 2px;
-        background: linear-gradient(
-          to bottom,
-          var(--red) 0%,
-          var(--amber) 50%,
-          var(--green) 100%
-        );
-      }
-      .tl-item {
-        position: relative;
-        margin-bottom: 2.2rem;
-        opacity: 0;
-        transform: translateX(-12px);
-        transition:
-          opacity 0.55s ease,
-          transform 0.55s ease;
-      }
-      .tl-item.vis {
-        opacity: 1;
-        transform: translateX(0);
-      }
-      .tl-item::before {
-        content: "";
-        position: absolute;
-        left: -3.15rem;
-        top: 0.3rem;
-        width: 11px;
-        height: 11px;
-        border-radius: 50%;
-        border: 2px solid;
-      }
-      .tl-item.d::before {
-        border-color: var(--red);
-        background: rgba(255, 26, 26, 0.25);
-        box-shadow: 0 0 10px var(--red);
-      }
-      .tl-item.w::before {
-        border-color: var(--amber);
-        background: rgba(255, 170, 0, 0.2);
-      }
-      .tl-item.s::before {
-        border-color: var(--green);
-        background: rgba(0, 255, 65, 0.2);
-        box-shadow: 0 0 8px var(--green);
-      }
-      .tl-yr {
-        font-family: var(--mono);
-        font-size: 0.62rem;
-        letter-spacing: 0.15em;
-        text-transform: uppercase;
-        margin-bottom: 0.3rem;
-      }
-      .tl-item.d .tl-yr {
-        color: var(--red);
-      }
-      .tl-item.w .tl-yr {
-        color: var(--amber);
-      }
-      .tl-item.s .tl-yr {
-        color: var(--green);
-      }
-      .tl-body {
-        color: #91ae91;
-        font-size: 0.98rem;
-      }
-      .tl-body strong {
-        color: var(--red);
-      }
-
-      /* ===== CHEM TABLE ===== */
-      .chem {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-        gap: 2px;
-        background: var(--green-dark);
-        margin: 2rem 0;
-      }
-      .ce {
-        background: var(--surface);
-        padding: 1.2rem;
-        text-align: center;
-      }
-      .ce-sym {
-        font-family: var(--display);
-        font-size: 2.2rem;
-        line-height: 1;
-        display: block;
-      }
-      .ce-nm {
-        font-family: var(--mono);
-        font-size: 0.5rem;
-        letter-spacing: 0.08em;
-        color: var(--text-muted);
-        display: block;
-        margin: 0.25rem 0;
-      }
-      .ce-val {
-        font-family: var(--mono);
-        font-size: 0.58rem;
-        padding: 0.18rem 0.4rem;
-        border: 1px solid;
-        display: inline-block;
-      }
-      .ce.danger .ce-sym {
-        color: var(--red);
-        text-shadow: 0 0 12px var(--red);
-      }
-      .ce.danger .ce-val {
-        color: var(--red);
-        border-color: var(--red);
-      }
-      .ce.warn .ce-sym {
-        color: var(--amber);
-      }
-      .ce.warn .ce-val {
-        color: var(--amber);
-        border-color: var(--amber);
-      }
-      .ce.ok .ce-sym {
-        color: var(--green);
-      }
-      .ce.ok .ce-val {
-        color: var(--green);
-        border-color: var(--green);
-      }
-
-      /* ===== RISK CARDS ===== */
-      .risk-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-        gap: 2px;
-        background: #111;
-        margin: 2rem 0;
-      }
-      .rc {
-        background: var(--surface);
-        padding: 2rem;
-        border-top: 3px solid;
-        position: relative;
-        overflow: hidden;
-        transition: transform 0.25s;
-      }
-      .rc:hover {
-        transform: translateY(-3px);
-        background: var(--surface2);
-      }
-      .rc::after {
-        content: "";
-        position: absolute;
-        bottom: 0;
-        left: 0;
-        right: 0;
-        height: 1px;
-        background: linear-gradient(
-          to right,
-          transparent,
-          rgba(0, 255, 65, 0.35),
-          transparent
-        );
-        animation: scanBar 3.5s linear infinite;
-      }
-      .rc:nth-child(even)::after {
-        animation-delay: 1.75s;
-      }
-      @keyframes scanBar {
-        from {
-          transform: translateX(-100%);
-        }
-        to {
-          transform: translateX(100%);
-        }
-      }
-      .rc.c1 {
-        border-top-color: var(--red);
-      }
-      .rc.c2 {
-        border-top-color: #4db8ff;
-      }
-      .rc.c3 {
-        border-top-color: var(--green);
-      }
-      .rc.c4 {
-        border-top-color: var(--amber);
-      }
-      .rc.c5 {
-        border-top-color: #cc88ff;
-      }
-      .rc.c6 {
-        border-top-color: var(--text-muted);
-      }
-      .rc-icon {
-        font-size: 2.2rem;
-        display: block;
-        margin-bottom: 0.8rem;
-      }
-      .rc-title {
-        font-family: var(--display);
-        font-size: 1.35rem;
-        letter-spacing: 0.04em;
-        margin-bottom: 0.6rem;
-      }
-      .c1 .rc-title {
-        color: var(--red);
-      }
-      .c2 .rc-title {
-        color: #4db8ff;
-      }
-      .c3 .rc-title {
-        color: var(--green);
-      }
-      .c4 .rc-title {
-        color: var(--amber);
-      }
-      .c5 .rc-title {
-        color: #cc88ff;
-      }
-      .c6 .rc-title {
-        color: var(--text-dim);
-      }
-      .rc-body {
-        font-size: 0.9rem;
-        color: var(--text-muted);
-        line-height: 1.65;
-      }
-
-      /* ===== COMPARE TABLE ===== */
-      .ct {
-        width: 100%;
-        border-collapse: collapse;
-        margin: 2rem 0;
-        font-size: 0.88rem;
-        overflow-x: auto;
-        display: block;
-      }
-      .ct th {
-        font-family: var(--mono);
-        font-size: 0.58rem;
-        letter-spacing: 0.1em;
-        text-transform: uppercase;
-        padding: 0.8rem 1rem;
-        text-align: left;
-        border-bottom: 1px solid var(--green-dark);
-        color: var(--green);
-        background: var(--surface);
-        position: sticky;
-        top: 0;
-      }
-      .ct td {
-        padding: 0.75rem 1rem;
-        border-bottom: 1px solid rgba(0, 255, 65, 0.06);
-        color: var(--text-muted);
-      }
-      .ct tr:hover td {
-        background: rgba(0, 255, 65, 0.04);
-      }
-      .td-ok {
-        color: var(--green) !important;
-      }
-      .td-warn {
-        color: var(--amber) !important;
-      }
-      .td-bad {
-        color: var(--red) !important;
-      }
-
-      /* ===== ACTION GRID ===== */
-      .action-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-        gap: 2px;
-        background: var(--green-dark);
-        margin: 2rem 0;
-      }
-      .ac {
-        background: var(--surface);
-        padding: 2rem;
-        position: relative;
-        overflow: hidden;
-        transition: background 0.25s;
-      }
-      .ac:hover {
-        background: var(--surface2);
-      }
-      .ac::before {
-        content: "";
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        height: 2px;
-        background: var(--green);
-        box-shadow: 0 0 10px var(--green);
-        animation: greenSweep 2.5s ease-in-out infinite;
-      }
-      .ac:nth-child(2n)::before {
-        animation-delay: 1.25s;
-      }
-      .ac:nth-child(3n)::before {
-        animation-delay: 0.83s;
-      }
-      @keyframes greenSweep {
-        0%,
-        100% {
-          opacity: 1;
-        }
-        50% {
-          opacity: 0.3;
-        }
-      }
-      .ac-num {
-        font-family: var(--display);
-        font-size: 4rem;
-        color: rgba(0, 255, 65, 0.1);
-        line-height: 1;
-        margin-bottom: 0.5rem;
-      }
-      .ac-title {
-        font-family: var(--display);
-        font-size: 1.25rem;
-        color: var(--green);
-        letter-spacing: 0.04em;
-        margin-bottom: 0.7rem;
-      }
-      .ac-body {
-        font-size: 0.88rem;
-        color: var(--text-muted);
-        line-height: 1.65;
-      }
-
-      /* ===== OUTCOME ===== */
-      .outcome-grid {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 2px;
-        background: #111;
-        margin: 2rem 0;
-      }
-      @media (max-width: 620px) {
-        .outcome-grid {
-          grid-template-columns: 1fr;
-        }
-      }
-      .oc {
-        padding: 2.2rem;
-      }
-      .oc.bad {
-        background: rgba(25, 0, 0, 0.85);
-        border-top: 3px solid var(--red);
-      }
-      .oc.good {
-        background: rgba(0, 18, 2, 0.85);
-        border-top: 3px solid var(--green);
-      }
-      .oc-title {
-        font-family: var(--display);
-        font-size: 1.5rem;
-        letter-spacing: 0.04em;
-        margin-bottom: 1.2rem;
-      }
-      .oc.bad .oc-title {
-        color: var(--red);
-      }
-      .oc.good .oc-title {
-        color: var(--green);
-      }
-      .oc-list {
-        list-style: none;
-      }
-      .oc-list li {
-        font-size: 0.9rem;
-        color: #99b099;
-        padding: 0.45rem 0;
-        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-        display: flex;
-        gap: 0.8rem;
-        align-items: flex-start;
-        line-height: 1.5;
-      }
-      .oc-list li::before {
-        font-family: var(--mono);
-        font-size: 0.7rem;
-        flex-shrink: 0;
-        margin-top: 0.1rem;
-      }
-      .oc.bad .oc-list li::before {
-        content: "✗";
-        color: var(--red);
-      }
-      .oc.good .oc-list li::before {
-        content: "✓";
-        color: var(--green);
-      }
-
-      /* ===== PULLQUOTE ===== */
-      .pq {
-        border-left: 3px solid;
-        padding: 1.5rem 2rem;
-        margin: 3rem 0;
-        position: relative;
-      }
-      .pq::before {
-        content: '"';
-        font-family: var(--display);
-        font-size: 7rem;
-        position: absolute;
-        top: -1.5rem;
-        left: 0.8rem;
-        line-height: 1;
-        opacity: 0.1;
-      }
-      .pq p {
-        font-style: italic;
-        font-size: 1.15rem;
-        color: var(--paper);
-        margin-bottom: 0.5rem;
-      }
-      .pq cite {
-        font-family: var(--mono);
-        font-size: 0.58rem;
-        letter-spacing: 0.1em;
-        font-style: normal;
-      }
-      .pq.green {
-        border-color: var(--green);
-        background: rgba(0, 255, 65, 0.03);
-      }
-      .pq.green::before {
-        color: var(--green);
-      }
-      .pq.green cite {
-        color: var(--green-dim);
-      }
-      .pq.red {
-        border-color: var(--red);
-        background: rgba(255, 26, 26, 0.03);
-      }
-      .pq.red::before {
-        color: var(--red);
-      }
-      .pq.red cite {
-        color: rgba(255, 80, 80, 0.7);
-      }
-
-      /* ===== BILINGUAL BANNER ===== */
-      .bilingual {
-        background: var(--surface2);
-        border: 1px solid var(--green-dark);
-        border-left: 4px solid var(--green);
-        padding: 1.5rem 2rem;
-        margin: 2rem 0;
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 2rem;
-      }
-      @media (max-width: 520px) {
-        .bilingual {
-          grid-template-columns: 1fr;
-        }
-      }
-      .bilingual-en {
-        font-style: italic;
-        font-size: 1rem;
-        color: var(--paper);
-      }
-      .bilingual-tr {
-        font-style: italic;
-        font-size: 1rem;
-        color: var(--text-dim);
-        border-left: 1px solid var(--green-dark);
-        padding-left: 2rem;
-      }
-      .bilingual-label {
-        font-family: var(--mono);
-        font-size: 0.5rem;
-        letter-spacing: 0.2em;
-        text-transform: uppercase;
-        color: var(--text-muted);
-        margin-bottom: 0.4rem;
-      }
-
-      /* ===== FOOTER ===== */
-      footer {
-        background: var(--black);
-        border-top: 1px solid var(--green-dark);
-        text-align: center;
-        padding: 4rem 2rem;
-        position: relative;
-        z-index: 10;
-      }
-      .footer-title {
-        font-family: var(--display);
-        font-size: clamp(2rem, 5vw, 4rem);
-        color: var(--green);
-        text-shadow: 0 0 30px rgba(0, 255, 65, 0.4);
-        margin-bottom: 0.5rem;
-      }
-      .footer-sub {
-        font-family: var(--mono);
-        font-size: 0.6rem;
-        letter-spacing: 0.15em;
-        color: var(--text-muted);
-        margin-bottom: 0.3rem;
-      }
-      .footer-sources {
-        margin-top: 2rem;
-      }
-      .footer-sources p {
-        font-family: var(--mono);
-        font-size: 0.58rem;
-        color: var(--text-muted);
-        margin-bottom: 0.25rem;
-        letter-spacing: 0.05em;
-      }
-      .footer-green {
-        color: var(--green);
-        text-shadow: 0 0 8px var(--green);
-      }
-
-      /* ===== RESPONSIVE ===== */
-      @media (max-width: 640px) {
-        nav ul {
-          flex-wrap: nowrap;
-          overflow-x: auto;
-          justify-content: flex-start;
-        }
-        nav a {
-          white-space: nowrap;
-          padding: 0.8rem 0.75rem;
-        }
-        .stats {
-          grid-template-columns: repeat(2, 1fr);
-        }
-        .bilingual {
-          grid-template-columns: 1fr;
-        }
-        .bilingual-tr {
-          border-left: none;
-          padding-left: 0;
-          border-top: 1px solid var(--green-dark);
-          padding-top: 1.5rem;
-        }
-      }
-
-      /* ===== SCROLL REVEAL ===== */
-      .reveal {
-        opacity: 0;
-        transform: translateY(24px);
-        transition:
-          opacity 0.7s ease,
-          transform 0.7s ease;
-      }
-      .reveal.vis {
-        opacity: 1;
-        transform: none;
-      }
-    </style>
-  </head>
-  <body>
-    <canvas id="canvas-bg"></canvas>
-
-    <!-- TICKER -->
-    <div class="ticker-wrap" aria-label="Live alert feed">
-      <div class="ticker-inner">
-        <span class="tick-item">⚠ VARTO TRIPLE JUNCTION</span>
-        <span class="tick-item">· M6.8 EARTHQUAKE 1966 · 2,529 KILLED ·</span>
-        <span class="tick-item">IGNIS H2 DRILLING: MAY 2026</span>
-        <span class="tick-item">· COULOMB STRESS POSITIVE ·</span>
-        <span class="tick-item">EIA NOT REQUIRED — LEGALLY CONTESTED</span>
-        <span class="tick-item">· 16 VILLAGES AT RISK ·</span>
-        <span class="tick-item">ARSENIC UP TO 10,700 µg/L</span>
-        <span class="tick-item">· YEDISU GAP UNRUPTURED SINCE 1784 ·</span>
-        <span class="tick-item"
-          >BEKTAŞ ET AL. 2025: DESTRUCTIVE EARTHQUAKE RISK ·</span
-        >
-        <span class="tick-item">453,494 m² PASTURELAND SEIZED ·</span>
-        <!-- duplicate for seamless loop -->
-        <span class="tick-item">⚠ VARTO TRIPLE JUNCTION</span>
-        <span class="tick-item">· M6.8 EARTHQUAKE 1966 · 2,529 KILLED ·</span>
-        <span class="tick-item">IGNIS H2 DRILLING: MAY 2026</span>
-        <span class="tick-item">· COULOMB STRESS POSITIVE ·</span>
-        <span class="tick-item">EIA NOT REQUIRED — LEGALLY CONTESTED</span>
-        <span class="tick-item">· 16 VILLAGES AT RISK ·</span>
-        <span class="tick-item">ARSENIC UP TO 10,700 µg/L</span>
-        <span class="tick-item">· YEDISU GAP UNRUPTURED SINCE 1784 ·</span>
-        <span class="tick-item"
-          >BEKTAŞ ET AL. 2025: DESTRUCTIVE EARTHQUAKE RISK ·</span
-        >
-        <span class="tick-item">453,494 m² PASTURELAND SEIZED ·</span>
-      </div>
-    </div>
-
-    <!-- HERO -->
-    <header class="hero" id="top">
-      <div class="ripple-wrap" aria-hidden="true">
-        <div class="epicenter"></div>
-        <div class="ripple"></div>
-        <div class="ripple"></div>
-        <div class="ripple"></div>
-        <div class="ripple"></div>
-        <div class="ripple"></div>
-      </div>
-      <div class="hero-content">
-        <p class="hero-eyebrow">
-          Varto · Muş · Karlıova Triple Junction · Eastern Anatolia · 39.17°N
-          41.46°E
-        </p>
-        <h1 class="hero-title">
-          <span class="t-green">VARTO</span>
-          <span class="t-small">Earth · Toprak · Erd</span>
-          <span class="t-red">UNDER PRESSURE</span>
-        </h1>
-        <p class="hero-desc">
-          Bir ABD'li jeotermal enerji şirketi, dünyanın en tehlikeli tektonik
-          kesişme noktasına 3.000 metre derinlikte sondaj yapmayı planlıyor; bu
-          durum 16 köyü, bir biyolojik çeşitlilik merkezi, 2.500 yıllık tarihi
-          ve depremlerle zaten paramparça olmuş bir bölgenin güvenliğini tehdit
-          ediyor.
-        </p>
-        <div class="chips">
-          <span class="chip g">NAFZ + EAFZ + VFZ</span>
-          <span class="chip r">M6.8 QUAKE HISTORY</span>
-          <span class="chip a">3,000m DRILL DEPTH</span>
-          <span class="chip g">16 VILLAGES</span>
-          <span class="chip r">NO EIA</span>
-          <span class="chip a">453,494 m² SEIZED</span>
-          <span class="chip g">URARTIAN HERITAGE</span>
-          <span class="chip r">YEDISU GAP: 240 YRS</span>
-        </div>
-        <div class="scroll-cue">
-          <span>Scroll to explore</span>
-          <div class="scroll-line"></div>
-        </div>
-      </div>
-    </header>
-
-    <!-- NAV -->
-    <nav id="main-nav" aria-label="Section navigation">
-      <ul>
-        <li><a href="#project">Project</a></li>
-        <li><a href="#geology">Geology</a></li>
-        <li><a href="#seismic">Seismic</a></li>
-        <li><a href="#chemical">Chemicals</a></li>
-        <li><a href="#ecology">Ecology</a></li>
-        <li><a href="#history">History</a></li>
-        <li><a href="#voices">Voices</a></li>
-        <li><a href="#actions">Stop It</a></li>
-        <li><a href="#outcomes">Outcomes</a></li>
-      </ul>
-    </nav>
-
-    <!-- ===== PROJECT ===== -->
-    <div class="band band-dark" id="project">
-      <div class="container">
-        <p class="section-tag green">The Project</p>
-        <h2 class="green reveal">What Is Being Drilled Into the Earth?</h2>
-        <p class="reveal">
-          ABD merkezli <strong>IGNIS H2 Energy Production Inc.</strong> (Teksas)
-          2023 yılının sonlarında Türkiye'deki iştirakini kurdu ve hemen
-          ardından Doğu Anadolu'da dört jeotermal arama ruhsatı aldı. Şirketin
-          amiral gemisi niteliğindeki Güzelkent projesi, Varto'nun yaklaşık 12
-          km kuzeybatısında, Varto Havzası ile Bingöl Dağları arasındaki geçiş
-          bölgesinde yer alan 40 km²'lik bir alanda bulunuyor. Şirket, 2023–2024
-          yıllarında manyetotellürik (MT) jeofizik araştırmalar gerçekleştirerek
-          hidrotermal rezervuarları tespit etti ve elektrik üretimi için yüksek
-          basınçlı buhar elde etmek amacıyla
-          <strong>3,000 metre derinliği</strong>
-          hedefleyen kavramsal bir model geliştirdi. İlk sondaj:
-          <em class="r">Mayıs 2026</em>.
-        </p>
-        <p class="reveal">
-          Muş Valiliği, toplam 453.494 m²'lik etkilenen alanın bir parçası olan
-          <strong>5.560 m²'lik ortak otlak arazisi</strong>
-          — toplam 453.494 m²'lik etkilenen alanın bir parçası. Önemli bir nokta
-          olarak, <em class="r">“ÇED Gerekli Değildir”</em>
-          kararı verildi ve projenin kapsamı ve aktif fay bölgelerine, biyolojik
-          çeşitlilik habitatlarına ve yoğun kırsal topluluklara yakınlığına
-          rağmen Türkiye'nin tam Çevresel Etki Değerlendirmesi süreci atlandı.
-        </p>
-
-        <div class="stats reveal">
-          <div class="stat">
-            <span class="sn g">40</span><span class="sl">km² license area</span>
-          </div>
-          <div class="stat">
-            <span class="sn r">16</span><span class="sl">villages — Varto</span>
-          </div>
-          <div class="stat">
-            <span class="sn r">6</span
-            ><span class="sl">villages — Karlıova</span>
-          </div>
-          <div class="stat">
-            <span class="sn g">3,000</span
-            ><span class="sl">meters drill depth</span>
-          </div>
-          <div class="stat">
-            <span class="sn a">453k</span><span class="sl">m² pastureland</span>
-          </div>
-          <div class="stat">
-            <span class="sn r">0</span><span class="sl">EIA conducted</span>
-          </div>
-          <div class="stat">
-            <span class="sn r">2,529</span
-            ><span class="sl">killed — 1966 quake</span>
-          </div>
-          <div class="stat">
-            <span class="sn a">240yr</span
-            ><span class="sl">seismic gap unruptured</span>
-          </div>
-        </div>
-
-        <div class="pq red reveal">
-          <p>
-            Proje, Türkiye Çevre Bakanlığı tarafından zorunlu kılınan kapsamlı
-            ÇED'i atlatmak amacıyla parsellere bölünmüştür. Her bir parsel tek
-            başına eşik değerin altında kalmaktadır; ancak birlikte ele
-            alındığında, sismik açıdan kritik bir bölgede büyük çaplı bir
-            endüstriyel müdahale oluşturmaktadır.
-          </p>
-          <cite
-            >— Parliamentary Questions, CHP MP Evrim Rızvanoğlu to Ministers
-            Yumaklı & Kurum, 2025</cite
-          >
-        </div>
-      </div>
-    </div>
-
-    <!-- ===== GEOLOGY ===== -->
-    <div class="band" id="geology">
-      <div class="container">
-        <p class="section-tag red">Geological Context</p>
-        <h2 class="red reveal">The Karlıova Triple Junction</h2>
-        <p class="reveal">
-          Varto, Dünya’nın tektonik açıdan en karmaşık bölgelerinden birinde yer
-          almaktadır:
-          <strong>Karlıova Üçlü Kavşağı (KTJ)</strong>, gezegenin en yıkıcı üç
-          fay sisteminin birleştiği noktadır. Arap Plakası,
-          <strong>yılda 15±2 mm</strong> hızla kuzeye doğru itilmektedir.
-          Anadolu Plakası, Avrasya'ya göre <strong>yılda 24±2 mm</strong> hızla
-          batıya doğru hareket etmektedir. Bunun sonucunda oluşan kabuk
-          kısalması — <strong>yılda 18–25 mm</strong> — bir yerlerde serbest
-          kalmak zorundadır. Bu, yaşayan hafızada defalarca, felaket
-          boyutlarında gerçekleşmiştir.
-        </p>
-
-        <div class="fault-box reveal">
-          <div class="fault-track">
-            <div class="ft nafz"></div>
-            <div class="ft eafz"></div>
-            <div class="ft vfz"></div>
-            <div class="ft drill"></div>
-          </div>
-          <div class="fault-legend">
-            <div class="fl">
-              <div class="fl-bar" style="background: var(--green)"></div>
-              <span class="fl-text g"
-                >North Anatolian Fault Zone (NAFZ) — 38 segments, right-lateral
-                strike-slip. Source: 1939 Erzincan M7.9 (33,000 dead), 1999
-                İzmit M7.6</span
-              >
-            </div>
-            <div class="fl">
-              <div class="fl-bar" style="background: var(--amber)"></div>
-              <span class="fl-text a"
-                >East Anatolian Fault Zone (EAFZ) — 580 km, left-lateral, 10
-                mm/yr. Source: 2023 Kahramanmaraş M7.7 + M7.6 (50,000+
-                dead)</span
-              >
-            </div>
-            <div class="fl">
-              <div class="fl-bar" style="background: var(--red)"></div>
-              <span class="fl-text r"
-                >Varto Fault Zone (VFZ) — 30 km, right-lateral strike-slip.
-                Three segments: Varto, Leylekdağ, Çayçatı. Source: 1966
-                M6.8</span
-              >
-            </div>
-            <div class="fl">
-              <div
-                class="fl-bar"
-                style="background: rgba(255, 80, 80, 0.7); width: 6px"
-              ></div>
-              <span class="fl-text d"
-                >⚡ IGNIS drill zone — 3,000m injection into this tectonic
-                nexus. No seismic risk study conducted.</span
-              >
-            </div>
-          </div>
-        </div>
-
-        <p class="reveal">
-          2025 yılında
-          <em>Bulletin of Geophysics and Oceanography</em> dergisinde yayınlanan
-          hakemli bir çalışma (Bektaş, Pırtı, Alkan, Yücel, Büyüksaraç),
-          bölgedeki 10 sürekli çalışan istasyondan elde edilen GNSS uydu
-          verilerini kullanarak, 15 adet yerel M≥5,0 büyüklüğündeki depremin yol
-          açtığı Coulomb gerilme değişikliklerini analiz etti. Çalışma,
-          Bingöl-Karlıova segmentinin tam üzerinde bulunan BIN1 istasyonunun,
-          <strong>2023 depremlerinin ardından</strong> kuzeydoğuya doğru 10,1 cm
-          kaymış olduğunu ortaya koydu; bu istasyon, deprem merkezlerinden 350
-          km uzaklıktadır. Bu istasyon,
-          <em class="r">EAFZ'nin tek kesintisiz bölümünde</em> — kayıtların
-          başladığı günden beri kırılmamış bir fay hattı — yer almaktadır.
-        </p>
-
-        <h3 class="reveal">
-          Yedisu Sismik Boşluğu — 240 Yıllık Birikmiş Enerji
-        </h3>
-        <p class="reveal">
-          Zwischen Bingöl und Karlıova liegt die
-          <strong>Yedisu-Seismische Lücke (YSG)</strong>, die etwa 70 km lang
-          ist und die die Teilabschnitte Kargapazarı, Elmalı, Yedisu und
-          Erzincan der NAFZ umfasst. In dieser Lücke hat sich seit
-          <strong>1784</strong> kein bedeutendes Erdbeben (M≥7) ereignet – das
-          sind über 240 Jahre akkumulierter elastischer Dehnung.
-          Coulomb-Spannungsmodellierungen zeigen starke positive Spannungslappen
-          entlang aller YSG-Segmente. Seismologen sagen voraus, dass diese Lücke
-          brechen wird. Die Einführung von Hochdruck-Flüssigkeitsinjektionen in
-          der Nähe der Verbindungsstelle, an der diese Segmente beginnen, wäre
-          einer der rücksichtslosesten geologischen Eingriffe, die man sich
-          vorstellen kann.
-        </p>
-      </div>
-    </div>
-
-    <!-- ===== SEISMIC ===== -->
-    <div class="band band-red" id="seismic">
-      <div class="container">
-        <p class="section-tag red">Seismic Science</p>
-        <h2 class="red reveal">How Drilling Triggers Earthquakes</h2>
-
-        <div class="wave-box reveal">
-          <div class="wave-label">
-            // SEISMIC SIGNAL — VARTO REGION (CONTINUOUS MONITORING)
-          </div>
-          <svg
-            class="wave-svg"
-            viewBox="0 0 1200 55"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <polyline
-              points="0,28 40,28 50,18 58,40 62,8 66,52 70,10 74,48 78,28 100,28 110,22 118,36 130,28 145,12 150,48 155,22 160,44 165,28 185,28 195,20 205,38 220,28 235,16 242,46 246,6 250,54 254,28 270,28 280,26 290,32 305,28 320,22 328,40 340,28 360,28 370,18 378,44 384,28 400,28 415,12 422,50 428,18 434,46 438,28 455,28 465,22 475,36 488,28 500,28 510,20 518,42 525,28 545,28 555,16 563,48 568,28 580,28 600,28 0,28 40,28 50,18 58,40 62,8 66,52 70,10 74,48 78,28 100,28 110,22 118,36 130,28 145,12 150,48 155,22 160,44 165,28 185,28 195,20 205,38 220,28 235,16 242,46 246,6 250,54 254,28 270,28 280,26 290,32 305,28 320,22 328,40 340,28 360,28 370,18 378,44 384,28 400,28 415,12 422,50 428,18 434,46 438,28 455,28 465,22 475,36 488,28 500,28 510,20 518,42 525,28 545,28 555,16 563,48 568,28 580,28 600,28"
-              fill="none"
-              stroke="#ff1a1a"
-              stroke-width="1.5"
-              opacity="0.85"
-            />
-          </svg>
-        </div>
-
-        <div class="eq-box reveal">
-          <div class="eq-main">
-            τ<sub>f</sub> = C + μ(σ<sub>n</sub> − P<sub>p</sub>)
-          </div>
-          <div class="eq-sub">
-            τ<sub>f</sub> = shear stress for failure &ensp;·&ensp; C = rock
-            cohesion &ensp;·&ensp; μ = friction coefficient &ensp;·&ensp; σ<sub
-              >n</sub
-            >
-            = normal stress &ensp;·&ensp; P<sub>p</sub> = pore fluid pressure
-          </div>
-          <div class="eq-warn">
-            ↑ INJECT FLUID AT 3,000m → ↑ P<sub>p</sub> → ↓
-            (σ<sub>n</sub>−P<sub>p</sub>) → LOWER FAILURE THRESHOLD → FAULT
-            RUPTURE
-          </div>
-        </div>
-
-        <p class="reveal">
-          Bu teorik bir durum değildir. Jeotermal işletmeciler kullanılmış
-          sıvıyı yeraltına yeniden enjekte ettiklerinde, fay düzlemlerinin
-          içindeki gözenek basıncını (P<sub>p</sub>) artırırlar. Bu durum,
-          fayların kaymasını engelleyen sürtünme bariyerini mekanik olarak
-          azaltır. Varto Fay Bölgesi halihazırda kritik seviyeye yakın gerilme
-          düzeylerindedir — Bektaş ve ark. (2025) tarafından hazırlanan Coulomb
-          gerilme haritaları,
-          <strong
-            >5–20 km arasındaki her derinlik aralığında pozitif gerilim
-            lobları</strong
-          >
-          KTJ boyunca. Coulomb gerilimindeki sadece
-          <strong>0,1 ila 1 bar</strong>'lık değişiklikler, hazırlıklı faylarda
-          depremleri tetiklemek için yeterlidir.
-        </p>
-
-        <div class="tl" id="seismic-tl">
-          <div class="tl-item d">
-            <div class="tl-yr">7 Mart 1966 — M5.6</div>
-            <div class="tl-body">
-              Varto'da bir ön sarsıntı meydana geldi. 14 kişi öldü, 75 kişi
-              yaralandı. Geleneksel taş evler ağır hasar gördü. Toprak ilk
-              uyarısını verdi.
-            </div>
-          </div>
-          <div class="tl-item d">
-            <div class="tl-yr">
-              19 Ağustos 1966 — M6.8 · INTENSITY IX (VIOLENT)
-            </div>
-            <div class="tl-body">
-              <strong>2.529 kişi hayatını kaybetti.</strong> 1.500 kişi
-              yaralandı. 19.013 bina yıkıldı veya ağır hasar gördü. 1966 yılında
-              dünyada meydana gelen en ölümcül deprem. Varto kasabası yerle bir
-              oldu. Yüzey çatlakları Kuzeybatıya doğru uzanan üç paralel bölgede
-              ortaya çıktı; bu bölgeler Kuzey Anadolu fay sistemi ile
-              bağlantılıydı (USGS Wallace, 1968). Dört ildeki yaklaşık 140 köy
-              yerle bir oldu.
-            </div>
-          </div>
-          <div class="tl-item d">
-            <div class="tl-yr">22 Mayıs 1971 — M6.8</div>
-            <div class="tl-body">
-              Bingöl depremi. Karlıova ve çevresindeki köylerde ciddi hasar —
-              tüm KTJ bölgesinin ölümcül derecede sismik olarak aktif olduğunu
-              teyit eden çifte felaket.
-            </div>
-          </div>
-          <div class="tl-item w">
-            <div class="tl-yr">2003–2021 — Bingöl Region</div>
-            <div class="tl-body">
-              Kayıtlı veriler döneminde KTJ çevresinde M≥3,0 büyüklüğünde 2.662
-              deprem kaydedilmiştir. Bingöl bölgesinde yaklaşık her 11 yılda bir
-              M6 ve üzeri büyüklükte depremler meydana gelmektedir. Türkiye’nin
-              Ege bölgesinde jeotermal sıvı çıkarımı başladıktan sonra daha
-              küçük ölçekli depremlerin (M&lt;4,5) arttığı belgelendi (Ozcelik,
-              2022).
-            </div>
-          </div>
-          <div class="tl-item d">
-            <div class="tl-yr">6 Şubat 2023 — M7.7 + M7.6 Kahramanmaraş</div>
-            <div class="tl-body">
-              EAFZ, Varto'nun 350 km güneyinde feci bir şekilde yırtıldı.
-              <strong>50.000'den fazla kişi hayatını kaybetti.</strong> 550.000
-              ev yıkıldı. GNSS verileri, BIN1 istasyonunun (Bingöl–Karlıova)
-              10,1 cm kuzeydoğuya kaymış olduğunu gösteriyor — bu da gerilimin
-              büyük kırılmalardan bu kadar uzağa aktarıldığını kanıtlıyor.
-              Kırılmamış Bingöl-Karlıova segmenti daha fazla gerilimi emiyor.
-              Bilim adamları gelecekteki kırılma potansiyeli konusunda uyarıyor.
-            </div>
-          </div>
-          <div class="tl-item s">
-            <div class="tl-yr">2025 — Scientific Warning Issued</div>
-            <div class="tl-body">
-              Bektaş ve arkadaşları,
-              <em>Bulletin of Geophysics and Oceanography</em> dergisinde şu
-              bulguları yayınladı: Coulomb gerilimi haritaları, Erzincan-Pülümür
-              ile Tercan-Kiğı arasında yüksek gerilim yoğunlaşması olduğunu
-              gösteriyor. Çalışma şu sonuca varıyor:
-              <strong style="color: var(--green)"
-                >"Büyük fay sistemleri, KTJ bölgesinde yıkıcı bir depremi
-                tetikleyebilir."</strong
-              >
-              IGNIS, Mayıs 2026'da sondaj çalışmalarına başlanacağını duyurdu.
-              Sismik risk çalışması yapılmadı.
-            </div>
-          </div>
-        </div>
-
-        <h3 class="reveal">The Aegean Precedent — What Actually Happened</h3>
-        <p class="reveal">
-          2022 yılında
-          <em>Environmental Science and Pollution Research</em> dergisinde
-          (Ozcelik, Süleyman Demirel Üniversitesi) yayınlanan hakemli bir
-          çalışma, Türkiye’nin en büyük jeotermal alanı olan ve 60 santralin
-          bulunduğu Büyük Menderes Graben’i inceledi. Çalışma, santral sayısının
-          artmasıyla birlikte 2000 yılından sonra mikro sismik olayların
-          (M&lt;4,5) hızla arttığını ortaya koydu; bu durum, akışkan kaynaklı
-          sismik aktiviteyle tutarlıdır. Ancak, BMG bir uzamalı graben olup,
-          jeolojik açıdan KTJ'den çok daha sakin bir bölgedir. Risk
-          karşılaştırması çarpıcıdır:
-        </p>
-
-        <div style="overflow-x: auto" class="reveal">
-          <table class="ct">
-            <thead>
-              <tr>
-                <th>Faktör</th>
-                <th>Ege BMG</th>
-                <th>Varto / Karlıova</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>Tektonik rejim</td>
-                <td class="td-ok">Genişlemesel graben</td>
-                <td class="td-bad">Üçlü kavşak sıkışması</td>
-              </tr>
-              <tr>
-                <td>Aktif fay sistemleri</td>
-                <td class="td-warn">1 (Batı Anadolu)</td>
-                <td class="td-bad">3 yakınsak (NAFZ+EAFZ+VFZ)</td>
-              </tr>
-              <tr>
-                <td>Tarihsel can kaybı</td>
-                <td class="td-warn">Orta şiddette olaylar</td>
-                <td class="td-bad">M6,8+ → 2.500+ ölü</td>
-              </tr>
-              <tr>
-                <td>Coulomb gerilme durumu</td>
-                <td class="td-warn">Orta derecede pozitif</td>
-                <td class="td-bad">
-                  Yüksek derecede pozitif, tüm derinlikler 5–20 km
-                </td>
-              </tr>
-              <tr>
-                <td>Sismik boşluk mevcut mu?</td>
-                <td class="td-ok">Hayır</td>
-                <td class="td-bad">Evet — 240 yıl (Yedisu Boşluğu)</td>
-              </tr>
-              <tr>
-                <td>Plaka yakınsaması</td>
-                <td class="td-ok">Uzatma ~3 mm/yıl</td>
-                <td class="td-bad">Sıkıştırma 18–25 mm/yıl</td>
-              </tr>
-              <tr>
-                <td>ÇED durumu</td>
-                <td class="td-warn">Santrale göre değişir</td>
-                <td class="td-bad">“Gerekli değil” — tüm segmentler</td>
-              </tr>
-              <tr>
-                <td>Bağımsız risk çalışması</td>
-                <td class="td-warn">Bazı tesisler</td>
-                <td class="td-bad">Yapılmamıştır</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-    </div>
-
-    <!-- ===== CHEMICALS ===== -->
-    <div class="band band-dark" id="chemical">
-      <div class="container">
-        <p class="section-tag amber">Chemical Hazards</p>
-        <h2 class="white reveal">3.000 Metre'nin Yayınladığı Şeyler</h2>
-        <p class="reveal">
-          Derinliklerdeki jeotermal sıvılar son derece etkili kimyasal
-          çözücülerdir — bu sıvılar, ana kayaçlardan ağır metaller, metaloidler
-          ve toksik bileşikleri çıkarır. Yüzeye çıkarıldıktan sonra yeniden
-          enjekte edildiklerinde veya döküldüklerinde, bu bileşikler içme
-          suyuna, toprağa ve havaya karışır. Aşağıdaki konsantrasyonlar,
-          Türkiye'nin faaliyetteki Ege jeotermal santrallerinde
-          <strong>gerçekten ölçülmüştür</strong> (Çevre ve Kentsel Dönüşüm
-          Bakanlığı, 2020; Özçelik, 2022):
-        </p>
-
-        <div class="chem reveal">
-          <div class="ce danger">
-            <span class="ce-sym">As</span><span class="ce-nm">Arsenik</span
-            ><span class="ce-val">8.900–10.700 µg/L</span>
-          </div>
-          <div class="ce danger">
-            <span class="ce-sym">H₂S</span
-            ><span class="ce-nm">Hidrojen Sülfür</span
-            ><span class="ce-val">7,10 µg/m³ ortalama</span>
-          </div>
-          <div class="ce danger">
-            <span class="ce-sym">B</span><span class="ce-nm">Bor</span
-            ><span class="ce-val">24,5–90,18 mg/L</span>
-          </div>
-          <div class="ce danger">
-            <span class="ce-sym">Pb</span><span class="ce-nm">Kurşun</span
-            ><span class="ce-val">Güvenli seviye yok</span>
-          </div>
-          <div class="ce warn">
-            <span class="ce-sym">Hg</span><span class="ce-nm">Cıva</span
-            ><span class="ce-val">Filtre gereklidir</span>
-          </div>
-          <div class="ce warn">
-            <span class="ce-sym">SO₂</span
-            ><span class="ce-nm">Kükürt Dioksit</span
-            ><span class="ce-val">→ Asit yağmuru</span>
-          </div>
-          <div class="ce warn">
-            <span class="ce-sym">Na⁺</span><span class="ce-nm">Sodyum</span
-            ><span class="ce-val">Toprak alkalileşmesi</span>
-          </div>
-          <div class="ce warn">
-            <span class="ce-sym">Li</span><span class="ce-nm">Lityum</span
-            ><span class="ce-val">Suda toksisite</span>
-          </div>
-        </div>
-
-        <h3 class="reveal">Saurer Regen über dem Bingöl-Gebirge</h3>
-        <p class="reveal">
-          Wenn H₂S in die Atmosphäre gelangt, reagiert es mit Feuchtigkeit zu
-          Schwefelsäure – der klassische Mechanismus des sauren Regens. In der
-          Provinz Aydın (Ägäis-Ebene) ergaben Luftmessungen einen
-          Durchschnittswert von 7,10 µg/m³ H₂S – genau auf dem
-          30-Minuten-Grenzwert der WHO für Geruchsbelästigung. Für die
-          hochgelegenen Almwiesen von Varto, die während der zunehmenden
-          Sommerdürren die letzten Feuchtigkeitsrefugien darstellen und seltene
-          endemische Flora beherbergen, verursacht die saure Deposition eine
-          irreversible Bodenversauerung und den Verlust von pH-empfindlichen
-          Pflanzengemeinschaften. Diese Wiesen können nicht in Sicherheit
-          gebracht werden.
-        </p>
-
-        <h3 class="reveal">Murat Nehri ve Fırat</h3>
-        <p class="reveal">
-          Varto havzası, <strong>Murat Nehri</strong>'ne dökülmektedir; bu
-          nehir, birçok ülkede tarımı destekleyen bir nehir sistemi olan Fırat
-          Nehri'nin başlıca bir koludur. Jeotermal atık sularının deşarjı, bu
-          sisteme arsenik, bor ve ağır metaller katarak, kirliliğin proje
-          bölgesinin çok ötesine yayılmasına neden olacaktır. Varto'nun daha dik
-          topografyası, yüzey sızıntılarının kontrol altına alınmasını düz Ege
-          ovalarına kıyasla önemli ölçüde zorlaştırmaktadır; bu ovalarda
-          sızıntılar zaten doğrudan nehirlere ulaşmaktadır (Ozçelik tarafından
-          Büyük Menderes'e deşarj edilen termal suyun fotoğrafik kanıtlarıyla
-          belgelenmiştir).
-        </p>
-      </div>
-    </div>
-
-    <!-- ===== ECOLOGY ===== -->
-    <div class="band" id="ecology">
-      <div class="container">
-        <p class="section-tag green">Ekoloji</p>
-        <h2 class="green reveal">Sondajın Hedefindeki Önemli Bir Doğa Alanı</h2>
-        <p class="reveal">
-          Proje alanı, Türkiye’nin sınıflandırılmış
-          <strong>Önemli Doğa Alanları (ÖDA)</strong>
-          kategorisi kapsamındadır — bu, olağanüstü biyolojik çeşitliliğin bir
-          göstergesidir. Muş Alparslan Üniversitesi tarafından yapılan botanik
-          araştırmalar, başka hiçbir yerde bulunmayan endemik türleri
-          belgelemiştir. Burada geliştirilen sıradan bir arazi değil; tek
-          seferlik bir endüstriyel madencilik faaliyetine açılan, yeri
-          doldurulamaz bir ekolojik kütüphanedir.
-        </p>
-
-        <div class="risk-grid reveal">
-          <div class="rc c3">
-            <span class="rc-icon">🌿</span>
-            <div class="rc-title">Endemik Bitki Örtüsü</div>
-            <div class="rc-body">
-              <em>Achillea schischkinii</em> (Deli civanperçemi) ve
-              <em>Pulicaria armena</em> (Boz yarotu) — bozulmamış Muş-Varto
-              koridoruna özgü polen taşıyıcılar ve geleneksel tıp bitkileri. Yol
-              açma çalışmaları + ekipman + bor kirliliği = başka bir yuvası
-              olmayan türler için kalıcı habitat kaybı.
-            </div>
-          </div>
-          <div class="rc c2">
-            <span class="rc-icon">🐺</span>
-            <div class="rc-title">Yaban Hayatı ve Göç</div>
-            <div class="rc-body">
-              Kurtlar, boz ayılar, yırtıcı kuşlar ve göçmen kuşlar, volkanik
-              platoların üzerindeki termal yükseliş akımlarını kullanır. “Dağ
-              çayırları” yaz kuraklığı sırasında nemin korunduğu son
-              sığınaklardır. Bu arazinin endüstriyel parçalanması — kimyasal
-              sızıntılar olmasa bile — yaban hayatı koridorlarını kalıcı olarak
-              yok eder.
-            </div>
-          </div>
-          <div class="rc c3">
-            <span class="rc-icon">🌳</span>
-            <div class="rc-title">Saf Meşe Ormanı</div>
-            <div class="rc-body">
-              Yerli meşe (saf meşe) ormanları erozyonu önler, karbon yutağı
-              görevi görür ve bölgesel besin ağının temelini oluşturur. 3.000
-              metrelik sondaj ekipmanı için açılan yol, bu ağaç topluluklarını
-              ikiye bölmektedir. Kesilen ormanlar, insan ömrü boyunca doğal
-              orman haline geri dönmez — destekledikleri biyolojik çeşitlilik
-              dağılır veya yok olur.
-            </div>
-          </div>
-          <div class="rc c4">
-            <span class="rc-icon">🐄</span>
-            <div class="rc-title">Agropastoral Ortak Alanlar</div>
-            <div class="rc-body">
-              453.494 m²'lik ortak otlak arazisi (mera) yasal olarak endüstriyel
-              kullanım amacıyla yeniden sınıflandırılıyor. Burası özel tarım
-              arazisi değil — Kürt-Alevi göçebe hayvancılığının nesiller boyu
-              sürdürdüğü kolektif mülkiyetli ortak alanlardır. Bor kirliliği
-              veya fiziksel bozulma, 22'den fazla köyün geçim kaynağının
-              temelini aynı anda ortadan kaldırmaktadır.
-            </div>
-          </div>
-          <div class="rc c1">
-            <span class="rc-icon">🌊</span>
-            <div class="rc-title">Fırat Havzası</div>
-            <div class="rc-body">
-              Varto'nun akarsuları Murat Nehri'ne → Fırat Nehri'ne dökülür. Bu
-              sisteme 10.700 µg/L arsenik girmesi, Muş, Bingöl ve nehrin
-              aşağısındaki illerde tarımı etkileyen sınır ötesi kirliliğe yol
-              açmaktadır. Arsenik alüvyon akiferlerine girdiğinde, insan zaman
-              ölçeğinde esasen kalıcı hale gelir.
-            </div>
-          </div>
-          <div class="rc c5">
-            <span class="rc-icon">🏺</span>
-            <div class="rc-title">Urartu Mirası</div>
-            <div class="rc-body">
-              Kayalıdere kalesi (Varto'ya 20 km uzaklıkta), 1965 yılında
-              kazılmış olup, Kral Sarduri II (MÖ 764–735) dönemine aittir ve
-              gelişmiş metalurji, şarap üretimi ve tapınak mimarisini ortaya
-              koymaktadır. Varto havzasında henüz kazılmamış höyükler ve
-              nekropoller bulunmaktadır. Sondajdan kaynaklanan sismik
-              dalgalanmalar antik taş yapılarında yapısal yorgunluğa neden
-              olmaktadır. Sondaj izni verilmeden önce herhangi bir arkeolojik
-              inceleme yapılmamıştır.
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- ===== HISTORY ===== -->
-    <div class="band band-dark" id="history">
-      <div class="container">
-        <p class="section-tag red">Tarihsel Derinlik</p>
-        <h2 class="red reveal">Her Şeye Dayanmış Bir Halk</h2>
-        <p class="reveal">
-          Varto, kalkınmayı bekleyen boş bir arazi değildir. Burası, binlerce
-          yıldır kesintisiz bir insan uygarlığının var olduğu bir yerdir —
-          volkanlar, fay hatları, krallıklar ve hayatta kalma mücadelesiyle
-          şekillenmiş bir yer. Bu bağlamı anlamak, JES projesinin neden bir
-          enerji yatırımı olarak değil, son bir saldırı olarak algılandığını
-          anlamaktan ayrı düşünülemez.
-        </p>
-        5
-
-        <div class="tl" id="hist-tl">
-          <div class="tl-item s">
-            <div class="tl-yr">MÖ 9.–7. yüzyıl — Urartu Krallığı</div>
-            <div class="tl-body">
-              Varto havzası, Van Krallığı’nın stratejik bir sınır bölgesi olarak
-              işlev görmüştür. Kayalıdere’de, Kral Sarduri II döneminde gelişmiş
-              bronz işçiliği, şarap mahzenleri ve dini mimari örnekleri ortaya
-              çıkarılmıştır. Volkanik platonun verimliliği ve kaynak suları —
-              IGNIS'in şu anda hedeflediği hidrotermal sistem — bu medeniyeti
-              ayakta tutmuştur.
-            </div>
-          </div>
-          <div class="tl-item s">
-            <div class="tl-yr">20. Yüzyıl Öncesi — Kürt-Alevi Toplulukları</div>
-            <div class="tl-body">
-              Kürt-Alevi toplulukları rızalık kültürünü oluşturur: toplumsal
-              rıza, ortak mülkiyet, mevsimlik göç. Kutsal hac yerleri (ocaklar)
-              ve ortak otlaklar, bu medeniyetin fiziksel altyapısını oluşturur.
-              Bingöl Dağları sadece arka plan manzarası değildir — bu dağlar,
-              topluluğun yaşayan manevi ve ekonomik alanıdır.
-            </div>
-          </div>
-          <div class="tl-item d">
-            <div class="tl-yr">19 Ağustos 1966 — Deprem</div>
-            <div class="tl-body">
-              <strong>2.529 kişi hayatını kaybetti.</strong> Dört ilde yaklaşık
-              140 köy yere serildi. Varto kasabası neredeyse yüzünden silindi.
-              Hayatta kalanlar on yıllar boyunca yeniden inşa ettiler. Bu, uzak
-              bir tarihsel dipnot değildir — bugün Varto'da yaşayan insanlar bu
-              depremden kurtulmuş ya da onun gölgesinde büyümüşlerdir.
-              Sondajlara karşı olmaları, fiziksel olarak hafızalarına kök
-              salmıştır.
-            </div>
-          </div>
-          <div class="tl-item d">
-            <div class="tl-yr">1990'lar — Silahlı Çatışma ve Göç</div>
-            <div class="tl-body">
-              Türkiye'nin doğusundaki çatışmalar, köylerin tahliyesine neden
-              oldu. Aileler Türkiye ve Avrupa'daki diasporaya (Almanya, Fransa,
-              Belçika, Hollanda, İsveç) dağıldı. Bugün tahminen 500.000'den
-              fazla Vartolu yurtdışında yaşıyor. Bu yerinden edilme, bölgenin
-              nüfusunu azaltıyor ve kalan toplulukları, sandıkta yerel direnişle
-              karşılaşmayan dış sömürücü çıkarların etkisine karşı daha
-              savunmasız hale getiriyor.
-            </div>
-          </div>
-          <div class="tl-item w">
-            <div class="tl-yr">
-              2000'ler–2010'lar — Sistematik Ekolojik Baskı
-            </div>
-            <div class="tl-body">
-              HES (hidroelektrik) projeleri nehirlerin yönünü değiştirmeye
-              başlar. Aktivistler buna “damarları kesmek” diyor. Ardından taş
-              ocağı ve madencilik ruhsatları dağları kuşatır. JES projesi üçüncü
-              dalga olarak gelir. Varto Ekoloji Platformu bunu açıkça dile
-              getirir: nehirler HES'e, topraklar JES'e, dağlar madenlere —
-              yaşayan bir manzarayı koordineli bir şekilde endüstriyel bir alana
-              dönüştürme.
-            </div>
-          </div>
-          <div class="tl-item d">
-            <div class="tl-yr">2023–2025 — Resistance Grows</div>
-            <div class="tl-body">
-              IGNIS obtains its license in 2023. Communities learn of it months
-              later — reportedly after company officials told villagers they
-              were conducting earthquake research. By 2025, protests erupt from
-              Varto to İzmir to Kocaeli. DEM Party and CHP submit parliamentary
-              questions. Legal challenges filed against EIA exemption. A miting
-              (mass rally) is announced for Varto, April 24, 2025.
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- ===== VOICES ===== -->
-    <div class="band" id="voices">
-      <div class="container">
-        <p class="section-tag white">Sesler</p>
-        <h2 class="white reveal">Kimler Sesini Yükseltiyor</h2>
-
-        <div class="bilingual reveal">
-          <div>
-            <div class="bilingual-label">English</div>
-            <div class="bilingual-en">
-              "In this region, JES projects carry the scientifically documented
-              risk of triggering seismic activity by disrupting underground
-              balance. It is against reason and science to invite new disaster
-              onto a people already fighting for their lives on fault lines."
-            </div>
-          </div>
-          <div class="bilingual-tr">
-            <div class="bilingual-label">Türkçe</div>
-            <div>
-              "Bu bölgede, JES projeleri yer altı dengesini bozarak bilimsel
-              olarak depremselliği tetikleme riski taşımaktadır. Fay hatları
-              üzerinde yaşam mücadelesi veren bir halkın tepesine, yeni felaket
-              davetiyeleri çıkarmak akıl ve bilim dışıdır."
-            </div>
-          </div>
-        </div>
-        <p
-          style="
-            font-family: var(--mono);
-            font-size: 0.6rem;
-            color: var(--text-muted);
-            margin-top: -1rem;
-            margin-bottom: 2rem;
-            letter-spacing: 0.1em;
-          "
-          class="reveal"
-        >
-          — Sıla Yıldız, Varto Ecology Platform Youth Council
-        </p>
-
-        <div class="pq green reveal">
-          <p>
-            Proje alanı, Türkiye’nin biyolojik çeşitlilik açısından önemli doğal
-            alanları arasında yer almaktadır. Doğru tarım ve hayvancılık
-            politikalarıyla korunmak yerine, yerel halka hiçbir fayda sağlamayan
-            yağma projeleriyle tahrip edilmekte ve bu projeler halkın havasını,
-            suyunu ve doğasını zehirlemektedir.
-          </p>
-
-          <cite>— Varto Ecology Platform, Official Statement 2025</cite>
-        </div>
-
-        <div class="pq red reveal">
-          <p>
-            Varto'daki sorun, bölgedeki doğanın korunmasıdır. Yenilenebilir
-            enerji önemlidir, ancak halka danışılmadan kapalı kapılar ardında
-            yürütülen işlemlerin hukuki dayanağı yoktur. İki proje. Halkın
-            bilgisi yok. Etkilenen 16 köy. Bu proje hukuka aykırıdır.
-          </p>
-          <cite>— Ali Haydar Konca, Former EU Affairs Minister</cite>
-        </div>
-
-        <div class="pq green reveal">
-          <p>
-            Doğal yapıya verilecek herhangi bir geri dönüşü olmayan zarar,
-            sadece ekosistemi değil, binlerce yıllık kültürel hafızayı da
-            etkileyecektir. Proje alanı, insanların yüzyıllardır ritüeller
-            gerçekleştirdiği ve manevi bağlarını sürdürdüğü kutsal mekanları
-            barındırmaktadır.
-          </p>
-          <cite>— Bahar Koç, İzmir Ecology Platform</cite>
-        </div>
-      </div>
-    </div>
-
-    <!-- ===== ACTIONS ===== -->
-    <div class="band band-dark" id="actions">
-      <div class="container">
-        <p class="section-tag green">Pathways Forward</p>
-        <h2 class="green reveal">Bunu Şu An Durdurabilecek Neler Var?</h2>
-        <p class="reveal">
-          Sondaj çalışmaları henüz başlamadı. Hukuki, bilimsel, siyasi ve
-          toplumsal birçok yol mevcut. Her biri önemli. Bu fırsat penceresi
-          Mayıs 2026’ya kadar açık.
-        </p>
-
-        <div class="action-grid reveal">
-          <div class="ac">
-            <div class="ac-num">01</div>
-            <div class="ac-title">Tam ÇED Talebi</div>
-            <div class="ac-body">
-              “ÇED Gerekmiyor” kararı hukuken itiraz edilmiştir. Danıştay (6.
-              Daire), benzer muafiyetler konusunda 2022/7584 sayılı durdurma
-              kararı vermiştir. Proje, ÇED Yönetmeliği Ek-1 Madde 42 uyarınca
-              değerlendirilmelidir — bu madde, herhangi bir sondaj çalışması
-              başlamadan önce tam kapsamlı kamu çevre duruşmaları ve bağımsız
-              bilimsel inceleme yapılmasını gerektirmektedir.
-            </div>
-          </div>
-          <div class="ac">
-            <div class="ac-num">02</div>
-            <div class="ac-title">Bağımsız Sismik Çalışma</div>
-            <div class="ac-body">
-              Uluslararası yer bilimcileri (USGS, Avrupa Sismoloji Komisyonu,
-              KOERI) tarafından yapılan bağımsız bir değerlendirme, VFZ ve YSG
-              için Coulomb gerilme modellemesi kullanılarak belirli sondaj
-              koordinatlarındaki indüklenmiş sismik aktivite olasılığını nicel
-              olarak belirlemelidir. Bu, dünya çapında sismik bölgelerdeki
-              jeotermal projeler için standart bir uygulamadır.
-            </div>
-          </div>
-          <div class="ac">
-            <div class="ac-num">03</div>
-            <div class="ac-title">Parlamento Baskısı</div>
-            <div class="ac-body">
-              DEM ve CHP milletvekilleri şimdiden iki bakana resmi soru önergesi
-              sundu. Vatandaşlar, yurtdışı Türkler ve Avrupa Parlamentosu
-              destekçileri bu çabayı güçlendirebilir: seçmen mektupları, insan
-              hakları ve çevre hukuku ile ilgili AB Parlamento soruları ve
-              projenin ilerletilmesini siyasi açıdan maliyetli hale getiren
-              uluslararası medya ilgisi.
-            </div>
-          </div>
-          <div class="ac">
-            <div class="ac-num">04</div>
-            <div class="ac-title">Doğa Alanını Koruyun</div>
-            <div class="ac-body">
-              Önemli Doğa Alanı statüsünün resmi olarak yasal koruma altına
-              alınması için başvuruda bulunun. Yasal olarak sınıflandırılmış
-              ortak mera (otlak) alanlarının özel endüstriyel kullanım için
-              dönüştürülmesine itiraz edin — bu, hem Mera Kanunu'na hem de
-              sağlıklı bir çevreye sahip olma anayasal hakkına (Türkiye
-              Anayasası, Madde 56) aykırıdır.
-            </div>
-            5
-          </div>
-          <div class="ac">
-            <div class="ac-num">05</div>
-            <div class="ac-title">
-              Toplumun Önceden ve Bilgilendirilmiş Onayı (FPIC)
-            </div>
-            <div class="ac-body">
-              BM’nin Önceden, Bilgilendirilmiş ve Gönüllü Onay ilkeleri,
-              herhangi bir projenin devam etmesinden önce Varto’daki 22’den
-              fazla köyün aktif ve samimi bir şekilde onay vermesini şart
-              koşmaktadır. Sakinlere bunun “deprem araştırması” olduğu
-              söylendiği bildirildi. Bu, herhangi bir zımni onayı geçersiz kılan
-              aldatıcı bir uygulamadır. Uluslararası insan hakları kuruluşlarına
-              resmi şikayetler iletilebilir.
-            </div>
-          </div>
-          <div class="ac">
-            <div class="ac-num">06</div>
-            <div class="ac-title">Diaspora ve Uluslararası Etki</div>
-            <div class="ac-body">
-              500.000'den fazla Vartolu, Almanya, Fransa, Belçika ve Hollanda'da
-              yaşamaktadır. Avrupa parlamentoları, Türk diaspora örgütleri ve
-              uluslararası çevre STK'ları bu konuyu uluslararası düzeye
-              taşıyabilir — Türkiye'de yeterli güvenlik önlemleri almadan
-              faaliyet gösteren bir ABD şirketi üzerinde itibar ve diplomatik
-              baskı oluşturabilir.
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- ===== OUTCOMES ===== -->
-    <div class="band" id="outcomes">
-      <div class="container">
-        <p class="section-tag amber">İki Gelecek</p>
-        <h2 class="white reveal">Bundan Sonra Ne Olacağı Eylemlere Bağlı</h2>
-        <p class="reveal">
-          Bunlar varsayımsal senaryolar değil. Bunlar, şu anda bir bakanlık, bir
-          yabancı şirket ve toprağı için mücadele eden bir topluluk tarafından
-          yapılan seçimlerin doğrudan sonuçlarıdır. Bir gelecek bilimsel
-          zorunluluk ve insan hakları üzerine yazılmıştır. Diğeri ise
-          şirketlerin kaynak sömürüsü ve siyasi atalet üzerine yazılmıştır.
-        </p>
-
-        <div class="outcome-grid reveal">
-          <div class="oc bad">
-            <div class="oc-title">⚡ Sondaj Devam Ederse</div>
-            <ul class="oc-list">
-              <li>
-                VFZ'ye 3.000 m derinlikte yüksek basınçlı sıvı enjeksiyonu —
-                kritik eşiğe yakın Coulomb gerilme sistemi yapay olarak
-                dengesizleştirildi
-              </li>
-              <li>
-                Varto Fayı Bölgesi veya Yedisu Sismik Boşluğu üzerinde
-                indüklenmiş sismiklik riski (240 yıllık birikmiş enerji)
-              </li>
-              <li>
-                24–90 mg/L seviyesinde bor, mera arazisine karışır —
-                fitotoksisite eşiğinin 15–45 katı — kalıcı mahsul hasarı
-              </li>
-              <li>
-                10.700 µg/L'ye varan arsenik Murat Nehri'ne → Fırat havzasına
-                ulaşır
-              </li>
-              <li>
-                Önemli Doğal Alan biyolojik çeşitliliğinin kalıcı kaybı —
-                endemik türler, alpin çayırları
-              </li>
-              <li>
-                22'den fazla köyden hayvancılıkla uğraşan ailelerin zorla
-                yerinden edilmesi
-              </li>
-              <li>
-                Kazılmamış Urartu arkeolojik mirası kayıt altına alınmadan yok
-                edildi
-              </li>
-              <li>
-                Demokratik emsal: topluluğun bilgisi veya rızası olmadan
-                onaylanan projeler
-              </li>
-              <li>
-                Kürt-Alevi topluluğunun kültürel manzarası ve kutsal alanları
-                silindi
-              </li>
-            </ul>
-          </div>
-          <div class="oc good">
-            <div class="oc-title">✓ Proje Durdurulursa</div>
-            <ul class="oc-list">
-              <li>
-                Varto Fayı Bölgesi etkilenmez — tarihsel olarak felaketlere yol
-                açmış bir sistemde ek bir sismik risk ortaya çıkmaz
-              </li>
-              <li>
-                453.494 m²'lik ortak otlak, nesiller boyu süren tarım
-                toplulukları için korunur
-              </li>
-              <li>
-                Önemli Doğal Alan biyolojik çeşitliliğini korur — endemik
-                bitkiler, alpin çayırları, yaban hayatı koridorları
-              </li>
-              <li>
-                Murat Nehri havzası jeotermal kimyasal kirlenmeden korunur
-              </li>
-              <li>
-                Gelecekteki herhangi bir geliştirme öncesinde kazılmamış
-                alanların arkeolojik araştırması
-              </li>
-              <li>
-                Demokratik emsal: topluluk rızası, gerçek kamu yararı olarak
-                kabul edildi
-              </li>
-              <li>
-                Tam ÇED gerçekleştirildi → proje ya iptal edildi ya da gerçek
-                koruma önlemleriyle temelden yeniden tasarlandı
-              </li>
-              <li>
-                Kasıtlı bir kaçınma taktiği olarak ÇED'in parçalanmasına karşı
-                yasal çerçeve güçlendirildi
-              </li>
-              <li>
-                Varto, agro-turizm, koruma alanı ve sürdürülebilir hayvancılık
-                bölgesi olarak — gerçek yerel kalkınma
-              </li>
-            </ul>
-          </div>
-        </div>
-        <script>
-          var f = document.getElementById("canva-frame");
-          var t = setTimeout(function () {
-            document.getElementById("canva-fallback").style.display = "flex";
-            f.style.display = "none";
-          }, 8000);
-          f.onload = function () {
-            clearTimeout(t);
-          };
-        </script>
-        <div class="pq green reveal">
-          <p>
-            Varto JES projesi, şu anki haliyle sürdürülebilir kalkınma
-            kriterlerini karşılamamaktadır. Proje, jeolojik güvenlik, çevresel
-            adalet ve demokratik katılım gibi temel ilkeleri göz ardı
-            etmektedir. Yerel halkın projenin tamamen durdurulması yönündeki
-            talepleri duygusal gerekçelere dayanmamaktadır; bu talepler, Varto
-            havzasının coğrafi ve tarihsel gerçeklikleriyle desteklenmektedir.
-          </p>
-          <cite
-            >— Integrated Assessment of the Varto Geothermal Energy Project
-            (Scientific Review, 2025)</cite
-          >
-        </div>
-      </div>
-    </div>
-
-    <!-- FOOTER -->
-    <footer>
-      <div class="footer-title">VARTO IS NOT OWNERLESS</div>
-      <p
-        style="
-          font-family: var(--serif);
-          font-style: italic;
-          color: var(--text-dim);
-          font-size: 1rem;
-          margin-bottom: 1.5rem;
-        "
-      >
-        Varto sahipsiz değildir. Toprağımızı ve suyumuzu şirketlerin kâr hırsına
-        kurban etmeyeceğiz.
-      </p>
-      <div class="footer-sources">
-        <p>
-          SCIENTIFIC · Bektaş et al. 2025 (Bull. Geoph. Ocean.) · Ozcelik 2022
-          (Environ. Sci. Pollut. Res.) · USGS Wallace 1968 · Sançar et al. 2015
-          (Tectonophys.)
-        </p>
-        <p>
-          JOURNALISTIC · Evrensel · Dicle TV · Muş Sarı Haber · Kısa Dalga · CHP
-          Official · Bianet · Rudaw · Birgün
-        </p>
-        <p>
-          COMMUNITY · Varto Ecology Platform · VADEF · Kocaeli Vartolular
-          Platform · İzmir Ecology Platform
-        </p>
-        <br />
-        <p class="footer-green">
-          COMPILED IN THE PUBLIC INTEREST · APRIL 2025 · varto-black.vercel.app
-        </p>
-      </div>
-    </footer>
-
-    <script>
-      /* ===== CANVAS SEISMIC BACKGROUND ===== */
-      (function () {
-        const c = document.getElementById("canvas-bg");
-        const ctx = c.getContext("2d");
-        let W,
-          H,
-          waves = [];
-
-        function resize() {
-          W = c.width = innerWidth;
-          H = c.height = innerHeight;
-        }
-        resize();
-        addEventListener("resize", resize);
-
-        function mkWaves() {
-          waves = [];
-          for (let i = 0; i < 8; i++) {
-            waves.push({
-              y: Math.random() * H,
-              amp: 8 + Math.random() * 28,
-              freq: 0.004 + Math.random() * 0.018,
-              speed: 0.2 + Math.random() * 0.7,
-              phase: Math.random() * Math.PI * 2,
-              color: Math.random() > 0.55 ? "#00ff41" : "#ff1a1a",
-              lw: 0.4 + Math.random() * 1.2,
-              opacity: 0.25 + Math.random() * 0.45,
-            });
-          }
-        }
-        mkWaves();
-
-        let t = 0;
-        function draw() {
-          ctx.clearRect(0, 0, W, H);
-          t += 0.008;
-          waves.forEach((w) => {
-            ctx.beginPath();
-            ctx.strokeStyle = w.color;
-            ctx.lineWidth = w.lw;
-            ctx.globalAlpha = w.opacity;
-            for (let x = 0; x <= W; x += 3) {
-              const y =
-                w.y +
-                Math.sin(x * w.freq + t * w.speed + w.phase) * w.amp +
-                Math.sin(x * w.freq * 2.7 + t * w.speed * 1.5) * w.amp * 0.25;
-              x === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
-            }
-            ctx.stroke();
-          });
-          requestAnimationFrame(draw);
-        }
-        draw();
-      })();
-
-      /* ===== SCROLL REVEALS ===== */
-      (function () {
-        const obs = new IntersectionObserver(
-          (entries) => {
-            entries.forEach((e) => {
-              if (e.isIntersecting) e.target.classList.add("vis");
-            });
-          },
-          { threshold: 0.1 },
-        );
-
-        document.querySelectorAll(".tl-item").forEach((el, i) => {
-          el.style.transitionDelay = i * 0.1 + "s";
-          obs.observe(el);
-        });
-
-        const revObs = new IntersectionObserver(
-          (entries) => {
-            entries.forEach((e) => {
-              if (e.isIntersecting) e.target.classList.add("vis");
-            });
-          },
-          { threshold: 0.08 },
-        );
-
-        document.querySelectorAll(".reveal").forEach((el, i) => {
-          el.style.transitionDelay = (i % 4) * 0.08 + "s";
-          revObs.observe(el);
-        });
-      })();
-
-      /* ===== NAV ACTIVE ===== */
-      (function () {
-        const links = document.querySelectorAll("nav a");
-        const sections = document.querySelectorAll("[id]");
-
-        const obs = new IntersectionObserver(
-          (entries) => {
-            entries.forEach((e) => {
-              if (e.isIntersecting) {
-                links.forEach((a) => a.classList.remove("active"));
-                const active = document.querySelector(
-                  'nav a[href="#' + e.target.id + '"]',
-                );
-                if (active) active.classList.add("active");
-              }
-            });
-          },
-          { rootMargin: "-40% 0px -55% 0px" },
-        );
-
-        sections.forEach((s) => {
-          if (s.id !== "top") obs.observe(s);
-        });
-      })();
-    </script>
-  </body>
+
+<head>
+	<meta charset="UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<meta name="description"
+		content="Varto JES — Doğu Anadolu’da bir sismik üçlü kavşağı, 16 köyü ve bir biyolojik çeşitlilik merkezini tehdit eden jeotermal enerji projesi." />
+	<title>VARTO — Die Erde unter Druck | Das Land verteidigen</title>
+	<link rel="preconnect" href="https://fonts.googleapis.com" />
+	<link
+		href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Literata:ital,opsz,wght@0,7..72,300;0,7..72,400;0,7..72,600;1,7..72,300;1,7..72,400&family=Share+Tech+Mono&display=swap"
+		rel="stylesheet" />
+	<style>
+		/* ===== DESIGN TOKENS ===== */
+		:root {
+			--black: #030805;
+			--deep-black: #050f06;
+			--surface: #0a160b;
+			--surface2: #0f1e10;
+			--green: #00ff41;
+			--green-dim: #00cc33;
+			--green-dark: #003d15;
+			--green-trace: rgba(0, 255, 65, 0.06);
+			--red: #ff1a1a;
+			--red-dim: #cc0000;
+			--red-trace: rgba(255, 26, 26, 0.06);
+			--amber: #ffaa00;
+			--amber-dim: rgba(255, 170, 0, 0.7);
+			--text: #d4e8d4;
+			--text-dim: #7a9c7a;
+			--text-muted: #4a6a4a;
+			--paper: #eef4ee;
+			--mono: "Share Tech Mono", monospace;
+			--serif: "Literata", Georgia, serif;
+			--display: "Bebas Neue", sans-serif;
+		}
+
+		/* ===== RESET ===== */
+		*,
+		*::before,
+		*::after {
+			margin: 0;
+			padding: 0;
+			box-sizing: border-box;
+		}
+
+		html {
+			scroll-behavior: smooth;
+			font-size: 16px;
+		}
+
+		body {
+			background: var(--black);
+			color: var(--text);
+			font-family: var(--serif);
+			line-height: 1.75;
+			overflow-x: hidden;
+		}
+
+		/* ===== SCAN LINES ===== */
+		body::after {
+			content: "";
+			position: fixed;
+			inset: 0;
+			background: repeating-linear-gradient(0deg,
+					transparent,
+					transparent 2px,
+					rgba(0, 255, 65, 0.012) 2px,
+					rgba(0, 255, 65, 0.012) 4px);
+			pointer-events: none;
+			z-index: 9000;
+		}
+
+		/* ===== CANVAS BG ===== */
+		#canvas-bg {
+			position: fixed;
+			inset: 0;
+			z-index: 0;
+			opacity: 0.09;
+		}
+
+		/* ===== TICKER ===== */
+		.ticker-wrap {
+			background: var(--red);
+			overflow: hidden;
+			position: relative;
+			z-index: 200;
+		}
+
+		.ticker-inner {
+			display: flex;
+			white-space: nowrap;
+			animation: tickerScroll 35s linear infinite;
+		}
+
+		.ticker-inner:hover {
+			animation-play-state: paused;
+		}
+
+		.tick-item {
+			font-family: var(--mono);
+			font-size: 0.65rem;
+			letter-spacing: 0.15em;
+			text-transform: uppercase;
+			color: #fff;
+			padding: 0.45rem 2.5rem;
+		}
+
+		@keyframes tickerScroll {
+			from {
+				transform: translateX(0);
+			}
+
+			to {
+				transform: translateX(-50%);
+			}
+		}
+
+		/* ===== HERO ===== */
+		.hero {
+			position: relative;
+			min-height: 100vh;
+			display: grid;
+			place-items: center;
+			text-align: center;
+			padding: 8rem 2rem 6rem;
+			z-index: 10;
+			overflow: hidden;
+		}
+
+		/* Ripple rings */
+		.ripple-wrap {
+			position: absolute;
+			inset: 0;
+			display: grid;
+			place-items: center;
+			pointer-events: none;
+		}
+
+		.ripple {
+			position: absolute;
+			border-radius: 50%;
+			border: 1px solid var(--red);
+			animation: rippleOut 5s ease-out infinite;
+			opacity: 0;
+		}
+
+		.ripple:nth-child(1) {
+			width: 80px;
+			height: 80px;
+			animation-delay: 0s;
+		}
+
+		.ripple:nth-child(2) {
+			width: 240px;
+			height: 240px;
+			animation-delay: 1s;
+		}
+
+		.ripple:nth-child(3) {
+			width: 480px;
+			height: 480px;
+			animation-delay: 2s;
+		}
+
+		.ripple:nth-child(4) {
+			width: 800px;
+			height: 800px;
+			animation-delay: 3s;
+		}
+
+		.ripple:nth-child(5) {
+			width: 1200px;
+			height: 1200px;
+			animation-delay: 4s;
+		}
+
+		@keyframes rippleOut {
+			0% {
+				transform: scale(0.2);
+				opacity: 0.9;
+				border-color: var(--red);
+			}
+
+			70% {
+				opacity: 0.15;
+			}
+
+			100% {
+				transform: scale(1);
+				opacity: 0;
+			}
+		}
+
+		.epicenter {
+			position: absolute;
+			width: 14px;
+			height: 14px;
+			border-radius: 50%;
+			background: var(--red);
+			box-shadow:
+				0 0 0 3px rgba(255, 26, 26, 0.3),
+				0 0 40px var(--red);
+			animation: epicPulse 1.8s ease-in-out infinite;
+			z-index: 2;
+		}
+
+		@keyframes epicPulse {
+
+			0%,
+			100% {
+				box-shadow:
+					0 0 0 3px rgba(255, 26, 26, 0.3),
+					0 0 30px var(--red);
+			}
+
+			50% {
+				box-shadow:
+					0 0 0 8px rgba(255, 26, 26, 0.15),
+					0 0 80px var(--red),
+					0 0 160px rgba(255, 26, 26, 0.2);
+			}
+		}
+
+		.hero-content {
+			position: relative;
+			z-index: 3;
+		}
+
+		.hero-eyebrow {
+			font-family: var(--mono);
+			font-size: 0.62rem;
+			letter-spacing: 0.4em;
+			color: var(--green);
+			text-transform: uppercase;
+			text-shadow: 0 0 12px var(--green);
+			margin-bottom: 2rem;
+			animation: fadeSlideUp 0.9s ease 0.2s both;
+		}
+
+		.hero-title {
+			font-family: var(--display);
+			font-size: clamp(5rem, 16vw, 13rem);
+			line-height: 0.85;
+			letter-spacing: 0.04em;
+			animation: fadeSlideUp 0.9s ease 0.4s both;
+		}
+
+		.hero-title .t-white {
+			color: var(--paper);
+		}
+
+		.hero-title .t-small {
+			font-family: var(--mono);
+			font-size: 0.12em;
+			letter-spacing: 0.4em;
+			color: var(--text-dim);
+			display: block;
+			padding: 0.5em 0;
+		}
+
+		.hero-title .t-red {
+			color: var(--red);
+			text-shadow:
+				0 0 40px var(--red),
+				0 0 100px rgba(255, 26, 26, 0.35);
+			animation: redTitleGlow 2.5s ease-in-out infinite alternate;
+		}
+
+		.hero-title .t-green {
+			color: var(--green);
+			text-shadow:
+				0 0 30px var(--green),
+				0 0 80px rgba(0, 255, 65, 0.25);
+			animation: greenTitleGlow 3s ease-in-out infinite alternate;
+		}
+
+		@keyframes redTitleGlow {
+			from {
+				text-shadow:
+					0 0 30px var(--red),
+					0 0 60px rgba(255, 26, 26, 0.25);
+			}
+
+			to {
+				text-shadow:
+					0 0 70px var(--red),
+					0 0 160px rgba(255, 26, 26, 0.5);
+			}
+		}
+
+		@keyframes greenTitleGlow {
+			from {
+				text-shadow:
+					0 0 20px var(--green),
+					0 0 50px rgba(0, 255, 65, 0.2);
+			}
+
+			to {
+				text-shadow:
+					0 0 60px var(--green),
+					0 0 130px rgba(0, 255, 65, 0.45);
+			}
+		}
+
+		.hero-desc {
+			font-family: var(--serif);
+			font-style: italic;
+			font-size: clamp(0.95rem, 2.2vw, 1.2rem);
+			color: var(--text-dim);
+			max-width: 640px;
+			margin: 1.8rem auto 2.5rem;
+			animation: fadeSlideUp 0.9s ease 0.6s both;
+		}
+
+		.chips {
+			display: flex;
+			flex-wrap: wrap;
+			gap: 0.6rem;
+			justify-content: center;
+			animation: fadeSlideUp 0.9s ease 0.8s both;
+			margin-bottom: 3rem;
+		}
+
+		.chip {
+			font-family: var(--mono);
+			font-size: 0.58rem;
+			letter-spacing: 0.12em;
+			text-transform: uppercase;
+			border: 1px solid;
+			padding: 0.35rem 0.8rem;
+			animation: chipFlicker 4s ease-in-out infinite;
+		}
+
+		.chip.g {
+			border-color: var(--green);
+			color: var(--green);
+		}
+
+		.chip.r {
+			border-color: var(--red);
+			color: var(--red);
+			animation-delay: 1.3s;
+		}
+
+		.chip.a {
+			border-color: var(--amber);
+			color: var(--amber);
+			animation-delay: 0.7s;
+		}
+
+		@keyframes chipFlicker {
+
+			0%,
+			88%,
+			100% {
+				opacity: 1;
+			}
+
+			93% {
+				opacity: 0.2;
+			}
+		}
+
+		.scroll-cue {
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			gap: 0.5rem;
+			font-family: var(--mono);
+			font-size: 0.55rem;
+			letter-spacing: 0.25em;
+			color: var(--green);
+			text-transform: uppercase;
+			animation: fadeSlideUp 1s ease 2s both;
+		}
+
+		.scroll-line {
+			width: 1px;
+			height: 50px;
+			background: linear-gradient(to bottom, var(--green), transparent);
+			animation: scrollBounce 1.8s ease-in-out infinite;
+		}
+
+		@keyframes scrollBounce {
+
+			0%,
+			100% {
+				transform: scaleY(1);
+				opacity: 0.4;
+			}
+
+			50% {
+				transform: scaleY(1.3);
+				opacity: 1;
+			}
+		}
+
+		@keyframes fadeSlideUp {
+			from {
+				opacity: 0;
+				transform: translateY(28px);
+			}
+
+			to {
+				opacity: 1;
+				transform: translateY(0);
+			}
+		}
+
+		/* ===== NAV ===== */
+		nav {
+			position: sticky;
+			top: 0;
+			z-index: 500;
+			background: rgba(3, 8, 5, 0.96);
+			border-bottom: 1px solid var(--green-dark);
+			backdrop-filter: blur(12px);
+		}
+
+		nav ul {
+			display: flex;
+			list-style: none;
+			justify-content: center;
+			flex-wrap: wrap;
+		}
+
+		nav a {
+			display: block;
+			font-family: var(--mono);
+			font-size: 0.58rem;
+			letter-spacing: 0.18em;
+			text-transform: uppercase;
+			color: var(--text-muted);
+			text-decoration: none;
+			padding: 0.85rem 1.1rem;
+			transition:
+				color 0.2s,
+				text-shadow 0.2s;
+			border-bottom: 2px solid transparent;
+			transition: all 0.2s;
+		}
+
+		nav a:hover,
+		nav a.active {
+			color: var(--green);
+			text-shadow: 0 0 10px var(--green);
+			border-bottom-color: var(--green);
+		}
+
+		/* ===== LAYOUT HELPERS ===== */
+		.band {
+			position: relative;
+			z-index: 10;
+			padding: 6rem 2rem;
+		}
+
+		.band-dark {
+			background: rgba(0, 6, 1, 0.85);
+			border-top: 1px solid var(--green-dark);
+			border-bottom: 1px solid var(--green-dark);
+		}
+
+		.band-red {
+			background: rgba(18, 0, 0, 0.9);
+			border-top: 1px solid rgba(255, 26, 26, 0.15);
+			border-bottom: 1px solid rgba(255, 26, 26, 0.15);
+		}
+
+		.container {
+			max-width: 980px;
+			margin: 0 auto;
+		}
+
+		.section-tag {
+			font-family: var(--mono);
+			font-size: 0.6rem;
+			letter-spacing: 0.35em;
+			text-transform: uppercase;
+			display: flex;
+			align-items: center;
+			gap: 1rem;
+			margin-bottom: 1.5rem;
+		}
+
+		.section-tag::after {
+			content: "";
+			flex: 1;
+			height: 1px;
+			background: currentColor;
+			opacity: 0.25;
+		}
+
+		.section-tag.green {
+			color: var(--green);
+			text-shadow: 0 0 8px var(--green);
+		}
+
+		.section-tag.red {
+			color: var(--red);
+		}
+
+		.section-tag.amber {
+			color: var(--amber);
+		}
+
+		.section-tag.white {
+			color: var(--text-dim);
+		}
+
+		h2 {
+			font-family: var(--display);
+			font-size: clamp(2.8rem, 6.5vw, 5.5rem);
+			line-height: 0.9;
+			letter-spacing: 0.03em;
+			margin-bottom: 1.5rem;
+		}
+
+		h2.green {
+			color: var(--green);
+			text-shadow: 0 0 25px rgba(0, 255, 65, 0.25);
+		}
+
+		h2.red {
+			color: var(--red);
+			text-shadow: 0 0 30px rgba(255, 26, 26, 0.35);
+		}
+
+		h2.white {
+			color: var(--paper);
+		}
+
+		h3 {
+			font-family: var(--display);
+			font-size: 1.8rem;
+			letter-spacing: 0.05em;
+			color: var(--green);
+			margin: 2.5rem 0 0.8rem;
+		}
+
+		p {
+			margin-bottom: 1.2rem;
+			color: var(--text-dim);
+			font-size: 1.05rem;
+		}
+
+		p strong {
+			color: var(--green);
+			font-weight: 600;
+		}
+
+		p em.r {
+			color: var(--red);
+			font-style: normal;
+			font-weight: 600;
+		}
+
+		p em.a {
+			color: var(--amber);
+			font-style: normal;
+			font-weight: 600;
+		}
+
+		/* ===== STATS ===== */
+		.stats {
+			display: grid;
+			grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+			gap: 1px;
+			background: var(--green-dark);
+			border: 1px solid var(--green-dark);
+			margin: 3rem 0;
+		}
+
+		.stat {
+			background: var(--surface);
+			padding: 1.6rem 1.2rem;
+			text-align: center;
+			transition: background 0.3s;
+			cursor: default;
+		}
+
+		.stat:hover {
+			background: var(--surface2);
+		}
+
+		.sn {
+			font-family: var(--display);
+			font-size: 2.8rem;
+			line-height: 1;
+			display: block;
+			margin-bottom: 0.3rem;
+		}
+
+		.sn.g {
+			color: var(--green);
+			text-shadow: 0 0 20px rgba(0, 255, 65, 0.4);
+		}
+
+		.sn.r {
+			color: var(--red);
+			text-shadow: 0 0 20px rgba(255, 26, 26, 0.5);
+			animation: redStatPulse 2.5s ease-in-out infinite;
+		}
+
+		.sn.a {
+			color: var(--amber);
+		}
+
+		@keyframes redStatPulse {
+
+			0%,
+			100% {
+				text-shadow: 0 0 15px rgba(255, 26, 26, 0.4);
+			}
+
+			50% {
+				text-shadow:
+					0 0 50px rgba(255, 26, 26, 0.8),
+					0 0 100px rgba(255, 26, 26, 0.3);
+			}
+		}
+
+		.sl {
+			font-family: var(--mono);
+			font-size: 0.52rem;
+			letter-spacing: 0.12em;
+			text-transform: uppercase;
+			color: var(--text-muted);
+		}
+
+		/* ===== FAULT VIZ ===== */
+		.fault-box {
+			background: var(--surface);
+			border: 1px solid var(--green-dark);
+			padding: 2rem;
+			margin: 2.5rem 0;
+			position: relative;
+			overflow: hidden;
+		}
+
+		.fault-box::before {
+			content: "// ACTIVE FAULT SYSTEM MAP — KARLΙOVA TRIPLE JUNCTION";
+			font-family: var(--mono);
+			font-size: 0.55rem;
+			letter-spacing: 0.15em;
+			color: var(--green);
+			display: block;
+			margin-bottom: 1.5rem;
+			text-shadow: 0 0 6px var(--green);
+		}
+
+		.fault-track {
+			position: relative;
+			height: 110px;
+			margin-bottom: 1.5rem;
+		}
+
+		.ft {
+			position: absolute;
+			height: 2px;
+			border-radius: 1px;
+			animation: ftWave 4s ease-in-out infinite;
+		}
+
+		.ft.nafz {
+			top: 18%;
+			width: 100%;
+			background: linear-gradient(to right,
+					transparent 0%,
+					var(--green) 15%,
+					var(--green) 85%,
+					transparent 100%);
+		}
+
+		.ft.eafz {
+			top: 50%;
+			width: 78%;
+			left: 11%;
+			background: linear-gradient(to right,
+					transparent 0%,
+					var(--amber) 15%,
+					var(--amber) 85%,
+					transparent 100%);
+			animation-delay: 1.2s;
+		}
+
+		.ft.vfz {
+			top: 78%;
+			width: 52%;
+			left: 24%;
+			background: linear-gradient(to right,
+					transparent 0%,
+					var(--red) 15%,
+					var(--red) 85%,
+					transparent 100%);
+			animation-delay: 0.6s;
+		}
+
+		.ft.drill {
+			width: 6px;
+			height: 100%;
+			top: 0;
+			left: 47%;
+			background: linear-gradient(to bottom,
+					transparent,
+					rgba(255, 26, 26, 0.9),
+					transparent);
+			animation: drillPulse 1.4s ease-in-out infinite;
+		}
+
+		@keyframes ftWave {
+
+			0%,
+			100% {
+				transform: translateY(0);
+			}
+
+			33% {
+				transform: translateY(-1.5px);
+			}
+
+			66% {
+				transform: translateY(1.5px);
+			}
+		}
+
+		@keyframes drillPulse {
+
+			0%,
+			100% {
+				opacity: 1;
+				box-shadow: 0 0 8px var(--red);
+			}
+
+			50% {
+				opacity: 0.35;
+				box-shadow: none;
+			}
+		}
+
+		.fault-legend {
+			display: flex;
+			flex-direction: column;
+			gap: 0.4rem;
+		}
+
+		.fl {
+			display: flex;
+			align-items: center;
+			gap: 0.6rem;
+		}
+
+		.fl-bar {
+			width: 24px;
+			height: 3px;
+			border-radius: 2px;
+			flex-shrink: 0;
+		}
+
+		.fl-text {
+			font-family: var(--mono);
+			font-size: 0.6rem;
+			letter-spacing: 0.06em;
+		}
+
+		.fl-text.g {
+			color: var(--green);
+		}
+
+		.fl-text.a {
+			color: var(--amber);
+		}
+
+		.fl-text.r {
+			color: var(--red);
+		}
+
+		.fl-text.d {
+			color: rgba(255, 80, 80, 0.8);
+			font-size: 0.58rem;
+		}
+
+		/* ===== EQUATION ===== */
+		.eq-box {
+			background: rgba(0, 255, 65, 0.03);
+			border: 1px solid var(--green-dark);
+			border-left: 4px solid var(--green);
+			padding: 2rem 2.5rem;
+			margin: 2.5rem 0;
+			position: relative;
+			text-align: center;
+		}
+
+		.eq-box::before {
+			content: "COULOMB FAILURE CRITERION";
+			position: absolute;
+			top: -0.6rem;
+			left: 1.2rem;
+			font-family: var(--mono);
+			font-size: 0.5rem;
+			letter-spacing: 0.2em;
+			background: var(--black);
+			padding: 0 0.6rem;
+			color: var(--green);
+			text-shadow: 0 0 6px var(--green);
+		}
+
+		.eq-main {
+			font-family: var(--mono);
+			font-size: 1.4rem;
+			color: var(--green);
+			text-shadow: 0 0 12px rgba(0, 255, 65, 0.5);
+			margin-bottom: 0.8rem;
+		}
+
+		.eq-sub {
+			font-family: var(--mono);
+			font-size: 0.65rem;
+			color: var(--text-muted);
+			margin-bottom: 0.4rem;
+		}
+
+		.eq-warn {
+			font-family: var(--mono);
+			font-size: 0.68rem;
+			color: var(--red);
+			margin-top: 0.8rem;
+		}
+
+		/* ===== WAVEFORM ===== */
+		.wave-box {
+			background: var(--surface);
+			border: 1px solid var(--green-dark);
+			padding: 1rem;
+			margin: 2rem 0;
+			overflow: hidden;
+		}
+
+		.wave-label {
+			font-family: var(--mono);
+			font-size: 0.52rem;
+			letter-spacing: 0.18em;
+			color: var(--green);
+			margin-bottom: 0.6rem;
+		}
+
+		.wave-svg {
+			width: 200%;
+			animation: waveSroll 14s linear infinite;
+		}
+
+		@keyframes waveSroll {
+			from {
+				transform: translateX(0);
+			}
+
+			to {
+				transform: translateX(-50%);
+			}
+		}
+
+		/* ===== TIMELINE ===== */
+		.tl {
+			position: relative;
+			padding-left: 2.8rem;
+			margin: 2rem 0;
+		}
+
+		.tl::before {
+			content: "";
+			position: absolute;
+			left: 0;
+			top: 0;
+			bottom: 0;
+			width: 2px;
+			background: linear-gradient(to bottom,
+					var(--red) 0%,
+					var(--amber) 50%,
+					var(--green) 100%);
+		}
+
+		.tl-item {
+			position: relative;
+			margin-bottom: 2.2rem;
+			opacity: 0;
+			transform: translateX(-12px);
+			transition:
+				opacity 0.55s ease,
+				transform 0.55s ease;
+		}
+
+		.tl-item.vis {
+			opacity: 1;
+			transform: translateX(0);
+		}
+
+		.tl-item::before {
+			content: "";
+			position: absolute;
+			left: -3.15rem;
+			top: 0.3rem;
+			width: 11px;
+			height: 11px;
+			border-radius: 50%;
+			border: 2px solid;
+		}
+
+		.tl-item.d::before {
+			border-color: var(--red);
+			background: rgba(255, 26, 26, 0.25);
+			box-shadow: 0 0 10px var(--red);
+		}
+
+		.tl-item.w::before {
+			border-color: var(--amber);
+			background: rgba(255, 170, 0, 0.2);
+		}
+
+		.tl-item.s::before {
+			border-color: var(--green);
+			background: rgba(0, 255, 65, 0.2);
+			box-shadow: 0 0 8px var(--green);
+		}
+
+		.tl-yr {
+			font-family: var(--mono);
+			font-size: 0.62rem;
+			letter-spacing: 0.15em;
+			text-transform: uppercase;
+			margin-bottom: 0.3rem;
+		}
+
+		.tl-item.d .tl-yr {
+			color: var(--red);
+		}
+
+		.tl-item.w .tl-yr {
+			color: var(--amber);
+		}
+
+		.tl-item.s .tl-yr {
+			color: var(--green);
+		}
+
+		.tl-body {
+			color: #91ae91;
+			font-size: 0.98rem;
+		}
+
+		.tl-body strong {
+			color: var(--red);
+		}
+
+		/* ===== CHEM TABLE ===== */
+		.chem {
+			display: grid;
+			grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+			gap: 2px;
+			background: var(--green-dark);
+			margin: 2rem 0;
+		}
+
+		.ce {
+			background: var(--surface);
+			padding: 1.2rem;
+			text-align: center;
+		}
+
+		.ce-sym {
+			font-family: var(--display);
+			font-size: 2.2rem;
+			line-height: 1;
+			display: block;
+		}
+
+		.ce-nm {
+			font-family: var(--mono);
+			font-size: 0.5rem;
+			letter-spacing: 0.08em;
+			color: var(--text-muted);
+			display: block;
+			margin: 0.25rem 0;
+		}
+
+		.ce-val {
+			font-family: var(--mono);
+			font-size: 0.58rem;
+			padding: 0.18rem 0.4rem;
+			border: 1px solid;
+			display: inline-block;
+		}
+
+		.ce.danger .ce-sym {
+			color: var(--red);
+			text-shadow: 0 0 12px var(--red);
+		}
+
+		.ce.danger .ce-val {
+			color: var(--red);
+			border-color: var(--red);
+		}
+
+		.ce.warn .ce-sym {
+			color: var(--amber);
+		}
+
+		.ce.warn .ce-val {
+			color: var(--amber);
+			border-color: var(--amber);
+		}
+
+		.ce.ok .ce-sym {
+			color: var(--green);
+		}
+
+		.ce.ok .ce-val {
+			color: var(--green);
+			border-color: var(--green);
+		}
+
+		/* ===== RISK CARDS ===== */
+		.risk-grid {
+			display: grid;
+			grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+			gap: 2px;
+			background: #111;
+			margin: 2rem 0;
+		}
+
+		.rc {
+			background: var(--surface);
+			padding: 2rem;
+			border-top: 3px solid;
+			position: relative;
+			overflow: hidden;
+			transition: transform 0.25s;
+		}
+
+		.rc:hover {
+			transform: translateY(-3px);
+			background: var(--surface2);
+		}
+
+		.rc::after {
+			content: "";
+			position: absolute;
+			bottom: 0;
+			left: 0;
+			right: 0;
+			height: 1px;
+			background: linear-gradient(to right,
+					transparent,
+					rgba(0, 255, 65, 0.35),
+					transparent);
+			animation: scanBar 3.5s linear infinite;
+		}
+
+		.rc:nth-child(even)::after {
+			animation-delay: 1.75s;
+		}
+
+		@keyframes scanBar {
+			from {
+				transform: translateX(-100%);
+			}
+
+			to {
+				transform: translateX(100%);
+			}
+		}
+
+		.rc.c1 {
+			border-top-color: var(--red);
+		}
+
+		.rc.c2 {
+			border-top-color: #4db8ff;
+		}
+
+		.rc.c3 {
+			border-top-color: var(--green);
+		}
+
+		.rc.c4 {
+			border-top-color: var(--amber);
+		}
+
+		.rc.c5 {
+			border-top-color: #cc88ff;
+		}
+
+		.rc.c6 {
+			border-top-color: var(--text-muted);
+		}
+
+		.rc-icon {
+			font-size: 2.2rem;
+			display: block;
+			margin-bottom: 0.8rem;
+		}
+
+		.rc-title {
+			font-family: var(--display);
+			font-size: 1.35rem;
+			letter-spacing: 0.04em;
+			margin-bottom: 0.6rem;
+		}
+
+		.c1 .rc-title {
+			color: var(--red);
+		}
+
+		.c2 .rc-title {
+			color: #4db8ff;
+		}
+
+		.c3 .rc-title {
+			color: var(--green);
+		}
+
+		.c4 .rc-title {
+			color: var(--amber);
+		}
+
+		.c5 .rc-title {
+			color: #cc88ff;
+		}
+
+		.c6 .rc-title {
+			color: var(--text-dim);
+		}
+
+		.rc-body {
+			font-size: 0.9rem;
+			color: var(--text-muted);
+			line-height: 1.65;
+		}
+
+		/* ===== COMPARE TABLE ===== */
+		.ct {
+			width: 100%;
+			border-collapse: collapse;
+			margin: 2rem 0;
+			font-size: 0.88rem;
+			overflow-x: auto;
+			display: block;
+		}
+
+		.ct th {
+			font-family: var(--mono);
+			font-size: 0.58rem;
+			letter-spacing: 0.1em;
+			text-transform: uppercase;
+			padding: 0.8rem 1rem;
+			text-align: left;
+			border-bottom: 1px solid var(--green-dark);
+			color: var(--green);
+			background: var(--surface);
+			position: sticky;
+			top: 0;
+		}
+
+		.ct td {
+			padding: 0.75rem 1rem;
+			border-bottom: 1px solid rgba(0, 255, 65, 0.06);
+			color: var(--text-muted);
+		}
+
+		.ct tr:hover td {
+			background: rgba(0, 255, 65, 0.04);
+		}
+
+		.td-ok {
+			color: var(--green) !important;
+		}
+
+		.td-warn {
+			color: var(--amber) !important;
+		}
+
+		.td-bad {
+			color: var(--red) !important;
+		}
+
+		/* ===== ACTION GRID ===== */
+		.action-grid {
+			display: grid;
+			grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+			gap: 2px;
+			background: var(--green-dark);
+			margin: 2rem 0;
+		}
+
+		.ac {
+			background: var(--surface);
+			padding: 2rem;
+			position: relative;
+			overflow: hidden;
+			transition: background 0.25s;
+		}
+
+		.ac:hover {
+			background: var(--surface2);
+		}
+
+		.ac::before {
+			content: "";
+			position: absolute;
+			top: 0;
+			left: 0;
+			right: 0;
+			height: 2px;
+			background: var(--green);
+			box-shadow: 0 0 10px var(--green);
+			animation: greenSweep 2.5s ease-in-out infinite;
+		}
+
+		.ac:nth-child(2n)::before {
+			animation-delay: 1.25s;
+		}
+
+		.ac:nth-child(3n)::before {
+			animation-delay: 0.83s;
+		}
+
+		@keyframes greenSweep {
+
+			0%,
+			100% {
+				opacity: 1;
+			}
+
+			50% {
+				opacity: 0.3;
+			}
+		}
+
+		.ac-num {
+			font-family: var(--display);
+			font-size: 4rem;
+			color: rgba(0, 255, 65, 0.1);
+			line-height: 1;
+			margin-bottom: 0.5rem;
+		}
+
+		.ac-title {
+			font-family: var(--display);
+			font-size: 1.25rem;
+			color: var(--green);
+			letter-spacing: 0.04em;
+			margin-bottom: 0.7rem;
+		}
+
+		.ac-body {
+			font-size: 0.88rem;
+			color: var(--text-muted);
+			line-height: 1.65;
+		}
+
+		/* ===== OUTCOME ===== */
+		.outcome-grid {
+			display: grid;
+			grid-template-columns: 1fr 1fr;
+			gap: 2px;
+			background: #111;
+			margin: 2rem 0;
+		}
+
+		@media (max-width: 620px) {
+			.outcome-grid {
+				grid-template-columns: 1fr;
+			}
+		}
+
+		.oc {
+			padding: 2.2rem;
+		}
+
+		.oc.bad {
+			background: rgba(25, 0, 0, 0.85);
+			border-top: 3px solid var(--red);
+		}
+
+		.oc.good {
+			background: rgba(0, 18, 2, 0.85);
+			border-top: 3px solid var(--green);
+		}
+
+		.oc-title {
+			font-family: var(--display);
+			font-size: 1.5rem;
+			letter-spacing: 0.04em;
+			margin-bottom: 1.2rem;
+		}
+
+		.oc.bad .oc-title {
+			color: var(--red);
+		}
+
+		.oc.good .oc-title {
+			color: var(--green);
+		}
+
+		.oc-list {
+			list-style: none;
+		}
+
+		.oc-list li {
+			font-size: 0.9rem;
+			color: #99b099;
+			padding: 0.45rem 0;
+			border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+			display: flex;
+			gap: 0.8rem;
+			align-items: flex-start;
+			line-height: 1.5;
+		}
+
+		.oc-list li::before {
+			font-family: var(--mono);
+			font-size: 0.7rem;
+			flex-shrink: 0;
+			margin-top: 0.1rem;
+		}
+
+		.oc.bad .oc-list li::before {
+			content: "✗";
+			color: var(--red);
+		}
+
+		.oc.good .oc-list li::before {
+			content: "✓";
+			color: var(--green);
+		}
+
+		/* ===== PULLQUOTE ===== */
+		.pq {
+			border-left: 3px solid;
+			padding: 1.5rem 2rem;
+			margin: 3rem 0;
+			position: relative;
+		}
+
+		.pq::before {
+			content: '"';
+			font-family: var(--display);
+			font-size: 7rem;
+			position: absolute;
+			top: -1.5rem;
+			left: 0.8rem;
+			line-height: 1;
+			opacity: 0.1;
+		}
+
+		.pq p {
+			font-style: italic;
+			font-size: 1.15rem;
+			color: var(--paper);
+			margin-bottom: 0.5rem;
+		}
+
+		.pq cite {
+			font-family: var(--mono);
+			font-size: 0.58rem;
+			letter-spacing: 0.1em;
+			font-style: normal;
+		}
+
+		.pq.green {
+			border-color: var(--green);
+			background: rgba(0, 255, 65, 0.03);
+		}
+
+		.pq.green::before {
+			color: var(--green);
+		}
+
+		.pq.green cite {
+			color: var(--green-dim);
+		}
+
+		.pq.red {
+			border-color: var(--red);
+			background: rgba(255, 26, 26, 0.03);
+		}
+
+		.pq.red::before {
+			color: var(--red);
+		}
+
+		.pq.red cite {
+			color: rgba(255, 80, 80, 0.7);
+		}
+
+		/* ===== BILINGUAL BANNER ===== */
+		.bilingual {
+			background: var(--surface2);
+			border: 1px solid var(--green-dark);
+			border-left: 4px solid var(--green);
+			padding: 1.5rem 2rem;
+			margin: 2rem 0;
+			display: grid;
+			grid-template-columns: 1fr 1fr;
+			gap: 2rem;
+		}
+
+		@media (max-width: 520px) {
+			.bilingual {
+				grid-template-columns: 1fr;
+			}
+		}
+
+		.bilingual-en {
+			font-style: italic;
+			font-size: 1rem;
+			color: var(--paper);
+		}
+
+		.bilingual-tr {
+			font-style: italic;
+			font-size: 1rem;
+			color: var(--text-dim);
+			border-left: 1px solid var(--green-dark);
+			padding-left: 2rem;
+		}
+
+		.bilingual-label {
+			font-family: var(--mono);
+			font-size: 0.5rem;
+			letter-spacing: 0.2em;
+			text-transform: uppercase;
+			color: var(--text-muted);
+			margin-bottom: 0.4rem;
+		}
+
+		/* ===== FOOTER ===== */
+		footer {
+			background: var(--black);
+			border-top: 1px solid var(--green-dark);
+			text-align: center;
+			padding: 4rem 2rem;
+			position: relative;
+			z-index: 10;
+		}
+
+		.footer-title {
+			font-family: var(--display);
+			font-size: clamp(2rem, 5vw, 4rem);
+			color: var(--green);
+			text-shadow: 0 0 30px rgba(0, 255, 65, 0.4);
+			margin-bottom: 0.5rem;
+		}
+
+		.footer-sub {
+			font-family: var(--mono);
+			font-size: 0.6rem;
+			letter-spacing: 0.15em;
+			color: var(--text-muted);
+			margin-bottom: 0.3rem;
+		}
+
+		.footer-sources {
+			margin-top: 2rem;
+		}
+
+		.footer-sources p {
+			font-family: var(--mono);
+			font-size: 0.58rem;
+			color: var(--text-muted);
+			margin-bottom: 0.25rem;
+			letter-spacing: 0.05em;
+		}
+
+		.footer-green {
+			color: var(--green);
+			text-shadow: 0 0 8px var(--green);
+		}
+
+		/* ===== RESPONSIVE ===== */
+		@media (max-width: 640px) {
+			nav ul {
+				flex-wrap: nowrap;
+				overflow-x: auto;
+				justify-content: flex-start;
+			}
+
+			nav a {
+				white-space: nowrap;
+				padding: 0.8rem 0.75rem;
+			}
+
+			.stats {
+				grid-template-columns: repeat(2, 1fr);
+			}
+
+			.bilingual {
+				grid-template-columns: 1fr;
+			}
+
+			.bilingual-tr {
+				border-left: none;
+				padding-left: 0;
+				border-top: 1px solid var(--green-dark);
+				padding-top: 1.5rem;
+			}
+		}
+
+		/* ===== SCROLL REVEAL ===== */
+		.reveal {
+			opacity: 0;
+			transform: translateY(24px);
+			transition:
+				opacity 0.7s ease,
+				transform 0.7s ease;
+		}
+
+		.reveal.vis {
+			opacity: 1;
+			transform: none;
+		}
+	</style>
+</head>
+
+<body>
+	<canvas id="canvas-bg"></canvas>
+
+	<!-- TICKER -->
+	<div class="ticker-wrap" aria-label="Live alert feed">
+		<div class="ticker-inner">
+			<span class="tick-item">⚠ VARTO TRIPLE JUNCTION</span>
+			<span class="tick-item">· M6.8 EARTHQUAKE 1966 · 2,529 KILLED ·</span>
+			<span class="tick-item">IGNIS H2 DRILLING: MAY 2026</span>
+			<span class="tick-item">· COULOMB STRESS POSITIVE ·</span>
+			<span class="tick-item">EIA NOT REQUIRED — LEGALLY CONTESTED</span>
+			<span class="tick-item">· 16 VILLAGES AT RISK ·</span>
+			<span class="tick-item">ARSENIC UP TO 10,700 µg/L</span>
+			<span class="tick-item">· YEDISU GAP UNRUPTURED SINCE 1784 ·</span>
+			<span class="tick-item">BEKTAŞ ET AL. 2025: DESTRUCTIVE EARTHQUAKE RISK ·</span>
+			<span class="tick-item">453,494 m² PASTURELAND SEIZED ·</span>
+			<!-- duplicate for seamless loop -->
+			<span class="tick-item">⚠ VARTO TRIPLE JUNCTION</span>
+			<span class="tick-item">· M6.8 EARTHQUAKE 1966 · 2,529 KILLED ·</span>
+			<span class="tick-item">IGNIS H2 DRILLING: MAY 2026</span>
+			<span class="tick-item">· COULOMB STRESS POSITIVE ·</span>
+			<span class="tick-item">EIA NOT REQUIRED — LEGALLY CONTESTED</span>
+			<span class="tick-item">· 16 VILLAGES AT RISK ·</span>
+			<span class="tick-item">ARSENIC UP TO 10,700 µg/L</span>
+			<span class="tick-item">· YEDISU GAP UNRUPTURED SINCE 1784 ·</span>
+			<span class="tick-item">BEKTAŞ ET AL. 2025: DESTRUCTIVE EARTHQUAKE RISK ·</span>
+			<span class="tick-item">453,494 m² PASTURELAND SEIZED ·</span>
+		</div>
+	</div>
+
+	<!-- HERO -->
+	<header class="hero" id="top">
+		<div class="ripple-wrap" aria-hidden="true">
+			<div class="epicenter"></div>
+			<div class="ripple"></div>
+			<div class="ripple"></div>
+			<div class="ripple"></div>
+			<div class="ripple"></div>
+			<div class="ripple"></div>
+		</div>
+		<div class="hero-content">
+			<p class="hero-eyebrow">
+				Varto · Muş · Karlıova Triple Junction · Eastern Anatolia · 39.17°N
+				41.46°E
+			</p>
+			<h1 class="hero-title">
+				<span class="t-green">VARTO</span>
+				<span class="t-small">Earth · Toprak · Erde</span>
+				<span class="t-red">UNDER PRESSURE</span>
+			</h1>
+			<p class="hero-desc">
+				Bir ABD'li jeotermal enerji şirketi, dünyanın en tehlikeli tektonik
+				kesişme noktasına <em class="r">3.000 metre derinlikte </em> sondaj yapmayı planlıyor; bu
+				durum <em class="r">16 köyü</em>, bir biyolojik çeşitlilik merkezi, <em class="r">2.500 yıllık
+					tarihi</em>
+				ve depremlerle zaten paramparça olmuş bir bölgenin <em class="r">güvenliğini tehdit ediyor</em>.
+			</p>
+			<div class="chips">
+				<span class="chip g">NAFZ + EAFZ + VFZ</span>
+				<span class="chip r">M6.8 QUAKE HISTORY</span>
+				<span class="chip a">3,000m DRILL DEPTH</span>
+				<span class="chip g">16 VILLAGES</span>
+				<span class="chip r">NO EIA</span>
+				<span class="chip a">453,494 m² SEIZED</span>
+				<span class="chip g">URARTIAN HERITAGE</span>
+				<span class="chip r">YEDISU GAP: 240 YRS</span>
+			</div>
+			<div class="scroll-cue">
+				<span>Scroll to explore</span>
+				<div class="scroll-line"></div>
+			</div>
+		</div>
+	</header>
+
+	<!-- NAV -->
+	<nav id="main-nav" aria-label="Section navigation">
+		<ul>
+			<li><a href="#project">Project</a></li>
+			<li><a href="#geology">Geology</a></li>
+			<li><a href="#seismic">Seismic</a></li>
+			<li><a href="#chemical">Chemicals</a></li>
+			<li><a href="#ecology">Ecology</a></li>
+			<li><a href="#history">History</a></li>
+			<li><a href="#voices">Voices</a></li>
+			<li><a href="#actions">Stop It</a></li>
+			<li><a href="#outcomes">Outcomes</a></li>
+		</ul>
+	</nav>
+
+	<!-- ===== PROJECT ===== -->
+	<div class="band band-dark" id="project">
+		<div class="container">
+			<p class="section-tag green">The Project</p>
+			<h2 class="green reveal">IGNISIN Hedefi ne?</h2>
+			<p class="reveal">
+				ABD merkezli <strong>IGNIS H2 Energy Production Inc.</strong>
+				2023 yılının sonlarında Türkiye'deki iştirakini kurdu ve hemen
+				ardından Doğu Anadolu'da dört jeotermal arama ruhsatı aldı. Güzelkent projesi, Varto'nun yaklaşık
+				<em class="r">12 km</em> kuzeybatısında, Varto Havzası ile Bingöl Dağları arasındaki geçiş
+				bölgesinde yer alan <em class="r">40 km²</em>'lik bir alanda bulunuyor. <br>Şirket, 2023–2024
+				yıllarında manyetotellürik (MT) jeofizik araştırmalar gerçekleştirerek
+				hidrotermal rezervuarları tespit etti ve elektrik üretimi için yüksek
+				basınçlı buhar elde etmek amacıyla
+				<strong>3,000 metre derinliği</strong>
+				hedefleyen kavramsal bir model geliştirdi. İlk sondaj:
+				<em class="r">Mayıs 2026</em>.
+			</p>
+			<p class="reveal">
+				Muş Valiliği, toplam <em class="r">453.494 m²</em>'lik etkilenen alanın bir parçası olan
+				<strong>5.560 m²'lik ortak otlak arazisi</strong>. <br>
+				Önemli bir nokta
+				olarak, <em class="r">“ÇED Gerekli Değildir”</em>
+				kararı verildi ve projenin kapsamı ve aktif fay bölgelerine, biyolojik
+				çeşitlilik habitatlarına ve yoğun kırsal topluluklara yakınlığına
+				<em class="r">rağmen Türkiye'nin tam Çevresel Etki Değerlendirmesi süreci atlandı.</em>
+			</p>
+			<div class="stats reveal">
+				<div class="stat">
+					<span class="sn g">40</span><span class="sl">km²'lik ruhsat alanı</span>
+				</div>
+				<div class="stat">
+					<span class="sn r">16</span><span class="sl">köy — Varto</span>
+				</div>
+				<div class="stat">
+					<span class="sn r">6</span><span class="sl">köy — Karlıova</span>
+				</div>
+				<div class="stat">
+					<span class="sn g">3.000</span><span class="sl">metre sondaj derinliği</span>
+				</div>
+				<div class="stat">
+					<span class="sn a">453k</span><span class="sl">m² mera</span>
+				</div>
+				<div class="stat">
+					<span class="sn r">0</span><span class="sl">ÇED gerçekleştirildi</span>
+				</div>
+				<div class="stat">
+					<span class="sn r">2.529</span><span class="sl">ölü — 1966 depremi</span>
+				</div>
+				<div class="stat">
+					<span class="sn a">240 yıl</span><span class="sl">sismik boşluk kırılmamış</span>
+				</div>
+			</div>
+
+			<div class="pq red reveal">
+				<p>
+					<em class="r">Proje, Türkiye Çevre Bakanlığı tarafından zorunlu kılınan kapsamlı
+					ÇED'i atlatmak amacıyla parsellere bölünmüştür.</em> Her bir parsel tek
+					başına eşik değerin altında kalmaktadır; ancak birlikte ele
+					alındığında, sismik açıdan kritik bir bölgede büyük çaplı bir
+					endüstriyel müdahale oluşturmaktadır.
+				</p>
+				<cite>— Parliamentary Questions, CHP MP Evrim Rızvanoğlu to Ministers
+					Yumaklı & Kurum, 2025</cite>
+			</div>
+		</div>
+	</div>
+
+	<!-- ===== GEOLOGY ===== -->
+	<div class="band" id="geology">
+		<div class="container">
+			<p class="section-tag red">Geological Context</p>
+			<h2 class="red reveal">The Karlıova Triple Junction</h2>
+			<p class="reveal">
+				Varto, Dünya’nın tektonik açıdan en karmaşık bölgelerinden birinde yer
+				almaktadır:
+				<strong>Karlıova Üçlü Kavşağı (KTJ)</strong>, gezegenin en yıkıcı üç
+				fay sisteminin birleştiği noktadır. Arap Plakası,
+				<strong>yılda 15±2 mm</strong> hızla kuzeye doğru itilmektedir.
+				Anadolu Plakası, Avrasya'ya göre <strong>yılda 24±2 mm</strong> hızla
+				batıya doğru hareket etmektedir. Bunun sonucunda oluşan kabuk
+				kısalması — <strong>yılda 18–25 mm</strong> — bir yerlerde serbest
+				kalmak zorundadır. Bu, yaşayan hafızada defalarca, felaket
+				boyutlarında gerçekleşmiştir.
+			</p>
+
+			<div class="fault-box reveal">
+				<div class="fault-track">
+					<div class="ft nafz"></div>
+					<div class="ft eafz"></div>
+					<div class="ft vfz"></div>
+					<div class="ft drill"></div>
+				</div>
+				<div class="fault-legend">
+					<div class="fl">
+						<div class="fl-bar" style="background: var(--green)"></div>
+						<span class="fl-text g">North Anatolian Fault Zone (NAFZ) — 38 segments, right-lateral
+							strike-slip. Source: 1939 Erzincan M7.9 (33,000 dead), 1999
+							İzmit M7.6</span>
+					</div>
+					<div class="fl">
+						<div class="fl-bar" style="background: var(--amber)"></div>
+						<span class="fl-text a">East Anatolian Fault Zone (EAFZ) — 580 km, left-lateral, 10
+							mm/yr. Source: 2023 Kahramanmaraş M7.7 + M7.6 (50,000+
+							dead)</span>
+					</div>
+					<div class="fl">
+						<div class="fl-bar" style="background: var(--red)"></div>
+						<span class="fl-text r">Varto Fault Zone (VFZ) — 30 km, right-lateral strike-slip.
+							Three segments: Varto, Leylekdağ, Çayçatı. Source: 1966
+							M6.8</span>
+					</div>
+					<div class="fl">
+						<div class="fl-bar" style="background: rgba(255, 80, 80, 0.7); width: 6px"></div>
+						<span class="fl-text d">⚡ IGNIS drill zone — 3,000m injection into this tectonic
+							nexus. No seismic risk study conducted.</span>
+					</div>
+				</div>
+			</div>
+
+			<p class="reveal">
+				2025 yılında
+				<em>Bulletin of Geophysics and Oceanography</em> dergisinde yayınlanan
+				hakemli bir çalışma (Bektaş, Pırtı, Alkan, Yücel, Büyüksaraç),
+				bölgedeki 10 sürekli çalışan istasyondan elde edilen GNSS uydu
+				verilerini kullanarak, 15 adet yerel M≥5,0 büyüklüğündeki depremin yol
+				açtığı Coulomb gerilme değişikliklerini analiz etti. Çalışma,
+				Bingöl-Karlıova segmentinin tam üzerinde bulunan BIN1 istasyonunun,
+				<strong>2023 depremlerinin ardından</strong> kuzeydoğuya doğru 10,1 cm
+				kaymış olduğunu ortaya koydu; bu istasyon, deprem merkezlerinden 350
+				km uzaklıktadır. Bu istasyon,
+				<em class="r">EAFZ'nin tek kesintisiz bölümünde</em> — kayıtların
+				başladığı günden beri kırılmamış bir fay hattı — yer almaktadır.
+			</p>
+
+			<h3 class="reveal">
+				Yedisu Sismik Boşluğu — 240 Yıllık Birikmiş Enerji
+			</h3>
+			<p class="reveal">
+				Zwischen Bingöl und Karlıova liegt die
+				<strong>Yedisu-Seismische Lücke (YSG)</strong>, die etwa 70 km lang
+				ist und die die Teilabschnitte Kargapazarı, Elmalı, Yedisu und
+				Erzincan der NAFZ umfasst. In dieser Lücke hat sich seit
+				<strong>1784</strong> kein bedeutendes Erdbeben (M≥7) ereignet – das
+				sind über 240 Jahre akkumulierter elastischer Dehnung.
+				Coulomb-Spannungsmodellierungen zeigen starke positive Spannungslappen
+				entlang aller YSG-Segmente. Seismologen sagen voraus, dass diese Lücke
+				brechen wird. Die Einführung von Hochdruck-Flüssigkeitsinjektionen in
+				der Nähe der Verbindungsstelle, an der diese Segmente beginnen, wäre
+				einer der rücksichtslosesten geologischen Eingriffe, die man sich
+				vorstellen kann.
+			</p>
+		</div>
+	</div>
+
+	<!-- ===== SEISMIC ===== -->
+	<div class="band band-red" id="seismic">
+		<div class="container">
+			<p class="section-tag red">Seismic Science</p>
+			<h2 class="red reveal">How Drilling Triggers Earthquakes</h2>
+
+			<div class="wave-box reveal">
+				<div class="wave-label">
+					// SEISMIC SIGNAL — VARTO REGION (CONTINUOUS MONITORING)
+				</div>
+				<svg class="wave-svg" viewBox="0 0 1200 55" xmlns="http://www.w3.org/2000/svg">
+					<polyline
+						points="0,28 40,28 50,18 58,40 62,8 66,52 70,10 74,48 78,28 100,28 110,22 118,36 130,28 145,12 150,48 155,22 160,44 165,28 185,28 195,20 205,38 220,28 235,16 242,46 246,6 250,54 254,28 270,28 280,26 290,32 305,28 320,22 328,40 340,28 360,28 370,18 378,44 384,28 400,28 415,12 422,50 428,18 434,46 438,28 455,28 465,22 475,36 488,28 500,28 510,20 518,42 525,28 545,28 555,16 563,48 568,28 580,28 600,28 0,28 40,28 50,18 58,40 62,8 66,52 70,10 74,48 78,28 100,28 110,22 118,36 130,28 145,12 150,48 155,22 160,44 165,28 185,28 195,20 205,38 220,28 235,16 242,46 246,6 250,54 254,28 270,28 280,26 290,32 305,28 320,22 328,40 340,28 360,28 370,18 378,44 384,28 400,28 415,12 422,50 428,18 434,46 438,28 455,28 465,22 475,36 488,28 500,28 510,20 518,42 525,28 545,28 555,16 563,48 568,28 580,28 600,28"
+						fill="none" stroke="#ff1a1a" stroke-width="1.5" opacity="0.85" />
+				</svg>
+			</div>
+
+			<div class="eq-box reveal">
+				<div class="eq-main">
+					τ<sub>f</sub> = C + μ(σ<sub>n</sub> − P<sub>p</sub>)
+				</div>
+				<div class="eq-sub">
+					τ<sub>f</sub> = shear stress for failure &ensp;·&ensp; C = rock
+					cohesion &ensp;·&ensp; μ = friction coefficient &ensp;·&ensp; σ<sub>n</sub>
+					= normal stress &ensp;·&ensp; P<sub>p</sub> = pore fluid pressure
+				</div>
+				<div class="eq-warn">
+					↑ INJECT FLUID AT 3,000m → ↑ P<sub>p</sub> → ↓
+					(σ<sub>n</sub>−P<sub>p</sub>) → LOWER FAILURE THRESHOLD → FAULT
+					RUPTURE
+				</div>
+			</div>
+
+			<p class="reveal">
+				Bu teorik bir durum değildir. Jeotermal işletmeciler kullanılmış
+				sıvıyı yeraltına yeniden enjekte ettiklerinde, fay düzlemlerinin
+				içindeki gözenek basıncını (P<sub>p</sub>) artırırlar. Bu durum,
+				fayların kaymasını engelleyen sürtünme bariyerini mekanik olarak
+				azaltır. Varto Fay Bölgesi halihazırda kritik seviyeye yakın gerilme
+				düzeylerindedir — Bektaş ve ark. (2025) tarafından hazırlanan Coulomb
+				gerilme haritaları,
+				<strong>5–20 km arasındaki her derinlik aralığında pozitif gerilim
+					lobları</strong>
+				KTJ boyunca. Coulomb gerilimindeki sadece
+				<strong>0,1 ila 1 bar</strong>'lık değişiklikler, hazırlıklı faylarda
+				depremleri tetiklemek için yeterlidir.
+			</p>
+
+			<div class="tl" id="seismic-tl">
+				<div class="tl-item d">
+					<div class="tl-yr">7 Mart 1966 — M5.6</div>
+					<div class="tl-body">
+						Varto'da bir ön sarsıntı meydana geldi. 14 kişi öldü, 75 kişi
+						yaralandı. Geleneksel taş evler ağır hasar gördü. Toprak ilk
+						uyarısını verdi.
+					</div>
+				</div>
+				<div class="tl-item d">
+					<div class="tl-yr">
+						19 Ağustos 1966 — M6.8 · INTENSITY IX (VIOLENT)
+					</div>
+					<div class="tl-body">
+						<strong>2.529 kişi hayatını kaybetti.</strong> 1.500 kişi
+						yaralandı. 19.013 bina yıkıldı veya ağır hasar gördü. 1966 yılında
+						dünyada meydana gelen en ölümcül deprem. Varto kasabası yerle bir
+						oldu. Yüzey çatlakları Kuzeybatıya doğru uzanan üç paralel bölgede
+						ortaya çıktı; bu bölgeler Kuzey Anadolu fay sistemi ile
+						bağlantılıydı (USGS Wallace, 1968). Dört ildeki yaklaşık 140 köy
+						yerle bir oldu.
+					</div>
+				</div>
+				<div class="tl-item d">
+					<div class="tl-yr">22 Mayıs 1971 — M6.8</div>
+					<div class="tl-body">
+						Bingöl depremi. Karlıova ve çevresindeki köylerde ciddi hasar —
+						tüm KTJ bölgesinin ölümcül derecede sismik olarak aktif olduğunu
+						teyit eden çifte felaket.
+					</div>
+				</div>
+				<div class="tl-item w">
+					<div class="tl-yr">2003–2021 — Bingöl Region</div>
+					<div class="tl-body">
+						Kayıtlı veriler döneminde KTJ çevresinde M≥3,0 büyüklüğünde 2.662
+						deprem kaydedilmiştir. Bingöl bölgesinde yaklaşık her 11 yılda bir
+						M6 ve üzeri büyüklükte depremler meydana gelmektedir. Türkiye’nin
+						Ege bölgesinde jeotermal sıvı çıkarımı başladıktan sonra daha
+						küçük ölçekli depremlerin (M&lt;4,5) arttığı belgelendi (Ozcelik,
+						2022).
+					</div>
+				</div>
+				<div class="tl-item d">
+					<div class="tl-yr">6 Şubat 2023 — M7.7 + M7.6 Kahramanmaraş</div>
+					<div class="tl-body">
+						EAFZ, Varto'nun 350 km güneyinde feci bir şekilde yırtıldı.
+						<strong>50.000'den fazla kişi hayatını kaybetti.</strong> 550.000
+						ev yıkıldı. GNSS verileri, BIN1 istasyonunun (Bingöl–Karlıova)
+						10,1 cm kuzeydoğuya kaymış olduğunu gösteriyor — bu da gerilimin
+						büyük kırılmalardan bu kadar uzağa aktarıldığını kanıtlıyor.
+						Kırılmamış Bingöl-Karlıova segmenti daha fazla gerilimi emiyor.
+						Bilim adamları gelecekteki kırılma potansiyeli konusunda uyarıyor.
+					</div>
+				</div>
+				<div class="tl-item s">
+					<div class="tl-yr">2025 — Scientific Warning Issued</div>
+					<div class="tl-body">
+						Bektaş ve arkadaşları,
+						<em>Bulletin of Geophysics and Oceanography</em> dergisinde şu
+						bulguları yayınladı: Coulomb gerilimi haritaları, Erzincan-Pülümür
+						ile Tercan-Kiğı arasında yüksek gerilim yoğunlaşması olduğunu
+						gösteriyor. Çalışma şu sonuca varıyor:
+						<strong style="color: var(--green)">"Büyük fay sistemleri, KTJ bölgesinde yıkıcı bir depremi
+							tetikleyebilir."</strong>
+						IGNIS, Mayıs 2026'da sondaj çalışmalarına başlanacağını duyurdu.
+						Sismik risk çalışması yapılmadı.
+					</div>
+				</div>
+			</div>
+
+			<h3 class="reveal">The Aegean Precedent — What Actually Happened</h3>
+			<p class="reveal">
+				2022 yılında
+				<em>Environmental Science and Pollution Research</em> dergisinde
+				(Ozcelik, Süleyman Demirel Üniversitesi) yayınlanan hakemli bir
+				çalışma, Türkiye’nin en büyük jeotermal alanı olan ve 60 santralin
+				bulunduğu Büyük Menderes Graben’i inceledi. Çalışma, santral sayısının
+				artmasıyla birlikte 2000 yılından sonra mikro sismik olayların
+				(M&lt;4,5) hızla arttığını ortaya koydu; bu durum, akışkan kaynaklı
+				sismik aktiviteyle tutarlıdır. Ancak, BMG bir uzamalı graben olup,
+				jeolojik açıdan KTJ'den çok daha sakin bir bölgedir. Risk
+				karşılaştırması çarpıcıdır:
+			</p>
+
+			<div style="overflow-x: auto" class="reveal">
+				<table class="ct">
+					<thead>
+						<tr>
+							<th>Faktör</th>
+							<th>Ege BMG</th>
+							<th>Varto / Karlıova</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td>Tektonik rejim</td>
+							<td class="td-ok">Genişlemesel graben</td>
+							<td class="td-bad">Üçlü kavşak sıkışması</td>
+						</tr>
+						<tr>
+							<td>Aktif fay sistemleri</td>
+							<td class="td-warn">1 (Batı Anadolu)</td>
+							<td class="td-bad">3 yakınsak (NAFZ+EAFZ+VFZ)</td>
+						</tr>
+						<tr>
+							<td>Tarihsel can kaybı</td>
+							<td class="td-warn">Orta şiddette olaylar</td>
+							<td class="td-bad">M6,8+ → 2.500+ ölü</td>
+						</tr>
+						<tr>
+							<td>Coulomb gerilme durumu</td>
+							<td class="td-warn">Orta derecede pozitif</td>
+							<td class="td-bad">
+								Yüksek derecede pozitif, tüm derinlikler 5–20 km
+							</td>
+						</tr>
+						<tr>
+							<td>Sismik boşluk mevcut mu?</td>
+							<td class="td-ok">Hayır</td>
+							<td class="td-bad">Evet — 240 yıl (Yedisu Boşluğu)</td>
+						</tr>
+						<tr>
+							<td>Plaka yakınsaması</td>
+							<td class="td-ok">Uzatma ~3 mm/yıl</td>
+							<td class="td-bad">Sıkıştırma 18–25 mm/yıl</td>
+						</tr>
+						<tr>
+							<td>ÇED durumu</td>
+							<td class="td-warn">Santrale göre değişir</td>
+							<td class="td-bad">“Gerekli değil” — tüm segmentler</td>
+						</tr>
+						<tr>
+							<td>Bağımsız risk çalışması</td>
+							<td class="td-warn">Bazı tesisler</td>
+							<td class="td-bad">Yapılmamıştır</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+
+	<!-- ===== CHEMICALS ===== -->
+	<div class="band band-dark" id="chemical">
+		<div class="container">
+			<p class="section-tag amber">Chemical Hazards</p>
+			<h2 class="white reveal">3.000 Metre'nin Yayınladığı Şeyler</h2>
+			<p class="reveal">
+				Derinliklerdeki jeotermal sıvılar son derece etkili kimyasal
+				çözücülerdir — bu sıvılar, ana kayaçlardan ağır metaller, metaloidler
+				ve toksik bileşikleri çıkarır. Yüzeye çıkarıldıktan sonra yeniden
+				enjekte edildiklerinde veya döküldüklerinde, bu bileşikler içme
+				suyuna, toprağa ve havaya karışır. Aşağıdaki konsantrasyonlar,
+				Türkiye'nin faaliyetteki Ege jeotermal santrallerinde
+				<strong>gerçekten ölçülmüştür</strong> (Çevre ve Kentsel Dönüşüm
+				Bakanlığı, 2020; Özçelik, 2022):
+			</p>
+
+			<div class="chem reveal">
+				<div class="ce danger">
+					<span class="ce-sym">As</span><span class="ce-nm">Arsenik</span><span class="ce-val">8.900–10.700
+						µg/L</span>
+				</div>
+				<div class="ce danger">
+					<span class="ce-sym">H₂S</span><span class="ce-nm">Hidrojen Sülfür</span><span class="ce-val">7,10
+						µg/m³ ortalama</span>
+				</div>
+				<div class="ce danger">
+					<span class="ce-sym">B</span><span class="ce-nm">Bor</span><span class="ce-val">24,5–90,18
+						mg/L</span>
+				</div>
+				<div class="ce danger">
+					<span class="ce-sym">Pb</span><span class="ce-nm">Kurşun</span><span class="ce-val">Güvenli seviye
+						yok</span>
+				</div>
+				<div class="ce warn">
+					<span class="ce-sym">Hg</span><span class="ce-nm">Cıva</span><span class="ce-val">Filtre
+						gereklidir</span>
+				</div>
+				<div class="ce warn">
+					<span class="ce-sym">SO₂</span><span class="ce-nm">Kükürt Dioksit</span><span class="ce-val">→ Asit
+						yağmuru</span>
+				</div>
+				<div class="ce warn">
+					<span class="ce-sym">Na⁺</span><span class="ce-nm">Sodyum</span><span class="ce-val">Toprak
+						alkalileşmesi</span>
+				</div>
+				<div class="ce warn">
+					<span class="ce-sym">Li</span><span class="ce-nm">Lityum</span><span class="ce-val">Suda
+						toksisite</span>
+				</div>
+			</div>
+
+			<h3 class="reveal">Saurer Regen über dem Bingöl-Gebirge</h3>
+			<p class="reveal">
+				Wenn H₂S in die Atmosphäre gelangt, reagiert es mit Feuchtigkeit zu
+				Schwefelsäure – der klassische Mechanismus des sauren Regens. In der
+				Provinz Aydın (Ägäis-Ebene) ergaben Luftmessungen einen
+				Durchschnittswert von 7,10 µg/m³ H₂S – genau auf dem
+				30-Minuten-Grenzwert der WHO für Geruchsbelästigung. Für die
+				hochgelegenen Almwiesen von Varto, die während der zunehmenden
+				Sommerdürren die letzten Feuchtigkeitsrefugien darstellen und seltene
+				endemische Flora beherbergen, verursacht die saure Deposition eine
+				irreversible Bodenversauerung und den Verlust von pH-empfindlichen
+				Pflanzengemeinschaften. Diese Wiesen können nicht in Sicherheit
+				gebracht werden.
+			</p>
+
+			<h3 class="reveal">Murat Nehri ve Fırat</h3>
+			<p class="reveal">
+				Varto havzası, <strong>Murat Nehri</strong>'ne dökülmektedir; bu
+				nehir, birçok ülkede tarımı destekleyen bir nehir sistemi olan Fırat
+				Nehri'nin başlıca bir koludur. Jeotermal atık sularının deşarjı, bu
+				sisteme arsenik, bor ve ağır metaller katarak, kirliliğin proje
+				bölgesinin çok ötesine yayılmasına neden olacaktır. Varto'nun daha dik
+				topografyası, yüzey sızıntılarının kontrol altına alınmasını düz Ege
+				ovalarına kıyasla önemli ölçüde zorlaştırmaktadır; bu ovalarda
+				sızıntılar zaten doğrudan nehirlere ulaşmaktadır (Ozçelik tarafından
+				Büyük Menderes'e deşarj edilen termal suyun fotoğrafik kanıtlarıyla
+				belgelenmiştir).
+			</p>
+		</div>
+	</div>
+
+	<!-- ===== ECOLOGY ===== -->
+	<div class="band" id="ecology">
+		<div class="container">
+			<p class="section-tag green">Ekoloji</p>
+			<h2 class="green reveal">Sondajın Hedefindeki Önemli Bir Doğa Alanı</h2>
+			<p class="reveal">
+				Proje alanı, Türkiye’nin sınıflandırılmış
+				<strong>Önemli Doğa Alanları (ÖDA)</strong>
+				kategorisi kapsamındadır — bu, olağanüstü biyolojik çeşitliliğin bir
+				göstergesidir. Muş Alparslan Üniversitesi tarafından yapılan botanik
+				araştırmalar, başka hiçbir yerde bulunmayan endemik türleri
+				belgelemiştir. Burada geliştirilen sıradan bir arazi değil; tek
+				seferlik bir endüstriyel madencilik faaliyetine açılan, yeri
+				doldurulamaz bir ekolojik kütüphanedir.
+			</p>
+
+			<div class="risk-grid reveal">
+				<div class="rc c3">
+					<span class="rc-icon">🌿</span>
+					<div class="rc-title">Endemik Bitki Örtüsü</div>
+					<div class="rc-body">
+						<em>Achillea schischkinii</em> (Deli civanperçemi) ve
+						<em>Pulicaria armena</em> (Boz yarotu) — bozulmamış Muş-Varto
+						koridoruna özgü polen taşıyıcılar ve geleneksel tıp bitkileri. Yol
+						açma çalışmaları + ekipman + bor kirliliği = başka bir yuvası
+						olmayan türler için kalıcı habitat kaybı.
+					</div>
+				</div>
+				<div class="rc c2">
+					<span class="rc-icon">🐺</span>
+					<div class="rc-title">Yaban Hayatı ve Göç</div>
+					<div class="rc-body">
+						Kurtlar, boz ayılar, yırtıcı kuşlar ve göçmen kuşlar, volkanik
+						platoların üzerindeki termal yükseliş akımlarını kullanır. “Dağ
+						çayırları” yaz kuraklığı sırasında nemin korunduğu son
+						sığınaklardır. Bu arazinin endüstriyel parçalanması — kimyasal
+						sızıntılar olmasa bile — yaban hayatı koridorlarını kalıcı olarak
+						yok eder.
+					</div>
+				</div>
+				<div class="rc c3">
+					<span class="rc-icon">🌳</span>
+					<div class="rc-title">Saf Meşe Ormanı</div>
+					<div class="rc-body">
+						Yerli meşe (saf meşe) ormanları erozyonu önler, karbon yutağı
+						görevi görür ve bölgesel besin ağının temelini oluşturur. 3.000
+						metrelik sondaj ekipmanı için açılan yol, bu ağaç topluluklarını
+						ikiye bölmektedir. Kesilen ormanlar, insan ömrü boyunca doğal
+						orman haline geri dönmez — destekledikleri biyolojik çeşitlilik
+						dağılır veya yok olur.
+					</div>
+				</div>
+				<div class="rc c4">
+					<span class="rc-icon">🐄</span>
+					<div class="rc-title">Agropastoral Ortak Alanlar</div>
+					<div class="rc-body">
+						453.494 m²'lik ortak otlak arazisi (mera) yasal olarak endüstriyel
+						kullanım amacıyla yeniden sınıflandırılıyor. Burası özel tarım
+						arazisi değil — Kürt-Alevi göçebe hayvancılığının nesiller boyu
+						sürdürdüğü kolektif mülkiyetli ortak alanlardır. Bor kirliliği
+						veya fiziksel bozulma, 22'den fazla köyün geçim kaynağının
+						temelini aynı anda ortadan kaldırmaktadır.
+					</div>
+				</div>
+				<div class="rc c1">
+					<span class="rc-icon">🌊</span>
+					<div class="rc-title">Fırat Havzası</div>
+					<div class="rc-body">
+						Varto'nun akarsuları Murat Nehri'ne → Fırat Nehri'ne dökülür. Bu
+						sisteme 10.700 µg/L arsenik girmesi, Muş, Bingöl ve nehrin
+						aşağısındaki illerde tarımı etkileyen sınır ötesi kirliliğe yol
+						açmaktadır. Arsenik alüvyon akiferlerine girdiğinde, insan zaman
+						ölçeğinde esasen kalıcı hale gelir.
+					</div>
+				</div>
+				<div class="rc c5">
+					<span class="rc-icon">🏺</span>
+					<div class="rc-title">Urartu Mirası</div>
+					<div class="rc-body">
+						Kayalıdere kalesi (Varto'ya 20 km uzaklıkta), 1965 yılında
+						kazılmış olup, Kral Sarduri II (MÖ 764–735) dönemine aittir ve
+						gelişmiş metalurji, şarap üretimi ve tapınak mimarisini ortaya
+						koymaktadır. Varto havzasında henüz kazılmamış höyükler ve
+						nekropoller bulunmaktadır. Sondajdan kaynaklanan sismik
+						dalgalanmalar antik taş yapılarında yapısal yorgunluğa neden
+						olmaktadır. Sondaj izni verilmeden önce herhangi bir arkeolojik
+						inceleme yapılmamıştır.
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- ===== HISTORY ===== -->
+	<div class="band band-dark" id="history">
+		<div class="container">
+			<p class="section-tag red">Tarihsel Derinlik</p>
+			<h2 class="red reveal">Her Şeye Dayanmış Bir Halk</h2>
+			<p class="reveal">
+				Varto, kalkınmayı bekleyen boş bir arazi değildir. Burası, binlerce
+				yıldır kesintisiz bir insan uygarlığının var olduğu bir yerdir —
+				volkanlar, fay hatları, krallıklar ve hayatta kalma mücadelesiyle
+				şekillenmiş bir yer. Bu bağlamı anlamak, JES projesinin neden bir
+				enerji yatırımı olarak değil, son bir saldırı olarak algılandığını
+				anlamaktan ayrı düşünülemez.
+			</p>
+			5
+
+			<div class="tl" id="hist-tl">
+				<div class="tl-item s">
+					<div class="tl-yr">MÖ 9.–7. yüzyıl — Urartu Krallığı</div>
+					<div class="tl-body">
+						Varto havzası, Van Krallığı’nın stratejik bir sınır bölgesi olarak
+						işlev görmüştür. Kayalıdere’de, Kral Sarduri II döneminde gelişmiş
+						bronz işçiliği, şarap mahzenleri ve dini mimari örnekleri ortaya
+						çıkarılmıştır. Volkanik platonun verimliliği ve kaynak suları —
+						IGNIS'in şu anda hedeflediği hidrotermal sistem — bu medeniyeti
+						ayakta tutmuştur.
+					</div>
+				</div>
+				<div class="tl-item s">
+					<div class="tl-yr">20. Yüzyıl Öncesi — Kürt-Alevi Toplulukları</div>
+					<div class="tl-body">
+						Kürt-Alevi toplulukları rızalık kültürünü oluşturur: toplumsal
+						rıza, ortak mülkiyet, mevsimlik göç. Kutsal hac yerleri (ocaklar)
+						ve ortak otlaklar, bu medeniyetin fiziksel altyapısını oluşturur.
+						Bingöl Dağları sadece arka plan manzarası değildir — bu dağlar,
+						topluluğun yaşayan manevi ve ekonomik alanıdır.
+					</div>
+				</div>
+				<div class="tl-item d">
+					<div class="tl-yr">19 Ağustos 1966 — Deprem</div>
+					<div class="tl-body">
+						<strong>2.529 kişi hayatını kaybetti.</strong> Dört ilde yaklaşık
+						140 köy yere serildi. Varto kasabası neredeyse yüzünden silindi.
+						Hayatta kalanlar on yıllar boyunca yeniden inşa ettiler. Bu, uzak
+						bir tarihsel dipnot değildir — bugün Varto'da yaşayan insanlar bu
+						depremden kurtulmuş ya da onun gölgesinde büyümüşlerdir.
+						Sondajlara karşı olmaları, fiziksel olarak hafızalarına kök
+						salmıştır.
+					</div>
+				</div>
+				<div class="tl-item d">
+					<div class="tl-yr">1990'lar — Silahlı Çatışma ve Göç</div>
+					<div class="tl-body">
+						Türkiye'nin doğusundaki çatışmalar, köylerin tahliyesine neden
+						oldu. Aileler Türkiye ve Avrupa'daki diasporaya (Almanya, Fransa,
+						Belçika, Hollanda, İsveç) dağıldı. Bugün tahminen 500.000'den
+						fazla Vartolu yurtdışında yaşıyor. Bu yerinden edilme, bölgenin
+						nüfusunu azaltıyor ve kalan toplulukları, sandıkta yerel direnişle
+						karşılaşmayan dış sömürücü çıkarların etkisine karşı daha
+						savunmasız hale getiriyor.
+					</div>
+				</div>
+				<div class="tl-item w">
+					<div class="tl-yr">
+						2000'ler–2010'lar — Sistematik Ekolojik Baskı
+					</div>
+					<div class="tl-body">
+						HES (hidroelektrik) projeleri nehirlerin yönünü değiştirmeye
+						başlar. Aktivistler buna “damarları kesmek” diyor. Ardından taş
+						ocağı ve madencilik ruhsatları dağları kuşatır. JES projesi üçüncü
+						dalga olarak gelir. Varto Ekoloji Platformu bunu açıkça dile
+						getirir: nehirler HES'e, topraklar JES'e, dağlar madenlere —
+						yaşayan bir manzarayı koordineli bir şekilde endüstriyel bir alana
+						dönüştürme.
+					</div>
+				</div>
+				<div class="tl-item d">
+					<div class="tl-yr">2023–2025 — Resistance Grows</div>
+					<div class="tl-body">
+						IGNIS obtains its license in 2023. Communities learn of it months
+						later — reportedly after company officials told villagers they
+						were conducting earthquake research. By 2025, protests erupt from
+						Varto to İzmir to Kocaeli. DEM Party and CHP submit parliamentary
+						questions. Legal challenges filed against EIA exemption. A miting
+						(mass rally) is announced for Varto, April 24, 2025.
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- ===== VOICES ===== -->
+	<div class="band" id="voices">
+		<div class="container">
+			<p class="section-tag white">Sesler</p>
+			<h2 class="white reveal">Kimler Sesini Yükseltiyor</h2>
+
+			<div class="bilingual reveal">
+				<div>
+					<div class="bilingual-label">English</div>
+					<div class="bilingual-en">
+						"In this region, JES projects carry the scientifically documented
+						risk of triggering seismic activity by disrupting underground
+						balance. It is against reason and science to invite new disaster
+						onto a people already fighting for their lives on fault lines."
+					</div>
+				</div>
+				<div class="bilingual-tr">
+					<div class="bilingual-label">Türkçe</div>
+					<div>
+						"Bu bölgede, JES projeleri yer altı dengesini bozarak bilimsel
+						olarak depremselliği tetikleme riski taşımaktadır. Fay hatları
+						üzerinde yaşam mücadelesi veren bir halkın tepesine, yeni felaket
+						davetiyeleri çıkarmak akıl ve bilim dışıdır."
+					</div>
+				</div>
+			</div>
+			<p style="
+			font-family: var(--mono);
+			font-size: 0.6rem;
+			color: var(--text-muted);
+			margin-top: -1rem;
+			margin-bottom: 2rem;
+			letter-spacing: 0.1em;
+		  " class="reveal">
+				— Sıla Yıldız, Varto Ecology Platform Youth Council
+			</p>
+
+			<div class="pq green reveal">
+				<p>
+					Proje alanı, Türkiye’nin biyolojik çeşitlilik açısından önemli doğal
+					alanları arasında yer almaktadır. Doğru tarım ve hayvancılık
+					politikalarıyla korunmak yerine, yerel halka hiçbir fayda sağlamayan
+					yağma projeleriyle tahrip edilmekte ve bu projeler halkın havasını,
+					suyunu ve doğasını zehirlemektedir.
+				</p>
+
+				<cite>— Varto Ecology Platform, Official Statement 2025</cite>
+			</div>
+
+			<div class="pq red reveal">
+				<p>
+					Varto'daki sorun, bölgedeki doğanın korunmasıdır. Yenilenebilir
+					enerji önemlidir, ancak halka danışılmadan kapalı kapılar ardında
+					yürütülen işlemlerin hukuki dayanağı yoktur. İki proje. Halkın
+					bilgisi yok. Etkilenen 16 köy. Bu proje hukuka aykırıdır.
+				</p>
+				<cite>— Ali Haydar Konca, Former EU Affairs Minister</cite>
+			</div>
+
+			<div class="pq green reveal">
+				<p>
+					Doğal yapıya verilecek herhangi bir geri dönüşü olmayan zarar,
+					sadece ekosistemi değil, binlerce yıllık kültürel hafızayı da
+					etkileyecektir. Proje alanı, insanların yüzyıllardır ritüeller
+					gerçekleştirdiği ve manevi bağlarını sürdürdüğü kutsal mekanları
+					barındırmaktadır.
+				</p>
+				<cite>— Bahar Koç, İzmir Ecology Platform</cite>
+			</div>
+		</div>
+	</div>
+
+	<!-- ===== ACTIONS ===== -->
+	<div class="band band-dark" id="actions">
+		<div class="container">
+			<p class="section-tag green">Pathways Forward</p>
+			<h2 class="green reveal">Bunu Şu An Durdurabilecek Neler Var?</h2>
+			<p class="reveal">
+				Sondaj çalışmaları henüz başlamadı. Hukuki, bilimsel, siyasi ve
+				toplumsal birçok yol mevcut. Her biri önemli. Bu fırsat penceresi
+				Mayıs 2026’ya kadar açık.
+			</p>
+
+			<div class="action-grid reveal">
+				<div class="ac">
+					<div class="ac-num">01</div>
+					<div class="ac-title">Tam ÇED Talebi</div>
+					<div class="ac-body">
+						“ÇED Gerekmiyor” kararı hukuken itiraz edilmiştir. Danıştay (6.
+						Daire), benzer muafiyetler konusunda 2022/7584 sayılı durdurma
+						kararı vermiştir. Proje, ÇED Yönetmeliği Ek-1 Madde 42 uyarınca
+						değerlendirilmelidir — bu madde, herhangi bir sondaj çalışması
+						başlamadan önce tam kapsamlı kamu çevre duruşmaları ve bağımsız
+						bilimsel inceleme yapılmasını gerektirmektedir.
+					</div>
+				</div>
+				<div class="ac">
+					<div class="ac-num">02</div>
+					<div class="ac-title">Bağımsız Sismik Çalışma</div>
+					<div class="ac-body">
+						Uluslararası yer bilimcileri (USGS, Avrupa Sismoloji Komisyonu,
+						KOERI) tarafından yapılan bağımsız bir değerlendirme, VFZ ve YSG
+						için Coulomb gerilme modellemesi kullanılarak belirli sondaj
+						koordinatlarındaki indüklenmiş sismik aktivite olasılığını nicel
+						olarak belirlemelidir. Bu, dünya çapında sismik bölgelerdeki
+						jeotermal projeler için standart bir uygulamadır.
+					</div>
+				</div>
+				<div class="ac">
+					<div class="ac-num">03</div>
+					<div class="ac-title">Parlamento Baskısı</div>
+					<div class="ac-body">
+						DEM ve CHP milletvekilleri şimdiden iki bakana resmi soru önergesi
+						sundu. Vatandaşlar, yurtdışı Türkler ve Avrupa Parlamentosu
+						destekçileri bu çabayı güçlendirebilir: seçmen mektupları, insan
+						hakları ve çevre hukuku ile ilgili AB Parlamento soruları ve
+						projenin ilerletilmesini siyasi açıdan maliyetli hale getiren
+						uluslararası medya ilgisi.
+					</div>
+				</div>
+				<div class="ac">
+					<div class="ac-num">04</div>
+					<div class="ac-title">Doğa Alanını Koruyun</div>
+					<div class="ac-body">
+						Önemli Doğa Alanı statüsünün resmi olarak yasal koruma altına
+						alınması için başvuruda bulunun. Yasal olarak sınıflandırılmış
+						ortak mera (otlak) alanlarının özel endüstriyel kullanım için
+						dönüştürülmesine itiraz edin — bu, hem Mera Kanunu'na hem de
+						sağlıklı bir çevreye sahip olma anayasal hakkına (Türkiye
+						Anayasası, Madde 56) aykırıdır.
+					</div>
+					5
+				</div>
+				<div class="ac">
+					<div class="ac-num">05</div>
+					<div class="ac-title">
+						Toplumun Önceden ve Bilgilendirilmiş Onayı (FPIC)
+					</div>
+					<div class="ac-body">
+						BM’nin Önceden, Bilgilendirilmiş ve Gönüllü Onay ilkeleri,
+						herhangi bir projenin devam etmesinden önce Varto’daki 22’den
+						fazla köyün aktif ve samimi bir şekilde onay vermesini şart
+						koşmaktadır. Sakinlere bunun “deprem araştırması” olduğu
+						söylendiği bildirildi. Bu, herhangi bir zımni onayı geçersiz kılan
+						aldatıcı bir uygulamadır. Uluslararası insan hakları kuruluşlarına
+						resmi şikayetler iletilebilir.
+					</div>
+				</div>
+				<div class="ac">
+					<div class="ac-num">06</div>
+					<div class="ac-title">Diaspora ve Uluslararası Etki</div>
+					<div class="ac-body">
+						500.000'den fazla Vartolu, Almanya, Fransa, Belçika ve Hollanda'da
+						yaşamaktadır. Avrupa parlamentoları, Türk diaspora örgütleri ve
+						uluslararası çevre STK'ları bu konuyu uluslararası düzeye
+						taşıyabilir — Türkiye'de yeterli güvenlik önlemleri almadan
+						faaliyet gösteren bir ABD şirketi üzerinde itibar ve diplomatik
+						baskı oluşturabilir.
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- ===== OUTCOMES ===== -->
+	<div class="band" id="outcomes">
+		<div class="container">
+			<p class="section-tag amber">İki Gelecek</p>
+			<h2 class="white reveal">Bundan Sonra Ne Olacağı Eylemlere Bağlı</h2>
+			<p class="reveal">
+				Bunlar varsayımsal senaryolar değil. Bunlar, şu anda bir bakanlık, bir
+				yabancı şirket ve toprağı için mücadele eden bir topluluk tarafından
+				yapılan seçimlerin doğrudan sonuçlarıdır. Bir gelecek bilimsel
+				zorunluluk ve insan hakları üzerine yazılmıştır. Diğeri ise
+				şirketlerin kaynak sömürüsü ve siyasi atalet üzerine yazılmıştır.
+			</p>
+
+			<div class="outcome-grid reveal">
+				<div class="oc bad">
+					<div class="oc-title">⚡ Sondaj Devam Ederse</div>
+					<ul class="oc-list">
+						<li>
+							VFZ'ye 3.000 m derinlikte yüksek basınçlı sıvı enjeksiyonu —
+							kritik eşiğe yakın Coulomb gerilme sistemi yapay olarak
+							dengesizleştirildi
+						</li>
+						<li>
+							Varto Fayı Bölgesi veya Yedisu Sismik Boşluğu üzerinde
+							indüklenmiş sismiklik riski (240 yıllık birikmiş enerji)
+						</li>
+						<li>
+							24–90 mg/L seviyesinde bor, mera arazisine karışır —
+							fitotoksisite eşiğinin 15–45 katı — kalıcı mahsul hasarı
+						</li>
+						<li>
+							10.700 µg/L'ye varan arsenik Murat Nehri'ne → Fırat havzasına
+							ulaşır
+						</li>
+						<li>
+							Önemli Doğal Alan biyolojik çeşitliliğinin kalıcı kaybı —
+							endemik türler, alpin çayırları
+						</li>
+						<li>
+							22'den fazla köyden hayvancılıkla uğraşan ailelerin zorla
+							yerinden edilmesi
+						</li>
+						<li>
+							Kazılmamış Urartu arkeolojik mirası kayıt altına alınmadan yok
+							edildi
+						</li>
+						<li>
+							Demokratik emsal: topluluğun bilgisi veya rızası olmadan
+							onaylanan projeler
+						</li>
+						<li>
+							Kürt-Alevi topluluğunun kültürel manzarası ve kutsal alanları
+							silindi
+						</li>
+					</ul>
+				</div>
+				<div class="oc good">
+					<div class="oc-title">✓ Proje Durdurulursa</div>
+					<ul class="oc-list">
+						<li>
+							Varto Fayı Bölgesi etkilenmez — tarihsel olarak felaketlere yol
+							açmış bir sistemde ek bir sismik risk ortaya çıkmaz
+						</li>
+						<li>
+							453.494 m²'lik ortak otlak, nesiller boyu süren tarım
+							toplulukları için korunur
+						</li>
+						<li>
+							Önemli Doğal Alan biyolojik çeşitliliğini korur — endemik
+							bitkiler, alpin çayırları, yaban hayatı koridorları
+						</li>
+						<li>
+							Murat Nehri havzası jeotermal kimyasal kirlenmeden korunur
+						</li>
+						<li>
+							Gelecekteki herhangi bir geliştirme öncesinde kazılmamış
+							alanların arkeolojik araştırması
+						</li>
+						<li>
+							Demokratik emsal: topluluk rızası, gerçek kamu yararı olarak
+							kabul edildi
+						</li>
+						<li>
+							Tam ÇED gerçekleştirildi → proje ya iptal edildi ya da gerçek
+							koruma önlemleriyle temelden yeniden tasarlandı
+						</li>
+						<li>
+							Kasıtlı bir kaçınma taktiği olarak ÇED'in parçalanmasına karşı
+							yasal çerçeve güçlendirildi
+						</li>
+						<li>
+							Varto, agro-turizm, koruma alanı ve sürdürülebilir hayvancılık
+							bölgesi olarak — gerçek yerel kalkınma
+						</li>
+					</ul>
+				</div>
+			</div>
+			<script>
+				var f = document.getElementById("canva-frame");
+				var t = setTimeout(function () {
+					document.getElementById("canva-fallback").style.display = "flex";
+					f.style.display = "none";
+				}, 8000);
+				f.onload = function () {
+					clearTimeout(t);
+				};
+			</script>
+			<div class="pq green reveal">
+				<p>
+					Varto JES projesi, şu anki haliyle sürdürülebilir kalkınma
+					kriterlerini karşılamamaktadır. Proje, jeolojik güvenlik, çevresel
+					adalet ve demokratik katılım gibi temel ilkeleri göz ardı
+					etmektedir. Yerel halkın projenin tamamen durdurulması yönündeki
+					talepleri duygusal gerekçelere dayanmamaktadır; bu talepler, Varto
+					havzasının coğrafi ve tarihsel gerçeklikleriyle desteklenmektedir.
+				</p>
+				<cite>— Integrated Assessment of the Varto Geothermal Energy Project
+					(Scientific Review, 2025)</cite>
+			</div>
+		</div>
+	</div>
+
+	<!-- FOOTER -->
+	<footer>
+		<div class="footer-title">VARTO IS NOT OWNERLESS</div>
+		<p style="
+		  font-family: var(--serif);
+		  font-style: italic;
+		  color: var(--text-dim);
+		  font-size: 1rem;
+		  margin-bottom: 1.5rem;
+		">
+			Varto sahipsiz değildir. Toprağımızı ve suyumuzu şirketlerin kâr hırsına
+			kurban etmeyeceğiz.
+		</p>
+		<div class="footer-sources">
+			<p>
+				SCIENTIFIC · Bektaş et al. 2025 (Bull. Geoph. Ocean.) · Ozcelik 2022
+				(Environ. Sci. Pollut. Res.) · USGS Wallace 1968 · Sançar et al. 2015
+				(Tectonophys.)
+			</p>
+			<p>
+				JOURNALISTIC · Evrensel · Dicle TV · Muş Sarı Haber · Kısa Dalga · CHP
+				Official · Bianet · Rudaw · Birgün
+			</p>
+			<p>
+				COMMUNITY · Varto Ecology Platform · VADEF · Kocaeli Vartolular
+				Platform · İzmir Ecology Platform
+			</p>
+			<br />
+			<p class="footer-green">
+				COMPILED IN THE PUBLIC INTEREST · APRIL 2025 · varto-black.vercel.app
+			</p>
+		</div>
+	</footer>
+
+	<script>
+		/* ===== CANVAS SEISMIC BACKGROUND ===== */
+		(function () {
+			const c = document.getElementById("canvas-bg");
+			const ctx = c.getContext("2d");
+			let W,
+				H,
+				waves = [];
+
+			function resize() {
+				W = c.width = innerWidth;
+				H = c.height = innerHeight;
+			}
+			resize();
+			addEventListener("resize", resize);
+
+			function mkWaves() {
+				waves = [];
+				for (let i = 0; i < 8; i++) {
+					waves.push({
+						y: Math.random() * H,
+						amp: 8 + Math.random() * 28,
+						freq: 0.004 + Math.random() * 0.018,
+						speed: 0.2 + Math.random() * 0.7,
+						phase: Math.random() * Math.PI * 2,
+						color: Math.random() > 0.55 ? "#00ff41" : "#ff1a1a",
+						lw: 0.4 + Math.random() * 1.2,
+						opacity: 0.25 + Math.random() * 0.45,
+					});
+				}
+			}
+			mkWaves();
+
+			let t = 0;
+			function draw() {
+				ctx.clearRect(0, 0, W, H);
+				t += 0.008;
+				waves.forEach((w) => {
+					ctx.beginPath();
+					ctx.strokeStyle = w.color;
+					ctx.lineWidth = w.lw;
+					ctx.globalAlpha = w.opacity;
+					for (let x = 0; x <= W; x += 3) {
+						const y =
+							w.y +
+							Math.sin(x * w.freq + t * w.speed + w.phase) * w.amp +
+							Math.sin(x * w.freq * 2.7 + t * w.speed * 1.5) * w.amp * 0.25;
+						x === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+					}
+					ctx.stroke();
+				});
+				requestAnimationFrame(draw);
+			}
+			draw();
+		})();
+
+		/* ===== SCROLL REVEALS ===== */
+		(function () {
+			const obs = new IntersectionObserver(
+				(entries) => {
+					entries.forEach((e) => {
+						if (e.isIntersecting) e.target.classList.add("vis");
+					});
+				},
+				{ threshold: 0.1 },
+			);
+
+			document.querySelectorAll(".tl-item").forEach((el, i) => {
+				el.style.transitionDelay = i * 0.1 + "s";
+				obs.observe(el);
+			});
+
+			const revObs = new IntersectionObserver(
+				(entries) => {
+					entries.forEach((e) => {
+						if (e.isIntersecting) e.target.classList.add("vis");
+					});
+				},
+				{ threshold: 0.08 },
+			);
+
+			document.querySelectorAll(".reveal").forEach((el, i) => {
+				el.style.transitionDelay = (i % 4) * 0.08 + "s";
+				revObs.observe(el);
+			});
+		})();
+
+		/* ===== NAV ACTIVE ===== */
+		(function () {
+			const links = document.querySelectorAll("nav a");
+			const sections = document.querySelectorAll("[id]");
+
+			const obs = new IntersectionObserver(
+				(entries) => {
+					entries.forEach((e) => {
+						if (e.isIntersecting) {
+							links.forEach((a) => a.classList.remove("active"));
+							const active = document.querySelector(
+								'nav a[href="#' + e.target.id + '"]',
+							);
+							if (active) active.classList.add("active");
+						}
+					});
+				},
+				{ rootMargin: "-40% 0px -55% 0px" },
+			);
+
+			sections.forEach((s) => {
+				if (s.id !== "top") obs.observe(s);
+			});
+		})();
+	</script>
+</body>
+
 </html>
