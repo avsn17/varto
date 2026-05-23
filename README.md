@@ -20,6 +20,10 @@ The **VARTO** platform is a lightweight, bilingual activist dashboard engineered
 
 ---
 
+# How to Contribute & Support
+
+Audit Primary Evidence: Review open-source legal complaints, official geological data vectors, and formal parliamentary inquiries hosted in the Campaign Document Folder
+
 ## 🚨 Overview
 
 **VARTO** is an open-source, data-driven campaign platform built to protect the **Karlıova Triple Junction** in Eastern Anatolia—one of the most dangerous and active tectonic fault zones on Earth.
@@ -32,11 +36,10 @@ This repository hosts the source code for our dual-mirror (Turkish/English) web 
 
 ## 🛑 Core Risk Factors
 
-### 1. Seismology & Induced Seismicity
+### Seismology & Induced Seismicity
 * **High-Pressure Fluid Injection:** Geothermal extraction relies on forcing immense volumes of fluid deep into rock matrices. In a compressed, high-stress fault nexus, this fluid increases pore pressure, reduces friction, and acts as a lubricant—drastically lowering the threshold for major tectonic faults to slip.
 * **The Ticking Clock:** The platform maps the project directly over the **Yedisu Gap**. This critical fault segment has been silently accumulating elastic strain without a major earthquake since **1784 (242 years)**.
 
-```text
        [ TECTONIC FAULT MATRIX — FLUID INDUCTION MECHANICS ]
 
         Varto Fault Zone (VFZ) / North & East Anatolian Faults (NAFZ/EAFZ)
@@ -85,3 +88,42 @@ Land Expropriation & Socio-Cultural Heritage
 Land Seizure: Over 453,494 m² of communal, ancestral village pastures are targeted for corporate exploitation, directly threatening local  agropastoral livelihoods.
 
 Preservation Threats: The drill footprint contains unexcavated ancient architectural structures from the historic Urartian civilization, dating back to King Sarduri II (764–735 BC).
+
+| The Threat Vector | Aegean Graben (Standard Baseline) | Varto Drilling Site (Karlıova Nexus) | Threat Level |
+| :--- | :--- | :--- | :---: |
+| **Fault Line Activity** | Moving apart slowly (~3 mm/year) | **Squeezing tightly fast (18–25 mm/year)** | 🟥 Extreme |
+| **Earthquake History** | Moderate, scattered micro-seismicity | **Massive historical ruptures (1966 Disaster)** | 🟥 Extreme |
+| **Unruptured Faults** | None present in immediate vicinity | **Yedisu Fault locked for over 2.4 centuries** | 🟥 Extreme |
+| **Toxic Chemical Risk** | Low / Trace baseline signatures | **Highly dangerous Arsenic & Boron concentrations** | ⚠️ High |
+| **Legal Status** | Full Environmental Review Completed | **Bypassed / "No Review Needed" status claimed** | 🚫 Violated |
+
+---
+
+# Frontend Architecture & Telemetry Specs
+Because field organizers, activists, and rural communities must access this platform in high-altitude terrain with weak cellular infrastructure, the application architecture was engineered from the ground up for minimal overhead and edge efficiency.
+
+[ FRONTEND INFRASTRUCTURE & EDGE DELIVERY NETWORK ]
+       
+         varto-black.vercel.app
+                   │
+                   ├───► [ CORE ENGINE ] ──► Pure Semantic HTML5 & Vanilla CSS
+                   │                         └─► Zero JS hydration delay
+                   │                         └─► Instant Edge-Network processing
+                   │
+                   ├───► [ UI THEME ] ─────► CRT Phosphor Emulation Terminal
+                   │                         └─► CSS Gradient Scanlines
+                   │                         └─► Hardware-Accelerated Layout Grid
+                   │
+                   └───► [ SYSTEM ARCH ] ──► Static Language Mirrors
+                                             ├─► index_tur.html (Local Advocacy)
+                                             └─► index_en.html  (Global Press)
+
+# Repository File Structure
+
+├── index_tur.html     # Production launch mirror (TR localization & legal briefs)
+├── index_en.html      # International mirror file (EN localization & geological datasets)
+├── favicon.ico        # Station telemetry application vector icon
+└── README.md          # System documentation readout terminal
+
+---
+
