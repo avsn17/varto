@@ -121,14 +121,16 @@ Because field organizers, activists, and rural communities must access this plat
                                              └─► index_en.html  (Global Press)
 
 # Repository File Structure
-
 -index_tur.html     
-# Production launch mirror (TR localization & legal briefs)
+Production launch mirror (TR localization & legal briefs)
 ─ index_en.html      
-# International mirror file (EN localization & geological datasets)
+
+International mirror file (EN localization & geological datasets)
 ─ favicon.ico        
-# Station telemetry application vector icon
+
+Station telemetry application vector icon
 ─ README.md          
-# System documentation readout terminal
+
+System documentation readout terminal
 
 
