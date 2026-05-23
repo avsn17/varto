@@ -1,4 +1,4 @@
-# VARTO — Earth Under Pressure // Tectonic Risk Terminal
+# VARTO — Earth Under Pressure 
 
 <p align="center">
   <img src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExbXN6cDR3Ym95amN4NXF4amN6bnd1Mnd6dWJ0cmVtcms0ZXBhN2JmNSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/Y2SbdRto6LWCoI9CjG/giphy.gif" alt="VARTO Tectonic UI Dashboard Terminal" width="100%" style="border-radius: 6px; border: 1px solid #003d15; max-height: 400px; object-fit: cover;">
