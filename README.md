@@ -55,3 +55,37 @@ This repository hosts the source code for our dual-mirror (Turkish/English) web 
        ░░░░░░░░░░░░░░░░░░░░░/              \░░░░░░░░░░░░░░░░░░░░░░
                                 ⬇            ⬆
                     [ INDUCED SEISMIC RUPTURE / EARTHQUAKE ]
+
+---
+
+Crustal Hydrology & Chemical Hazards
+Deep-crust drilling acts as a powerful subsurface solvent, extracting heavy toxic elements that threaten major contamination leaks into the Murat River (the primary feeding branch of the Euphrates Basin):
+
+Arsenic (10,700 μg/L): Underground fluid samples reveal catastrophic arsenic levels capable of permanently poisoning local alluvial aquifers and downriver agriculture.
+
+Boron (24.5 to 90.18 mg/L): Runoff parameters exceed safe agricultural irrigation metrics by up to 90x, serving as a destructive phytotoxic agent that kills crops and ruins livestock pastures.
+
+---
+[ CRUSTAL HYDROLOGY & CHEMICAL RUNOFF CONTAMINATION ]
+
+        GEOTHERMAL WELL                 ALLUVIAL VALLEY / VILLAGES
+            [ || ]                               [ 🌾🌾🌾 ]
+            [ || ]                                  │  │
+    ________[_||_]__________________________________▼__▼__  [Surface Level]
+   │        ║  ║ Runoff / Deep-Crust Seepage              │
+   │        ║  ║ ──► [ Arsenic: 10,700 µg/L ] ────────┐   │
+   │        ║  ║ ──► [ Boron: 24.5-90.18 mg/L ] ──┐   │   │
+   │        ║  ║                                  ▼   ▼   │
+   │========╩==╩==========================================│ [Aquifer Level]
+   │  ░░░░░░░░░░░░░░░░ LOCAL GROUNDWATER WATER ░░░░░░░░░  │
+   │  ░░░░░░░░░░░░ CRITICAL CONTAMINATION ZONE ░░░░░░░░░  │
+   │______________________________________________________│
+                            │
+                            └───► Feeds into Murat River ──► [ EUPHRATES BASIN ]
+
+---
+
+Land Expropriation & Socio-Cultural Heritage
+Land Seizure: Over 453,494 m² of communal, ancestral village pastures are targeted for corporate exploitation, directly threatening local  agropastoral livelihoods.
+
+Preservation Threats: The drill footprint contains unexcavated ancient architectural structures from the historic Urartian civilization, dating back to King Sarduri II (764–735 BC).
