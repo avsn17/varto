@@ -121,9 +121,9 @@ Because field organizers, activists, and rural communities must access this plat
                                              └─► index_en.html  (Global Press)
 
 # Repository File Structure
--index_tur.html     
+
 Production launch mirror (TR localization & legal briefs)
-─ index_en.html      
+─ index_en.html; -index_tur.html        
 
 International mirror file (EN localization & geological datasets)
 ─ favicon.ico        
